@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ed266835-c936-4da2-85c7-289bc221e8c0" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/createcompetition" beforeDir="false" afterPath="$PROJECT_DIR$/createcompetition" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/createcompetition/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/createcompetition/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/CreatecompetitionApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/CreatecompetitionApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/createcompetition/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/createcompetition/src/main/resources/application.yaml" afterDir="false" />
@@ -322,7 +323,7 @@
       <workItem from="1647707979698" duration="3443000" />
       <workItem from="1647879099657" duration="651000" />
       <workItem from="1651917856898" duration="12000" />
-      <workItem from="1651918713910" duration="931000" />
+      <workItem from="1651918713910" duration="1702000" />
     </task>
     <servers />
   </component>
