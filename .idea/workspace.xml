@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ed266835-c936-4da2-85c7-289bc221e8c0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/createcompetition" beforeDir="false" afterPath="$PROJECT_DIR$/createcompetition" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/createcompetition/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/createcompetition/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/CreatecompetitionApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/CreatecompetitionApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/createcompetition/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/createcompetition/src/main/resources/application.yaml" afterDir="false" />
+    <list default="true" id="ed266835-c936-4da2-85c7-289bc221e8c0" name="Default Changelist" comment="migrating to git">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +68,7 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.36018413" />
-    <property name="settings.editor.selected.configurable" value="spring" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.DirectoryMappings" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -323,9 +320,25 @@
       <workItem from="1647707979698" duration="3443000" />
       <workItem from="1647879099657" duration="651000" />
       <workItem from="1651917856898" duration="12000" />
-      <workItem from="1651918713910" duration="1702000" />
+      <workItem from="1651918713910" duration="1889000" />
+      <workItem from="1651920648844" duration="1057000" />
     </task>
+    <task id="LOCAL-00001" summary="migrating to git">
+      <created>1651920527824</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1651920527824</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/createcompetition" />
+    </ignored-roots>
+    <MESSAGE value="migrating to git" />
+    <option name="LAST_COMMIT_MESSAGE" value="migrating to git" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
