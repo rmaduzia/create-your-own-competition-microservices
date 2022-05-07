@@ -4,12 +4,12 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/cloud-server/pom.xml" />
-        <option value="$PROJECT_DIR$/createcompetition/pom.xml" />
         <option value="$PROJECT_DIR$/team-service/pom.xml" />
         <option value="$PROJECT_DIR$/user-service/pom.xml" />
         <option value="$PROJECT_DIR$/eureka-service-discovery/pom.xml" />
         <option value="$PROJECT_DIR$/api-gateway/pom.xml" />
         <option value="$PROJECT_DIR$/authorization-server/pom.xml" />
+        <option value="$PROJECT_DIR$/createcompetition/pom.xml" />
       </list>
     </option>
   </component>

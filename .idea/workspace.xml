@@ -5,7 +5,143 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ed266835-c936-4da2-85c7-289bc221e8c0" name="Default Changelist" comment="migrating to git">
+      <change afterPath="$PROJECT_DIR$/.idea/jpa-buddy.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/.mvn/wrapper/MavenWrapperDownloader.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/.mvn/wrapper/maven-wrapper.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/docker/docker-compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/docker/enabled_plugins" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/mvnw" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/mvnw.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/CreatecompetitionApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/annotations/PasswordConstraintValidator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/annotations/ValidPassword.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/authentication/AuthenticationController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/authentication/AuthenticationService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/competition/Competition.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/competition/CompetitionController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/competition/CompetitionRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/competition/CompetitionService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/competition/CompetitionTagController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/competition/CompetitionTagRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/competition/CompetitionTagService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/competition/match/MatchInCompetition.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/competition/match/MatchInCompetitionController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/competition/match/MatchInCompetitionRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/competition/match/MatchInCompetitionService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/config/AppConstants.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/config/AppProperties.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/config/MongoConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/config/SecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/config/WebMvcConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/config/WebSocketConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/exception/BadRequestException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/exception/ErrorResponseHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/exception/OAuth2AuthenticationProcessingException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/exception/ResourceAlreadyExistException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/exception/ResourceNotFoundException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/model/AuthProvider.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/model/Gender.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/model/PageModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/model/PagedResponseDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/model/PagedResponseDtoBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/model/Tag.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/model/websockets/UserNotification.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/notification/NotificationMessagesToUsersService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/notification/NotificationRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/notification/WebSocketMessagingController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/payload/ApiResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/payload/AuthResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/payload/ChangeMailRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/payload/ChangePasswordRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/payload/LoginRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/payload/PaginationInfoRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/payload/SignUpRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/payload/interfaces/ChangeRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/payload/responses/ErrorResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/payload/responses/Responses.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/security/CurrentUser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/security/CustomUserDetailsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/security/RestAuthenticationEntryPoint.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/security/TokenAuthenticationFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/security/TokenProvider.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/security/UserPrincipal.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/security/oauth2/CustomOAuth2UserService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/security/oauth2/HttpCookieOAuth2AuthorizationRequestRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/security/oauth2/OAuth2AuthenticationFailureHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/security/oauth2/OAuth2AuthenticationSuccessHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/security/oauth2/user/FacebookOAuth2UserInfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/security/oauth2/user/GoogleOAuth2UserInfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/security/oauth2/user/OAuth2UserInfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/security/oauth2/user/OAuth2UserInfoFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/team/Team.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/team/TeamController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/team/TeamRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/team/TeamService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/tournament/Tournament.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/tournament/TournamentController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/tournament/TournamentRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/tournament/TournamentService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/tournament/match/MatchInTournament.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/tournament/match/MatchInTournamentController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/tournament/match/MatchInTournamentRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/tournament/match/MatchInTournamentService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/user/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/user/UserController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/user/UserRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/user/UserService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/user/detail/UserDetail.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/user/detail/UserDetailRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/user/detail/UserDetailService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/user/detail/UserDetailsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/util/CookieUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/util/MatchTeamsInTournament.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/util/StringUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/util/VerifyMethodsForServices.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/util/email/ContextBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/util/email/EmailMassageTemplate.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/util/email/Mail.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/util/email/MailService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/util/email/MailTemplateCreator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/util/email/TemplateValues.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/util/query/GetQueryAbstractService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/util/query/GetQueryImplService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/util/query/QueryDtoInterface.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/util/query/SearchCriteria.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/util/query/UserSearchQueryCriteriaConsumer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/resources/application.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/resources/db/migration/structure/ddl/V2021.05.03.13.28__competitions_schema_create.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/resources/db/migration/structure/ddl/V2021.05.03.13.29__tag_schema_create.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/resources/db/migration/structure/ddl/V2021.05.03.13.30__team_schema_create.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/resources/db/migration/structure/ddl/V2021.05.03.13.31__tournament_schema_create.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/resources/db/migration/structure/ddl/V2021.05.03.13.32__user_schema_create.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/resources/db/migration/structure/ddl/V2021.05.04.23.28__competition_tag_schema_create.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/resources/db/migration/structure/ddl/V2021.05.04.23.29__competition_team_schema_create.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/resources/db/migration/structure/ddl/V2021.05.04.23.30__tournament_team_and_tag_schema_create.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/resources/db/migration/structure/ddl/V2021.05.04.23.31__user_team_and_competition_schema_create.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/main/resources/templates/email/Email-alert-template.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/test/java/pl/createcompetition/controller/UserControllerTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/test/java/pl/createcompetition/email/EmileMassagesTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/test/java/pl/createcompetition/email/MailServiceTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/test/java/pl/createcompetition/email/MailTemplateCreatorTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/test/java/pl/createcompetition/service/AuthenticationServiceTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/test/java/pl/createcompetition/service/CompetitionServiceTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/test/java/pl/createcompetition/service/CompetitionTagServiceTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/test/java/pl/createcompetition/service/MatchInCompetitionServiceTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/test/java/pl/createcompetition/service/MatchInTournamentServiceTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/test/java/pl/createcompetition/service/SendNotificationToUserTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/test/java/pl/createcompetition/service/TeamServiceTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/test/java/pl/createcompetition/service/TournamentServiceTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/test/java/pl/createcompetition/service/UserDetailServiceTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/test/java/pl/createcompetition/service/UserServiceTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/src/test/java/pl/createcompetition/util/MatchTeamsInTournamentTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/createcompetition/swagger.PNG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/createcompetition" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,6 +184,13 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
   <component name="ProjectId" id="1t4jxrNM32BDuwrFKXiYKUFWdvy" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -62,9 +205,10 @@
     <property name="RequestMappingsPanelWidth1" value="75" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/git-localconfig-repo" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/createcompetition" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.36018413" />
@@ -321,7 +465,7 @@
       <workItem from="1647879099657" duration="651000" />
       <workItem from="1651917856898" duration="12000" />
       <workItem from="1651918713910" duration="1889000" />
-      <workItem from="1651920648844" duration="1057000" />
+      <workItem from="1651920648844" duration="1446000" />
     </task>
     <task id="LOCAL-00001" summary="migrating to git">
       <created>1651920527824</created>

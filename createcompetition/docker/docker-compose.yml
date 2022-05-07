@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  # RabbitMq
+  rabbit:
+    container_name: rabbit_3
+    image: rabbitmq:3-management
+    hostname: rabbit
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    ports:
+    - "15672:15672"
+    - "5672:5672"
+    - "61613:61613"
+    - "15674:15674"
+    volumes:
+    - ./enabled_plugins:/etc/rabbitmq/enabled_plugins
+
+  #MySQL
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: create_competition
