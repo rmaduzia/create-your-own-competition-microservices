@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="authorization-server" />
+        <module name="eureka-service-discovery" />
+        <module name="api-gateway" />
+        <module name="createcompetition" />
+        <module name="createcompetition-cloud-server" />
+        <module name="user-service" />
+        <module name="team-service" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="api-gateway" target="11" />
+      <module name="authorization-server" target="11" />
+      <module name="createcompetition" target="11" />
+      <module name="createcompetition-cloud-server" target="11" />
+      <module name="eureka-service-discovery" target="11" />
+      <module name="team-service" target="11" />
+      <module name="user-service" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="api-gateway" options="-parameters" />
+      <module name="authorization-server" options="-parameters" />
+      <module name="createcompetition" options="-parameters" />
+      <module name="createcompetition-cloud-server" options="-parameters" />
+      <module name="eureka-service-discovery" options="-parameters" />
+      <module name="team-service" options="-parameters" />
+      <module name="user-service" options="-parameters" />
+    </option>
+  </component>
+</project>

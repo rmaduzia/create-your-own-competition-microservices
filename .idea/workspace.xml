@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ed266835-c936-4da2-85c7-289bc221e8c0" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/createcompetition/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/createcompetition/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/CreatecompetitionApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/createcompetition/src/main/java/pl/createcompetition/CreatecompetitionApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/createcompetition/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/createcompetition/src/main/resources/application.yaml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="JpbToolWindowState">
+    <option name="myId2FirstActivated">
+      <map>
+        <entry key="com.haulmont.jpb.jpaPalette" value="true" />
+        <entry key="com.haulmont.jpb.jpaStructure" value="true" />
+      </map>
+    </option>
+    <option name="myId2Visible">
+      <map>
+        <entry key="com.haulmont.jpb.jpaPalette" value="true" />
+        <entry key="com.haulmont.jpb.jpaStructure" value="true" />
+      </map>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="1t4jxrNM32BDuwrFKXiYKUFWdvy" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="mysql" />
+    <property name="ExpandSpringBootJavaOptionsPanel" value="true" />
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/git-localconfig-repo" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.36018413" />
+    <property name="settings.editor.selected.configurable" value="spring" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\rafi1\IdeaProjects\createcompetition-microservices\authorization-server\src\main\java\pl\createcompetition\authorizationserver\newpackages" />
+      <recent name="C:\Users\rafi1\IdeaProjects\createcompetition-microservices\authorization-server\src\main\resources" />
+      <recent name="C:\Users\rafi1\IdeaProjects\createcompetition-microservices\team-service\src\main\resources\db\migration" />
+      <recent name="C:\Users\rafi1\IdeaProjects\createcompetition-microservices\team-service\src\main\resources" />
+      <recent name="C:\Users\rafi1\IdeaProjects\createcompetition-microservices\team-service\src\main\java\pl\createcompetition\teamservice\exception" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\rafi1\IdeaProjects\createcompetition-microservices\eureka-service-discovery\src\main\resources" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="pl.createcompetition" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="pl.createcompetition.teamservice.config" />
+      <recent name="pl.createcompetition.teamservice" />
+      <recent name="pl.createcompetition.teamservice.notification" />
+      <recent name="pl.createcompetition.userservice.all" />
+      <recent name="pl.createcompetition.teamservice.all" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.AuthorizationServerApplication">
+    <configuration name="MailTemplateCreatorTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="user-service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="pl.createcompetition.email.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="pl.createcompetition.email" />
+      <option name="MAIN_CLASS_NAME" value="pl.createcompetition.email.MailTemplateCreatorTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="pl.createcompetition in user-service" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="user-service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="pl.createcompetition.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="pl.createcompetition" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="pl.createcompetition.email in user-service" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="user-service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="pl.createcompetition.email.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="pl.createcompetition.email" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ApiGatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="api-gateway" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="pl.createcompetition.apigateway.ApiGatewayApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AuthorizationServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="authorization-server" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="pl.createcompetition.authorizationserver.AuthorizationServerApplication" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <envs>
+        <env name="DATABASE_URL" value="localhost" />
+        <env name="DATABASE_PORT" value="3306" />
+        <env name="DATABASE_NAME" value="create_competition" />
+        <env name="DATABASE_USERNAME" value="root" />
+        <env name="DATABASE_PASSWORD" value="root" />
+        <env name="DATABASE_DIALECT" value="org.hibernate.dialect.MySQL8Dialect" />
+        <env name="MAIL_USERNAME" value="knight570@hotmail.com" />
+        <env name="MAIL_PASSWORD" value="S]wN;#YP]XdpB2^g:,Xf" />
+        <env name="GOOGLE_OAUTH_CLIENT_ID" value="276649131286-i47eh3g3711uho1haubcamkafgi42b6g.apps.googleusercontent.com" />
+        <env name="GOOGLE_OAUTH_CLIENT_SECRET" value="MxN0OSIwdWMAmbjONE-35az0" />
+        <env name="FACEBOOK_OAUTH_CLIENT_ID" value="750150205764190" />
+        <env name="FACEBOOK_OAUTH_CLIENT_SECRET" value="c47717a0479a837e042a2b640ccacd94" />
+        <env name="GITHUB_OAUTH_CLIENT_ID" value="220d6357ca62f76bb566" />
+        <env name="GITHUB_OAUTH_CLIENT_SECRET" value="48aad5cbae6192ccb4f972fcb28186b820927f42" />
+        <env name="APP_AUTH_TOKEN_SECRET" value="926D96C90030DD58429D2751AC1BDBBC" />
+        <env name="DATABASE_DRIVER" value="mysql" />
+      </envs>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CreatecompetitionApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="createcompetition" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="pl.createcompetition.CreatecompetitionApplication" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <envs>
+        <env name="DATABASE_DRIVER" value="mysql" />
+        <env name="DATABASE_URL" value="localhost" />
+        <env name="DATABASE_PORT" value="3306" />
+        <env name="DATABASE_NAME" value="create_competition" />
+        <env name="DATABASE_USERNAME" value="root" />
+        <env name="DATABASE_PASSWORD" value="root" />
+        <env name="DATABASE_DIALECT" value="org.hibernate.dialect.MySQL8Dialect" />
+        <env name="MAIL_USERNAME" value="knight570@hotmail.com" />
+        <env name="MAIL_PASSWORD" value="S]wN;#YP]XdpB2^g:,Xf" />
+        <env name="GOOGLE_OAUTH_CLIENT_ID" value="276649131286-i47eh3g3711uho1haubcamkafgi42b6g.apps.googleusercontent.com" />
+        <env name="GOOGLE_OAUTH_CLIENT_SECRET" value="MxN0OSIwdWMAmbjONE-35az0" />
+        <env name="FACEBOOK_OAUTH_CLIENT_ID" value="750150205764190" />
+        <env name="FACEBOOK_OAUTH_CLIENT_SECRET" value="c47717a0479a837e042a2b640ccacd94" />
+        <env name="GITHUB_OAUTH_CLIENT_ID" value="220d6357ca62f76bb566" />
+        <env name="GITHUB_OAUTH_CLIENT_SECRET" value="48aad5cbae6192ccb4f972fcb28186b820927f42" />
+        <env name="APP_AUTH_TOKEN_SECRET" value="926D96C90030DD58429D2751AC1BDBBC" />
+      </envs>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CreatecompetitionCloudServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="createcompetition-cloud-server" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="pl.createcompetition.createcompetition.cloudserver.CreateCompetitionCloudServerApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EurekaServiceDiscoveryApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="eureka-service-discovery" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="pl.createcompetition.eurekaservicediscovery.EurekaServiceDiscoveryApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TeamServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="team-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="pl.createcompetition.teamservice.TeamServiceApplication" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <envs>
+        <env name="DATABASE_DRIVER" value="mysql" />
+        <env name="DATABASE_URL" value="localhost" />
+        <env name="DATABASE_PORT" value="3306" />
+        <env name="DATABASE_NAME" value="create_competition" />
+        <env name="DATABASE_USERNAME" value="root" />
+        <env name="DATABASE_PASSWORD" value="root" />
+        <env name="DATABASE_DIALECT" value="org.hibernate.dialect.MySQL8Dialect" />
+        <env name="MAIL_USERNAME" value="knight570@hotmail.com" />
+        <env name="MAIL_PASSWORD" value="S]wN;#YP]XdpB2^g:,Xf" />
+        <env name="GOOGLE_OAUTH_CLIENT_ID" value="276649131286-i47eh3g3711uho1haubcamkafgi42b6g.apps.googleusercontent.com" />
+        <env name="GOOGLE_OAUTH_CLIENT_SECRET" value="MxN0OSIwdWMAmbjONE-35az0" />
+        <env name="FACEBOOK_OAUTH_CLIENT_ID" value="750150205764190" />
+        <env name="FACEBOOK_OAUTH_CLIENT_SECRET" value="c47717a0479a837e042a2b640ccacd94" />
+        <env name="GITHUB_OAUTH_CLIENT_ID" value="220d6357ca62f76bb566" />
+        <env name="GITHUB_OAUTH_CLIENT_SECRET" value="48aad5cbae6192ccb4f972fcb28186b820927f42" />
+        <env name="APP_AUTH_TOKEN_SECRET" value="926D96C90030DD58429D2751AC1BDBBC" />
+      </envs>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="user-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="pl.createcompetition.UserServiceApplication" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <envs>
+        <env name="DATABASE_DRIVER" value="mysql" />
+        <env name="DATABASE_URL" value="localhost" />
+        <env name="DATABASE_PORT" value="3306" />
+        <env name="DATABASE_NAME" value="create_competition" />
+        <env name="DATABASE_USERNAME" value="root" />
+        <env name="DATABASE_PASSWORD" value="root" />
+        <env name="DATABASE_DIALECT" value="org.hibernate.dialect.MySQL8Dialect" />
+        <env name="MAIL_USERNAME" value="knight570@hotmail.com" />
+        <env name="MAIL_PASSWORD" value="S]wN;#YP]XdpB2^g:,Xf" />
+        <env name="GOOGLE_OAUTH_CLIENT_ID" value="276649131286-i47eh3g3711uho1haubcamkafgi42b6g.apps.googleusercontent.com" />
+        <env name="GOOGLE_OAUTH_CLIENT_SECRET" value="MxN0OSIwdWMAmbjONE-35az0" />
+        <env name="FACEBOOK_OAUTH_CLIENT_ID" value="750150205764190" />
+        <env name="FACEBOOK_OAUTH_CLIENT_SECRET" value="c47717a0479a837e042a2b640ccacd94" />
+        <env name="APP_AUTH_TOKEN_SECRET" value="926D96C90030DD58429D2751AC1BDBBC" />
+      </envs>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="JUnit.pl.createcompetition in user-service" />
+      <item itemvalue="JUnit.MailTemplateCreatorTest" />
+      <item itemvalue="JUnit.pl.createcompetition.email in user-service" />
+      <item itemvalue="Spring Boot.CreatecompetitionApplication" />
+      <item itemvalue="Spring Boot.CreatecompetitionCloudServerApplication" />
+      <item itemvalue="Spring Boot.TeamServiceApplication" />
+      <item itemvalue="Spring Boot.UserServiceApplication" />
+      <item itemvalue="Spring Boot.EurekaServiceDiscoveryApplication" />
+      <item itemvalue="Spring Boot.ApiGatewayApplication" />
+      <item itemvalue="Spring Boot.AuthorizationServerApplication" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.pl.createcompetition in user-service" />
+        <item itemvalue="JUnit.pl.createcompetition.email in user-service" />
+        <item itemvalue="JUnit.MailTemplateCreatorTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ed266835-c936-4da2-85c7-289bc221e8c0" name="Default Changelist" comment="" />
+      <created>1622035506547</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1622035506547</updated>
+      <workItem from="1622035508180" duration="272000" />
+      <workItem from="1622035789888" duration="1304000" />
+      <workItem from="1622037354292" duration="2949000" />
+      <workItem from="1622040631758" duration="5044000" />
+      <workItem from="1622314682030" duration="6928000" />
+      <workItem from="1622662881348" duration="3857000" />
+      <workItem from="1622923078292" duration="594000" />
+      <workItem from="1622925142376" duration="6360000" />
+      <workItem from="1624041617283" duration="21810000" />
+      <workItem from="1624308883540" duration="1321000" />
+      <workItem from="1624479341419" duration="596000" />
+      <workItem from="1624717481916" duration="1789000" />
+      <workItem from="1624996343673" duration="1915000" />
+      <workItem from="1625078055632" duration="594000" />
+      <workItem from="1625323809578" duration="857000" />
+      <workItem from="1625467200933" duration="4000" />
+      <workItem from="1625945172762" duration="1908000" />
+      <workItem from="1627492079687" duration="1514000" />
+      <workItem from="1627930385949" duration="1192000" />
+      <workItem from="1628696855382" duration="669000" />
+      <workItem from="1628698718926" duration="9080000" />
+      <workItem from="1628933145768" duration="4661000" />
+      <workItem from="1629046796726" duration="3968000" />
+      <workItem from="1629571665488" duration="3613000" />
+      <workItem from="1629739507716" duration="8895000" />
+      <workItem from="1630259540078" duration="1300000" />
+      <workItem from="1630311320125" duration="4000" />
+      <workItem from="1631401402055" duration="1203000" />
+      <workItem from="1645796545741" duration="1195000" />
+      <workItem from="1645910789189" duration="603000" />
+      <workItem from="1647707979698" duration="3443000" />
+      <workItem from="1647879099657" duration="651000" />
+      <workItem from="1651917856898" duration="12000" />
+      <workItem from="1651918713910" duration="931000" />
+    </task>
+    <servers />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="com.vaadin.designer2.intellij.settings.SizePresetsSettingsComponent">
+    <option name="sizePresets">
+      <list>
+        <SizePreset>
+          <option name="caption" value="Phone" />
+          <option name="height" value="568" />
+          <option name="width" value="320" />
+        </SizePreset>
+        <SizePreset>
+          <option name="caption" value="Tablet" />
+          <option name="height" value="1024" />
+          <option name="width" value="768" />
+        </SizePreset>
+        <SizePreset>
+          <option name="caption" value="Desktop" />
+          <option name="height" value="900" />
+          <option name="width" value="1440" />
+        </SizePreset>
+      </list>
+    </option>
+  </component>
+</project>
