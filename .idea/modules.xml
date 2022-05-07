@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/api-gateway/api-gateway.iml" filepath="$PROJECT_DIR$/api-gateway/api-gateway.iml" />
+      <module fileurl="file://$PROJECT_DIR$/authorization-server/authorization-server.iml" filepath="$PROJECT_DIR$/authorization-server/authorization-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/createcompetition/createcompetition.iml" filepath="$PROJECT_DIR$/createcompetition/createcompetition.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cloud-server/createcompetition-cloud-server.iml" filepath="$PROJECT_DIR$/cloud-server/createcompetition-cloud-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/eureka-service-discovery/eureka-service-discovery.iml" filepath="$PROJECT_DIR$/eureka-service-discovery/eureka-service-discovery.iml" />
+      <module fileurl="file://$PROJECT_DIR$/team-service/team-service.iml" filepath="$PROJECT_DIR$/team-service/team-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/user-service/user-service.iml" filepath="$PROJECT_DIR$/user-service/user-service.iml" />
+    </modules>
+  </component>
+</project>
