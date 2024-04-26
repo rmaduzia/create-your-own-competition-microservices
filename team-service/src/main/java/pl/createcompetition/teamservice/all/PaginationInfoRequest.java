@@ -1,9 +1,9 @@
 package pl.createcompetition.teamservice.all;
 
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.Min;
 import java.beans.ConstructorProperties;
 
 @Getter

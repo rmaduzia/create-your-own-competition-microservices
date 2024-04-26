@@ -2,12 +2,14 @@ package pl.createcompetition.teamservice.all;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import pl.createcompetition.teamservice.query.QueryDtoInterface;
 
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -21,6 +23,7 @@ import static pl.createcompetition.teamservice.config.AppConstants.MAX_AMOUNT_OF
 @Getter
 @Setter
 @Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -36,25 +39,30 @@ public class Team implements QueryDtoInterface<Team.TeamDto> {
     private String teamName;
 
     @Max(value = MAX_AMOUNT_OF_USERS_IN_TEAM, message = "You can't have more members then: " + MAX_AMOUNT_OF_USERS_IN_TEAM)
-    @Min(value = 1, message = "You can't have less member then 1")
-    private int maxAmountMembers;
+//    @Min(value = 1, message = "You can't have less member then 1")
+    @Builder.Default
+    private int maxAmountMembers = 30;
 
     @NotBlank(message = "Team owner can't be empty")
     private String teamOwner;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "team_members", joinColumns = @JoinColumn(name = "team_id" , referencedColumnName = "id"),
             foreignKey = @ForeignKey(name = "FK_TEAM_MEMBERS_TEAM_ID"))
-    @MapKeyColumn(name = "id")
+//    @MapKeyColumn(name = "id")
     @Column(name = "user_name")
     @Builder.Default
-    Map<Long, String> team_members = new HashMap<>();
+//    Map<Long, String> team_members = new HashMap<>();
+//    @Singular
+    private Set<String> team_members = new HashSet<>();
 
     @NotBlank(message = "City can't be empty")
     @Pattern(regexp="^[a-zA-Z]*$", message = "City can't contain number")
     private String city;
 
-    private Boolean isOpenRecruitment;
+    @ColumnDefault("true")
+    @Builder.Default
+    private boolean isOpenRecruitment = true;
 
     @Override
     public TeamDto map() {
@@ -70,6 +78,18 @@ public class Team implements QueryDtoInterface<Team.TeamDto> {
         private String teamOwner;
         private String city;
         private Boolean isOpenRecruitment;
-
     }
+
+    public boolean addRecruit(String recruitName) {
+        return team_members.add(recruitName);
+    }
+
+    public boolean removeRecruit(String recruitName) {
+        return team_members.remove(recruitName);
+    }
+
+
+
+
+
 }

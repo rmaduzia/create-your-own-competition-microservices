@@ -4,14 +4,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import pl.createcompetition.teamservice.exception.BadRequestException;
 import pl.createcompetition.teamservice.exception.ResourceAlreadyExistException;
 import pl.createcompetition.teamservice.exception.ResourceNotFoundException;
-import pl.createcompetition.teamservice.notification.NotificationMessagesToUsersService;
+//import pl.createcompetition.teamservice.notification.NotificationMessagesToUsersService;
+import pl.createcompetition.teamservice.keycloak.KeyCloakService;
 import pl.createcompetition.teamservice.query.GetQueryImplService;
-import pl.createcompetition.teamservice.security.UserPrincipal;
-
-import java.util.Optional;
+import pl.createcompetition.teamservice.microserviceschanges.UserPrincipal;
 
 @AllArgsConstructor
 @Service
@@ -19,196 +19,103 @@ public class TeamService {
 
     private final TeamRepository teamRepository;
 
-    private final NotificationMessagesToUsersService notificationMessagesToUsersService;
+//    private final NotificationMessagesToUsersService notificationMessagesToUsersService;
     private final GetQueryImplService<Team,?> queryTeamService;
     private final VerifyMethodsForServices verifyMethodsForServices;
+    private final KeyCloakService keyCloakService;
 
     public PagedResponseDto<?> searchTeam(String search, PaginationInfoRequest paginationInfoRequest) {
 
         return queryTeamService.execute(Team.class, search, paginationInfoRequest.getPageNumber(), paginationInfoRequest.getPageSize());
     }
 
-    public ResponseEntity<?> addTeam (Team team, UserPrincipal userPrincipal) {
+    public ResponseEntity<Team> addTeam (CreateTeamRequest createTeamRequest, String userName) {
 
-        if (!teamRepository.existsTeamByTeamNameIgnoreCase(team.getTeamName())) {
-            team.setTeamOwner(userPrincipal.getUsername());
-            return ResponseEntity.status(HttpStatus.CREATED).body(teamRepository.save(team));
+        if (!teamRepository.existsTeamByTeamNameIgnoreCase(createTeamRequest.getTeamName())) {
+            Team newTeam = Team.builder()
+                .teamOwner(userName)
+                .teamName(createTeamRequest.getTeamName())
+                .city(createTeamRequest.getCity())
+                .build();
+            return ResponseEntity.status(HttpStatus.CREATED).body(teamRepository.save(newTeam));
         } else{
-            throw new ResourceAlreadyExistException("Team", "Name", team.getTeamName());
+            throw new ResourceAlreadyExistException("Team", "Name", createTeamRequest.getTeamName());
         }
     }
 
-    public ResponseEntity<?> updateTeam (String teamName, Team team, UserPrincipal userPrincipal) {
+    public ResponseEntity<?> updateTeam (String teamName, Team team, String userName) {
 
         if (!team.getTeamName().equals(teamName)) {
-            throw new BadRequestException("Tean Name doesn't match with Team object");
+            throw new BadRequestException("Team name doesn't match with Team object");
         }
 
-        Team foundTeam = verifyMethodsForServices.shouldFindTeam(team.getTeamName(), userPrincipal.getUsername());
-        checkIfTeamBelongToUser(foundTeam, userPrincipal);
+        Team foundTeam = verifyMethodsForServices.shouldFindTeam(team.getTeamName(), userName);
+        checkIfTeamBelongToUser(foundTeam, userName);
 
         return ResponseEntity.ok(teamRepository.save(team));
 
     }
 
-    public ResponseEntity<?> deleteTeam (String teamName, UserPrincipal userPrincipal) {
+    public ResponseEntity<?> deleteTeam (String teamName, String userName) {
 
-        Team foundTeam = verifyMethodsForServices.shouldFindTeam(teamName, userPrincipal.getUsername());
-        checkIfTeamBelongToUser(foundTeam, userPrincipal);
+        Team foundTeam = verifyMethodsForServices.shouldFindTeam(teamName, userName);
+        checkIfTeamBelongToUser(foundTeam, userName);
 
         teamRepository.deleteById(foundTeam.getId());
 
         return ResponseEntity.noContent().build();
     }
 
-    public ResponseEntity<?> addRecruitToTeam(String teamName, String recruitName, UserPrincipal userPrincipal) {
+    public ResponseEntity<?> addRecruitToTeam(String teamName, String recruitName, String userName) {
 
-        Team foundTeam = verifyMethodsForServices.shouldFindTeam(teamName, userPrincipal.getUsername());
-        checkIfTeamBelongToUser(foundTeam, userPrincipal);
+        Team foundTeam = verifyMethodsForServices.shouldFindTeam(teamName, userName);
+        checkIfTeamBelongToUser(foundTeam, userName);
 
- //       Optional<UserDetail> findRecruit = Optional.ofNullable(userDetailRepository.findByUserName(recruitName).orElseThrow(() ->
-  //              new ResourceNotFoundException("UserName not exists", "Name", recruitName)));
+        // SHOULD VERIFY WITH KEYCLOAK IS RECRUIT NAME IS CORRECT
+        if (keyCloakService.getUserByUserName(recruitName) == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User name: " + recruitName + " does not exists");
+        }
 
-    //    foundTeam.addRecruitToTeam(findRecruit.get());
+        foundTeam.addRecruit(recruitName);
+
         teamRepository.save(foundTeam);
 
-        notificationMessagesToUsersService.notificationMessageToUser(recruitName, "Team","invite", foundTeam.getTeamName());
+//        notificationMessagesToUsersService.notificationMessageToUser(recruitName, "Team","invite", foundTeam.getTeamName());
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    public ResponseEntity<?> deleteMemberFromTeam(String teamName, String userNameToDelete, UserPrincipal userPrincipal) {
+    public ResponseEntity<?> removeMemberFromTeam(String teamName, String userNameToDelete, UserPrincipal userPrincipal) {
 
-        Team foundTeam = verifyMethodsForServices.shouldFindTeam(teamName, userPrincipal.getUsername());
-        checkIfTeamBelongToUser(foundTeam, userPrincipal);
+        Team foundTeam = verifyMethodsForServices.shouldFindTeam(teamName, userPrincipal.getName());
+        checkIfTeamBelongToUser(foundTeam, userPrincipal.getName());
 
-  //      UserDetail findRecruit = userDetailRepository.findByUserName(userNameToDelete).orElseThrow(() ->
-   //             new ResourceNotFoundException("UserName not exists", "Name", userNameToDelete));
+        boolean isRemoved = foundTeam.removeRecruit(userNameToDelete);
 
-    //    checkIfUserIsMemberOfTeam(foundTeam, findRecruit);
+        if (!isRemoved)
+            throw new ResourceNotFoundException("UserName: " + userNameToDelete +  " does not belong to team: " + teamName);
 
-     //   foundTeam.deleteRecruitFromTeam(findRecruit);
 
         teamRepository.save(foundTeam);
-        notificationMessagesToUsersService.notificationMessageToUser(userNameToDelete, "Have been","deleted", foundTeam.getTeamName());
+//        notificationMessagesToUsersService.notificationMessageToUser(userNameToDelete, "Have been","deleted", foundTeam.getTeamName());
 
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<?> teamJoinTournament(String teamName, String tournamentName,UserPrincipal userPrincipal) {
-
-        Team foundTeam = verifyMethodsForServices.shouldFindTeam(teamName, userPrincipal.getUsername());
-        checkIfTeamBelongToUser(foundTeam, userPrincipal);
-
-     //   Tournament findTournament = getTournament(tournamentName);
-
-    //    if (findTournament.getMaxAmountOfTeams() == findTournament.getTeams().size()) {
-     //       throw new BadRequestException("There is already the maximum number of teams");
-       // }
-
-    //    foundTeam.addTeamToTournament(findTournament);
 
 
-        // Send notification to Team Members
-     //   for (UserDetail userDetail: foundTeam.getUserDetails()) {
-   //         notificationMessagesToUsersService.notificationMessageToUser(userDetail.getUserName(), "Team","joined tournament: ", tournamentName);
-    //    }
-
-
-     //   return ResponseEntity.ok(teamRepository.save(foundTeam));
-            return ResponseEntity.ok().build();
-    }
-
-
-    public ResponseEntity<?> teamLeaveTournament(String teamName, String tournamentName,UserPrincipal userPrincipal) {
-
-        Team foundTeam = verifyMethodsForServices.shouldFindTeam(teamName, userPrincipal.getUsername());
-        checkIfTeamBelongToUser(foundTeam, userPrincipal);
-
-     //   Tournament findTournament = getTournament(tournamentName);
-
-    //    foundTeam.deleteTeamFromTournament(findTournament);
-
-        // Send notification to Team Members
-    //    for (UserDetail userDetail: foundTeam.getUserDetails()) {
-   //         notificationMessagesToUsersService.notificationMessageToUser(userDetail.getUserName(), "Team","left tournament: ", tournamentName);
-   //     }
-
-       // return ResponseEntity.ok(teamRepository.save(foundTeam));
-        return ResponseEntity.ok().build();
-
-    }
-
-    public ResponseEntity<?> teamJoinCompetition(String teamName, String competitionName,UserPrincipal userPrincipal) {
-
-        Team foundTeam = verifyMethodsForServices.shouldFindTeam(teamName, userPrincipal.getUsername());
-        checkIfTeamBelongToUser(foundTeam, userPrincipal);
-/*
-        Competition findCompetition = getCompetition(competitionName);
-
-        if (findCompetition.getMaxAmountOfTeams() == findCompetition.getTeams().size()) {
-            throw new BadRequestException("There is already the maximum number of teams");
-        }
-
-        foundTeam.addTeamToCompetition(findCompetition);
-
-        // Send notification to Team Members
-        for (UserDetail userDetail: foundTeam.getUserDetails()) {
-            notificationMessagesToUsersService.notificationMessageToUser(userDetail.getUserName(), "Team","joined competition: ", competitionName);
-        }
-
-
-
- */
-        //return ResponseEntity.ok(teamRepository.save(foundTeam));
-        return ResponseEntity.ok().build();
-
-    }
-
-
-    public ResponseEntity<?> teamLeaveCompetition(String teamName, String competitionName,UserPrincipal userPrincipal) {
-
-        Team foundTeam = verifyMethodsForServices.shouldFindTeam(teamName, userPrincipal.getUsername());
-        checkIfTeamBelongToUser(foundTeam, userPrincipal);
-/*
-        Competition findCompetition = getCompetition(competitionName);
-
-        foundTeam.deleteTeamFromCompetition(findCompetition);
-
-        // Send notification to Team Members
-        for (UserDetail userDetail: foundTeam.getUserDetails()) {
-            notificationMessagesToUsersService.notificationMessageToUser(userDetail.getUserName(), "Team","left tournament: ", competitionName);
-        }
-
-        return ResponseEntity.ok(teamRepository.save(foundTeam));
-
- */
-        return ResponseEntity.ok().build();
-
-    }
-
-    private void checkIfTeamBelongToUser(Team team, UserPrincipal userPrincipal) {
-            if (!team.getTeamOwner().equals(userPrincipal.getUsername())) {
-                throw new ResourceNotFoundException("Team named: " + team.getTeamName(), "Owner", userPrincipal.getUsername());
+    private void checkIfTeamBelongToUser(Team team, String userName) {
+            if (!team.getTeamOwner().equals(userName)) {
+                throw new ResourceNotFoundException("Team named: " + team.getTeamName(), "Does not long to:", userName);
             }
         }
 
-        /*
-    private void checkIfUserIsMemberOfTeam(Team team, UserDetail userDetail) {
-        if(!team.getUserDetails().contains(userDetail)) {
-            throw new ResourceNotFoundException("User named: " + userDetail.getUserName(), "Team", team.getTeamName());
+    private void checkIfUserIsMemberOfTeam(Team team, String username) {
+        if(!team.getTeam_members().contains(username)) {
+            throw new ResourceNotFoundException("User named: " + username, "Team", team.getTeamName() + " not found in Team");
         }
     }
 
-    private Tournament getTournament(String tournamentName) {
-        return tournamentRepository.findByTournamentName(tournamentName).orElseThrow(() ->
-                new ResourceNotFoundException("Tournament not exists", "Name", tournamentName));
-    }
 
-    private Competition getCompetition(String competitionName) {
-        return competitionRepository.findByCompetitionName(competitionName).orElseThrow(() ->
-                new ResourceNotFoundException("Competition not exists", "Name", competitionName));
-    }
 
-         */
 }

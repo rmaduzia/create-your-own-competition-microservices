@@ -1,6 +1,6 @@
 CREATE TABLE teams
 (
-    id                  BIGINT PRIMARY KEY,
+    id                  BIGINT PRIMARY KEY AUTO_INCREMENT,
     city                VARCHAR(255),
     is_open_recruitment BOOLEAN,
     max_amount_members  INT,
@@ -11,11 +11,11 @@ CREATE TABLE teams
 
 CREATE TABLE team_members
 (
-    id BIGINT NOT NULL,
+--    id BIGINT NOT NULL,
     user_name VARCHAR(30) NOT NULL,
     team_id BIGINT NOT NULL,
 
-    PRIMARY KEY (id, team_id),
+    PRIMARY KEY (user_name, team_id),
 
     CONSTRAINT FK_USER_TEAMS_TEAM_ID
         FOREIGN KEY (team_id)

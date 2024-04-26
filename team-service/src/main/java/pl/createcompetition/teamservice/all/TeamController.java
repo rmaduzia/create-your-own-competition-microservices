@@ -1,15 +1,17 @@
 package pl.createcompetition.teamservice.all;
 
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import pl.createcompetition.teamservice.security.CurrentUser;
-import pl.createcompetition.teamservice.security.UserPrincipal;
+import org.springframework.web.server.ResponseStatusException;
+import pl.createcompetition.teamservice.exception.ResourceAlreadyExistException;
+import pl.createcompetition.teamservice.exception.ResourceNotFoundException;
+import pl.createcompetition.teamservice.microserviceschanges.UserPrincipal;
 
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 
 @AllArgsConstructor
 @RestController
@@ -17,6 +19,15 @@ import javax.validation.constraints.NotBlank;
 public class TeamController {
 
     private final TeamService teamService;
+
+
+    @GetMapping("test-endpoint")
+    public UserPrincipal testEndpoint(UserPrincipal userPrincipal) {
+
+        System.out.println("Principal: " + userPrincipal);
+
+        return userPrincipal;
+    }
 
     @GetMapping
     @ResponseBody
@@ -26,87 +37,64 @@ public class TeamController {
 
     }
 
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping
-    public ResponseEntity<?> addTeam(@Valid @RequestBody Team team,
-                                     @CurrentUser UserPrincipal userPrincipal) {
 
-        return teamService.addTeam(team, userPrincipal);
+    @PostMapping
+    @RolesAllowed("user")
+    public ResponseEntity<?> addTeam(@RequestBody CreateTeamRequest createTeamRequest,
+                                     UserPrincipal userPrincipal) {
+
+        return teamService.addTeam(createTeamRequest, userPrincipal.getName());
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @RolesAllowed("user")
     @PutMapping("{teamName}")
     public ResponseEntity<?> updateTeam(@Valid @RequestBody Team team,
-                                        @CurrentUser UserPrincipal userPrincipal,
+                                        UserPrincipal userPrincipal,
                                         @PathVariable String teamName) {
 
-        return teamService.updateTeam(teamName, team, userPrincipal);
+        return teamService.updateTeam(teamName, team, userPrincipal.getName());
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @RolesAllowed("user")
     @DeleteMapping("{teamName}")
     public ResponseEntity<?> deleteTeam(@PathVariable String teamName,
-                                        @CurrentUser UserPrincipal userPrincipal) {
+                                        UserPrincipal userPrincipal) {
 
-        return teamService.deleteTeam(teamName, userPrincipal);
+        return teamService.deleteTeam(teamName, userPrincipal.getName());
     }
 
 
-    @PreAuthorize("hasRole('USER')")
+    @RolesAllowed("user")
     @PostMapping("{teamName}/addRecruit")
-    public ResponseEntity<?> addRecruitToTeam(@RequestBody String recruitName,
-                                              @CurrentUser UserPrincipal userPrincipal,
+    public ResponseEntity<?> addRecruitToTeam(@RequestParam String recruitName,
+                                              UserPrincipal userPrincipal,
                                               @PathVariable String teamName) {
 
-        return teamService.addRecruitToTeam(teamName, recruitName,userPrincipal);
+        return teamService.addRecruitToTeam(teamName, recruitName,userPrincipal.getName());
     }
 
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping("{teamName}/deleteRecruit")
-    public ResponseEntity<?> deleteMemberFromTeam(@RequestBody String recruitName,
-                                                  @CurrentUser UserPrincipal userPrincipal,
+    @RolesAllowed("user")
+    @DeleteMapping("{teamName}/removeRecruit")
+    public ResponseEntity<?> removeMemberFromTeam(@RequestParam String recruitName,
+                                                  UserPrincipal userPrincipal,
                                                   @PathVariable String teamName) {
 
-        return teamService.deleteMemberFromTeam(teamName, recruitName,userPrincipal);
+        return teamService.removeMemberFromTeam(teamName, recruitName, userPrincipal);
     }
 
+    @GetMapping("testing-endpoint")
+    public ResponseEntity<?> testingEndpoint() {
 
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping("{teamName}/joinTournament")
-    public ResponseEntity<?> joinTeamToTournament(@RequestBody String recruitName,
-                                                  @CurrentUser UserPrincipal userPrincipal,
-                                                  @PathVariable String teamName) {
+        String userNameToDelete = "userNameToDelete";
+        String teamName = "teamName";
 
-        return teamService.teamJoinTournament(teamName, recruitName,userPrincipal);
+//        throw new ResourceNotFoundException("UserName: " + userNameToDelete +  "does not belong to team: " + teamName);
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "UserName999999999999999999999999999");
+//        throw new ResourceNotFoundException("UserName7777777777777777777777777");
+
+//        throw new ResourceNotFoundException("99999999999999999999");
+
+
     }
 
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping("{teamName}leaveTournament")
-    public ResponseEntity<?> teamLeaveTournament(@RequestBody String recruitName,
-                                                 @CurrentUser UserPrincipal userPrincipal,
-                                                 @PathVariable String teamName) {
-
-        return teamService.teamLeaveTournament(teamName, recruitName,userPrincipal);
-    }
-
-
-    //TODO IMPLEMENT METHOD
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping("{teamName}/joinCompetition")
-    public ResponseEntity<?> joinCompetition(@RequestBody String competitionName,
-                                             @CurrentUser UserPrincipal userPrincipal,
-                                             @PathVariable String teamName) {
-
-        return teamService.teamJoinCompetition(teamName, competitionName, userPrincipal);
-    }
-
-    //TODO IMPLEMENT METHOD
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping("{teamName}/leaveCompetition")
-    public ResponseEntity<?> rejectionCompetition(@RequestBody String competitionName,
-                                                  @CurrentUser UserPrincipal userPrincipal,
-                                                  @PathVariable String teamName) {
-
-        return teamService.teamLeaveCompetition(teamName, competitionName, userPrincipal);
-    }
 }
