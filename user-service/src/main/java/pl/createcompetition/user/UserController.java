@@ -1,41 +1,65 @@
 package pl.createcompetition.user;
 
+import jakarta.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import pl.createcompetition.payload.ChangeMailRequest;
-import pl.createcompetition.payload.ChangePasswordRequest;
-import pl.createcompetition.security.CurrentUser;
-import pl.createcompetition.security.UserPrincipal;
-
-import javax.validation.Valid;
+import pl.createcompetition.microserviceschanges.ExchangePasswordForTokenRequestRecord;
+import pl.createcompetition.microserviceschanges.UserPrincipal;
+import pl.createcompetition.microserviceschanges.ValidJwtToken;
 
 @AllArgsConstructor
 @RestController
 public class UserController {
 
-    final private UserService userService;
+    final private KeyCloakService keyCloakService;
 
-    @PreAuthorize("hasRole('USER')")
+    @RolesAllowed("user")
     @GetMapping("/user/me")
-    public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
-        return userService.getCurrentUser(userPrincipal);
+    public UserPrincipal getCurrentUser(UserPrincipal userPrincipal) {
+        return userPrincipal;
     }
 
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping("changeMail")
-    public ResponseEntity<?> changeEmail(@RequestBody @Valid ChangeMailRequest changeMail){
-        return userService.changeEmail(changeMail);
+    @PostMapping("/keycloak/user/create")
+    public UserRegisteredRecord createUser(@RequestBody UserCreateRecord userCreateRecord) {
+        return keyCloakService.createUser(userCreateRecord);
     }
 
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping("changePassword")
-    public ResponseEntity<?> changePassword(@RequestBody @Valid ChangePasswordRequest changePassword){
-        return userService.changePassword(changePassword);
+    @PostMapping("keycloak/user/login")
+    public ValidJwtToken exchangePasswordForToken(@RequestBody ExchangePasswordForTokenRequestRecord exchangePasswordForTokenRequestRecord) {
+        return keyCloakService.exchangePasswordForToken(exchangePasswordForTokenRequestRecord);
     }
+
+    @RolesAllowed("user")
+    @PostMapping("keycloak/user/changeMail")
+    public void changeEmail(UserPrincipal userPrincipal){
+        keyCloakService.changeEmail(userPrincipal.getUserId());
+    }
+
+    @RolesAllowed("user")
+    @PostMapping("keycloak/user/changePassword")
+    public void changePassword(UserPrincipal userPrincipal){
+        keyCloakService.changePassword(userPrincipal.getUserId());
+    }
+
+    @RolesAllowed("user")
+    @PostMapping("keycloak/user/change-username")
+    public String changeUserName(@RequestBody String userName, UserPrincipal userPrincipal) {
+        return keyCloakService.changeUserName(userPrincipal.getUserId(), userName);
+    }
+
+    @PostMapping("/keycloak/{userId}/send-verify-email")
+    public void sendVerificationEmail(@PathVariable String userId) {
+        keyCloakService.sendEmailVerification(userId);
+    }
+
+    @PostMapping("keycloak/user/{userId}/forgot-password")
+    public void forgotPassword(@PathVariable String userId) {
+        keyCloakService.forgotPassword(userId);
+    }
+
 
 }
