@@ -66,6 +66,8 @@ public class KeyCloakService {
 
     private final ObjectMapper objectMapper;
 
+    private final WebClient webClient;
+
     public UserRegisteredRecord createUser(UserCreateRecord userCreateRecord) {
 
         UserRepresentation user = new UserRepresentation();
@@ -211,8 +213,6 @@ public class KeyCloakService {
         } catch (URISyntaxException exception) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Issue while login in. Please use form to contact with us");
         }
-
-        WebClient webClient = WebClient.builder().build();
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
 
