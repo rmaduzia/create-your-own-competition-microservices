@@ -16,7 +16,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterAll;
@@ -34,6 +39,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -41,6 +51,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 import pl.createcompetition.microserviceschanges.ExchangePasswordForTokenRequestRecord;
+import pl.createcompetition.microserviceschanges.UserPrincipal;
 import pl.createcompetition.microserviceschanges.ValidJwtToken;
 import pl.createcompetition.user.KeyCloakService;
 import pl.createcompetition.user.UserController;
@@ -132,6 +143,39 @@ public class UserControllerProperUnitTest {
     }
 
     @Test
+    void shouldGetCurrentUser() throws Exception {
+
+        Jwt jwtToken = Jwt.withTokenValue("dummyToken")
+            .header("alg", "none")
+            .claim("sub", "testUser")
+            .claim("email", "test@test.pl")
+            .build();
+
+        UserPrincipal userPrincipal = UserPrincipal.builder()
+            .jwt(jwtToken)
+            .authorities(Set.of(new SimpleGrantedAuthority("ROLE_USER")))
+            .name("testUser")
+            .email("test@test.pl")
+            .userId("testUser")
+            .build();
+
+        SecurityContextHolder.getContext().setAuthentication(userPrincipal);
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/user/me"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+
+
+
+
+
+
+
+    }
+
+
+    @Test
     void whenCreatingUserShouldThrowExceptionThatUserNameAlreadyExists()
         throws Exception {
 
@@ -196,11 +240,9 @@ public class UserControllerProperUnitTest {
 
         System.out.println("result: " + mvcResult.getResponse().getContentAsString());
 
-
-
-
-
     }
+
+
 
 
 }
