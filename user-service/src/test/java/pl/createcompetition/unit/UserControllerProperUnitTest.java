@@ -2,6 +2,7 @@ package pl.createcompetition.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -12,7 +13,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonNull;
 import jakarta.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
@@ -144,19 +148,24 @@ public class UserControllerProperUnitTest {
 
     @Test
     void shouldGetCurrentUser() throws Exception {
+        
+        String tokenValue = "dummyToken";
+        String username = "testUser";
+        String userEmail = "test@test.pl";
+        String roleName = "ROLE_USER";
 
-        Jwt jwtToken = Jwt.withTokenValue("dummyToken")
+        Jwt jwtToken = Jwt.withTokenValue(tokenValue)
             .header("alg", "none")
-            .claim("sub", "testUser")
-            .claim("email", "test@test.pl")
+            .claim("sub", username)
+            .claim("email", userEmail)
             .build();
 
         UserPrincipal userPrincipal = UserPrincipal.builder()
             .jwt(jwtToken)
-            .authorities(Set.of(new SimpleGrantedAuthority("ROLE_USER")))
-            .name("testUser")
-            .email("test@test.pl")
-            .userId("testUser")
+            .authorities(Set.of(new SimpleGrantedAuthority(roleName)))
+            .name(username)
+            .email(userEmail)
+            .userId(username)
             .build();
 
         SecurityContextHolder.getContext().setAuthentication(userPrincipal);
@@ -165,13 +174,36 @@ public class UserControllerProperUnitTest {
             .andExpect(status().isOk())
             .andReturn();
 
+        String responseContent = mvcResult.getResponse().getContentAsString();
+        JsonNode responseJson = objectMapper.readTree(responseContent);
 
+        assertTrue(responseJson.get("authorities").isArray());
 
+        JsonNode authoritiesArray = responseJson.get("authorities");
+        assertEquals(1, authoritiesArray.size());
 
+        assertEquals(roleName, authoritiesArray.get(0).get("authority").asText());
 
+        assertTrue(responseJson.get("details").isEmpty());
 
+        assertTrue(responseJson.get("authenticated").asBoolean());
 
+        JsonNode principal = responseJson.get("principal");
+        assertEquals(tokenValue, principal.get("tokenValue").asText());
 
+        JsonNode credentials = responseJson.get("credentials");
+        assertEquals(tokenValue, credentials.get("tokenValue").asText());
+
+        JsonNode token = responseJson.get("token");
+        assertEquals(tokenValue, token.get("tokenValue").asText());
+
+        assertEquals(username, responseJson.get("name").asText());
+        assertEquals(userEmail, responseJson.get("email").asText());
+        assertEquals(username, responseJson.get("userId").asText());
+
+        JsonNode tokenAttributes = responseJson.get("tokenAttributes");
+        assertEquals(username, tokenAttributes.get("sub").asText());
+        assertEquals(userEmail, tokenAttributes.get("email").asText());
     }
 
 
