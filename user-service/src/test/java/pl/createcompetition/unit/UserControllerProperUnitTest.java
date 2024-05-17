@@ -4,10 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.keycloak.common.Profile.Feature.UPDATE_EMAIL;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,6 +39,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +88,9 @@ public class UserControllerProperUnitTest {
 
     @MockBean
     UsersResource usersResource;
+
+    @MockBean
+    UserResource userResource;
 
     @MockBean
 //    @Autowired
@@ -148,25 +156,8 @@ public class UserControllerProperUnitTest {
 
     @Test
     void shouldGetCurrentUser() throws Exception {
-        
-        String tokenValue = "dummyToken";
-        String username = "testUser";
-        String userEmail = "test@test.pl";
-        String roleName = "ROLE_USER";
 
-        Jwt jwtToken = Jwt.withTokenValue(tokenValue)
-            .header("alg", "none")
-            .claim("sub", username)
-            .claim("email", userEmail)
-            .build();
-
-        UserPrincipal userPrincipal = UserPrincipal.builder()
-            .jwt(jwtToken)
-            .authorities(Set.of(new SimpleGrantedAuthority(roleName)))
-            .name(username)
-            .email(userEmail)
-            .userId(username)
-            .build();
+        UserPrincipal userPrincipal = getUserPrincipal();
 
         SecurityContextHolder.getContext().setAuthentication(userPrincipal);
 
@@ -182,28 +173,28 @@ public class UserControllerProperUnitTest {
         JsonNode authoritiesArray = responseJson.get("authorities");
         assertEquals(1, authoritiesArray.size());
 
-        assertEquals(roleName, authoritiesArray.get(0).get("authority").asText());
+        assertEquals(userPrincipal.getAuthorities().toArray()[0].toString(), authoritiesArray.get(0).get("authority").asText());
 
         assertTrue(responseJson.get("details").isEmpty());
 
         assertTrue(responseJson.get("authenticated").asBoolean());
 
         JsonNode principal = responseJson.get("principal");
-        assertEquals(tokenValue, principal.get("tokenValue").asText());
+        assertEquals(userPrincipal.getToken().getTokenValue(), principal.get("tokenValue").asText());
 
         JsonNode credentials = responseJson.get("credentials");
-        assertEquals(tokenValue, credentials.get("tokenValue").asText());
+        assertEquals(userPrincipal.getToken().getTokenValue(), credentials.get("tokenValue").asText());
 
         JsonNode token = responseJson.get("token");
-        assertEquals(tokenValue, token.get("tokenValue").asText());
+        assertEquals(userPrincipal.getToken().getTokenValue(), token.get("tokenValue").asText());
 
-        assertEquals(username, responseJson.get("name").asText());
-        assertEquals(userEmail, responseJson.get("email").asText());
-        assertEquals(username, responseJson.get("userId").asText());
+        assertEquals(userPrincipal.getName(), responseJson.get("name").asText());
+        assertEquals(userPrincipal.getEmail(), responseJson.get("email").asText());
+        assertEquals(userPrincipal.getName(), responseJson.get("userId").asText());
 
         JsonNode tokenAttributes = responseJson.get("tokenAttributes");
-        assertEquals(username, tokenAttributes.get("sub").asText());
-        assertEquals(userEmail, tokenAttributes.get("email").asText());
+        assertEquals(userPrincipal.getName(), tokenAttributes.get("sub").asText());
+        assertEquals(userPrincipal.getEmail(), tokenAttributes.get("email").asText());
     }
 
 
@@ -271,6 +262,49 @@ public class UserControllerProperUnitTest {
             .andReturn();
 
         System.out.println("result: " + mvcResult.getResponse().getContentAsString());
+
+    }
+
+    @Test
+    public void shouldChangeEmail() throws Exception {
+
+        UserPrincipal userPrincipal = getUserPrincipal();
+
+        SecurityContextHolder.getContext().setAuthentication(userPrincipal);
+
+        when(usersResource.get(any())).thenReturn(userResource);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/keycloak/user/change-mail")
+                    .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk());
+
+        verify(userResource, times(1)).executeActionsEmail(List.of(UPDATE_EMAIL.name()));
+    }
+
+
+    UserPrincipal getUserPrincipal() {
+
+        String tokenValue = "dummyToken";
+        String username = "testUser";
+        String userEmail = "test@test.pl";
+        String roleName = "ROLE_USER";
+
+        Jwt jwtToken = Jwt.withTokenValue(tokenValue)
+            .header("alg", "none")
+            .claim("sub", username)
+            .claim("email", userEmail)
+            .build();
+
+
+        return  UserPrincipal.builder()
+            .jwt(jwtToken)
+            .authorities(Set.of(new SimpleGrantedAuthority(roleName)))
+            .name(username)
+            .email(userEmail)
+            .userId(username)
+            .build();
 
     }
 
