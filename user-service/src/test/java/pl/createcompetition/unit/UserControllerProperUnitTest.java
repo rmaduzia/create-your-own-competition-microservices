@@ -16,6 +16,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,6 +42,7 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -67,7 +69,6 @@ import pl.createcompetition.user.UserController;
 import pl.createcompetition.user.UserCreateRecord;
 import pl.createcompetition.user.UserRegisteredRecord;
 import reactor.core.publisher.Mono;
-
 
 @WebMvcTest(UserController.class)
 @Import({KeyCloakService.class, UnitTestJwtDecoderConfig.class})
@@ -266,7 +267,7 @@ public class UserControllerProperUnitTest {
     }
 
     @Test
-    public void shouldChangeEmail() throws Exception {
+    void shouldChangeEmail() throws Exception {
 
         UserPrincipal userPrincipal = getUserPrincipal();
 
@@ -281,6 +282,48 @@ public class UserControllerProperUnitTest {
             .andExpect(status().isOk());
 
         verify(userResource, times(1)).executeActionsEmail(List.of(UPDATE_EMAIL.name()));
+    }
+
+    @Test
+    void shouldChangePassword() throws Exception {
+
+        UserPrincipal userPrincipal = getUserPrincipal();
+
+        SecurityContextHolder.getContext().setAuthentication(userPrincipal);
+
+        when(usersResource.get(any())).thenReturn(userResource);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/keycloak/user/changePassword")
+            .with(csrf())
+        ).andExpect(status().isOk());
+
+        verify(userResource, times(1)).executeActionsEmail(List.of("UPDATE_PASSWORD"));
+
+    }
+
+    @Test
+    void shouldChangeUserName() throws Exception {
+
+        UserPrincipal userPrincipal = getUserPrincipal();
+        String newUserName = "newUserName";
+
+        SecurityContextHolder.getContext().setAuthentication(userPrincipal);
+
+        UserRepresentation userRepresentation = new UserRepresentation();
+
+        when(usersResource.get("testUser")).thenReturn(userResource);
+        when(userResource.toRepresentation()).thenReturn(userRepresentation);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/keycloak/user/change-username")
+            .with(csrf())
+            .content(newUserName)
+
+        ).andExpect(status().isOk());
+
+        verify(userResource, times(1)).update(userRepresentation);
+
+        assertEquals(newUserName, userRepresentation.getUsername(), "New user name is not correct");
+
     }
 
 
