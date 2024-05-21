@@ -13,8 +13,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static pl.createcompetition.user.KeyCloakService.UPDATE_PASSWORD;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -58,6 +60,8 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
@@ -102,8 +106,7 @@ public class UserControllerProperUnitTest {
 
     @Autowired
     ObjectMapper objectMapper;
-
-
+    
     @MockBean
     private WebClient.RequestBodyUriSpec requestBodyUriSpec;
 
@@ -122,6 +125,7 @@ public class UserControllerProperUnitTest {
 
     @BeforeEach
     void setUp() {
+
         when(keycloak.realm(any())).thenReturn(realmResource);
         when(realmResource.users()).thenReturn(usersResource);
 
@@ -325,6 +329,48 @@ public class UserControllerProperUnitTest {
         assertEquals(newUserName, userRepresentation.getUsername(), "New user name is not correct");
 
     }
+
+    @Test
+    void shouldSendVerificationEmail() throws Exception {
+
+        UserPrincipal userPrincipal = getUserPrincipal();
+
+        SecurityContextHolder.getContext().setAuthentication(userPrincipal);
+
+        when(usersResource.get("testUser")).thenReturn(userResource);
+
+        String userId = "testUser";
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/keycloak/" + userId + "/send-verify-email")
+            .with(csrf())
+        ).andExpect(status().isOk());
+
+        verify(userResource, times(1)).sendVerifyEmail();
+    }
+
+    @Test
+    void shouldExecuteForgetPassword() throws Exception {
+
+        UserPrincipal userPrincipal = getUserPrincipal();
+
+        SecurityContextHolder.getContext().setAuthentication(userPrincipal);
+
+        String userId = "testUser";
+
+        when(usersResource.get(userId)).thenReturn(userResource);
+
+        UserRepresentation userRepresentation = new UserRepresentation();
+        userRepresentation.setId(userId);
+
+        when(usersResource.searchByUsername(userId, true)).thenReturn(List.of(userRepresentation));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/keycloak/user/" + userId + "/forgot-password")
+            .with(csrf())
+        ).andExpect(status().isOk());
+
+        verify(userResource, times(1)).executeActionsEmail(List.of(UPDATE_PASSWORD));
+    }
+
 
 
     UserPrincipal getUserPrincipal() {

@@ -1,5 +1,7 @@
 package pl.createcompetition.user;
 
+import static org.keycloak.common.Profile.Feature.UPDATE_EMAIL;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.gson.JsonObject;
 import com.nimbusds.jose.shaded.gson.JsonParser;
@@ -37,9 +39,9 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class KeyCloakService {
 
-    private static final String UPDATE_PASSWORD = "UPDATE_PASSWORD";
-    private static final String UPDATE_EMAIL = "UPDATE_EMAIL";
-    private static final String VERIFY_EMAIL = "VERIFY_EMAIL";
+    public static final String UPDATE_PASSWORD = "UPDATE_PASSWORD";
+//    private static final String UPDATE_EMAIL = "UPDATE_EMAIL";
+    public static final String VERIFY_EMAIL = "VERIFY_EMAIL";
 
     @Value("${keycloak.domain}")
     private String authServerUrl;
@@ -163,7 +165,7 @@ public class KeyCloakService {
     public void changeEmail(String userId) {
 
         UserResource userResource = getUserResource(userId);
-        userResource.executeActionsEmail(List.of(UPDATE_EMAIL));
+        userResource.executeActionsEmail(List.of(UPDATE_EMAIL.name()));
     }
 
 
