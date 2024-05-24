@@ -45,25 +45,19 @@ import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 import pl.createcompetition.microserviceschanges.ExchangePasswordForTokenRequestRecord;
 import pl.createcompetition.microserviceschanges.UserPrincipal;
@@ -72,18 +66,15 @@ import pl.createcompetition.user.KeyCloakService;
 import pl.createcompetition.user.UserController;
 import pl.createcompetition.user.UserCreateRecord;
 import pl.createcompetition.user.UserRegisteredRecord;
-import reactor.core.publisher.Mono;
+import pl.createcompetition.user.WebClientConfig;
 
 @WebMvcTest(UserController.class)
-@Import({KeyCloakService.class, UnitTestJwtDecoderConfig.class})
+@Import({KeyCloakService.class, UnitTestJwtDecoderConfig.class, WebClientConfig.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UserControllerProperUnitTest {
 
     @Autowired
     MockMvc mockMvc;
-
-//    @Autowired
-//    KeyCloakService keyCloakService;
 
     @MockBean
     Keycloak keycloak;
@@ -97,25 +88,15 @@ public class UserControllerProperUnitTest {
     @MockBean
     UserResource userResource;
 
-    @MockBean
-//    @Autowired
-    WebClient webClient;
-
-    @MockBean
-    WebClient.Builder webClientBuilder;
-
     @Autowired
     ObjectMapper objectMapper;
-    
-    @MockBean
-    private WebClient.RequestBodyUriSpec requestBodyUriSpec;
 
     public static MockWebServer mockWebServer;
 
     @BeforeAll
     static void mockWebServer() throws IOException {
         mockWebServer = new MockWebServer();
-        mockWebServer.start();
+        mockWebServer.start(9090);
     }
 
     @AfterAll
@@ -125,14 +106,8 @@ public class UserControllerProperUnitTest {
 
     @BeforeEach
     void setUp() {
-
         when(keycloak.realm(any())).thenReturn(realmResource);
         when(realmResource.users()).thenReturn(usersResource);
-
-
-        when(webClientBuilder.build()).thenReturn(webClient);
-        when(webClient.post()).thenReturn(requestBodyUriSpec);
-        when(requestBodyUriSpec.uri(any(URI.class))).thenReturn(requestBodyUriSpec);
     }
 
     @Test
@@ -239,25 +214,24 @@ public class UserControllerProperUnitTest {
 
         String exchangePasswordForTokenBody = objectMapper.writeValueAsString(exchangePasswordForTokenRequestRecord);
 
+        String keycloakTokenResponse = "{\"access_token\":\"accessTokenSome\",\"expires_in\":299,\"refresh_expires_in\":1799,\"refresh_token\":\"refreshTokenSome\",\"token_type\":\"Bearer\",\"id_token\":\"idTokenSome\",\"not-before policy\":0,\"session_state\":\"sessionState\",\"scope\":\"openid profile email\"}";
 
-
-
-
-//        when(webClient.post()).thenReturn("fgfgfg");
-
-        String mockResponse = "{\"accessToken\":\"mockAccessToken\",\"expiresIn\":300,\"refreshExpiresIn\":1800,\"refreshToken\":\"mockRefreshToken\",\"tokenType\":\"Bearer\",\"idToken\":\"mockIdToken\",\"notBeforePolicy\":0,\"session_state\":\"mockSessionState\",\"scope\":\"openid profile email\"}";
-
-
-
-        ValidJwtToken validJwtToken = ValidJwtToken.builder()
-            .accessToken("acesss token")
+        ValidJwtToken expectedToken = ValidJwtToken.builder()
+            .accessToken("accessTokenSome")
+            .expiresIn(299)
+            .refreshExpiresIn(1799)
+            .refreshToken("refreshTokenSome")
+            .tokenType("Bearer")
+            .idToken("idTokenSome")
+            .notBeforePolicy(0)
+            .session_state("sessionState")
+            .scope("openid profile email")
             .build();
 
         mockWebServer.enqueue(new MockResponse()
-            .setBody(objectMapper.writeValueAsString(validJwtToken))
-            .addHeader("Content-Type", "application/json")
+            .setBody(keycloakTokenResponse)
+            .addHeader("application", "x-www-form-urlencoded")
         );
-
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/keycloak/user/login")
                 .with(jwt())
@@ -266,8 +240,11 @@ public class UserControllerProperUnitTest {
                 .andExpect(status().isOk())
             .andReturn();
 
-        System.out.println("result: " + mvcResult.getResponse().getContentAsString());
 
+        String responseContent = mvcResult.getResponse().getContentAsString();
+        ValidJwtToken responseToken = objectMapper.readValue(responseContent, ValidJwtToken.class);
+
+        assertEquals(expectedToken, responseToken);
     }
 
     @Test
@@ -396,8 +373,5 @@ public class UserControllerProperUnitTest {
             .build();
 
     }
-
-
-
 
 }
