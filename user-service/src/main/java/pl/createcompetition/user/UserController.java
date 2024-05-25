@@ -34,13 +34,13 @@ public class UserController {
     }
 
     @RolesAllowed("user")
-    @PostMapping("keycloak/user/changeMail")
+    @PostMapping("/keycloak/user/change-mail")
     public void changeEmail(UserPrincipal userPrincipal){
         keyCloakService.changeEmail(userPrincipal.getUserId());
     }
 
     @RolesAllowed("user")
-    @PostMapping("keycloak/user/changePassword")
+    @PostMapping("/keycloak/user/changePassword")
     public void changePassword(UserPrincipal userPrincipal){
         keyCloakService.changePassword(userPrincipal.getUserId());
     }

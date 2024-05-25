@@ -2,36 +2,23 @@ package pl.createcompetition.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.keycloak.common.Profile.Feature.UPDATE_EMAIL;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static pl.createcompetition.user.KeyCloakService.UPDATE_PASSWORD;
 
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonNull;
 import jakarta.ws.rs.core.Response;
 import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -45,7 +32,6 @@ import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -93,6 +79,10 @@ public class UserControllerProperUnitTest {
 
     public static MockWebServer mockWebServer;
 
+    static final String validUserName = "testUser";
+    static final String validUserEmail = "test@example.com";
+    static final String validUserPassword = "password";
+
     @BeforeAll
     static void mockWebServer() throws IOException {
         mockWebServer = new MockWebServer();
@@ -113,8 +103,8 @@ public class UserControllerProperUnitTest {
     @Test
     void testCreateUser() throws Exception {
 
-        UserCreateRecord userCreateRecord = new UserCreateRecord("testuser", "test@example.com", "password");
-        UserRegisteredRecord registeredRecord = new UserRegisteredRecord("testuser", "test@example.com");
+        UserCreateRecord userCreateRecord = new UserCreateRecord(validUserName, validUserEmail, validUserPassword);
+        UserRegisteredRecord registeredRecord = new UserRegisteredRecord(validUserName, validUserEmail);
 
         when(usersResource.create(any())).thenReturn(Response.status(201).build());
 
@@ -182,7 +172,7 @@ public class UserControllerProperUnitTest {
     void whenCreatingUserShouldThrowExceptionThatUserNameAlreadyExists()
         throws Exception {
 
-        UserCreateRecord userAlreadyExistsCreateRecord = new UserCreateRecord("testuser", "test@example.com", "password");
+        UserCreateRecord userAlreadyExistsCreateRecord = new UserCreateRecord(validUserName, validUserEmail, validUserPassword);
 
         when(usersResource.create(any())).thenReturn(Response.status(409).entity("{\"errorMessage\":\"User exists with same username\"}").build());
 
@@ -207,10 +197,7 @@ public class UserControllerProperUnitTest {
     @Test
     void shouldExchangePasswordForToken() throws Exception {
 
-        String userName = "test";
-        String password = "test";
-
-        ExchangePasswordForTokenRequestRecord exchangePasswordForTokenRequestRecord = new ExchangePasswordForTokenRequestRecord(userName, password);
+        ExchangePasswordForTokenRequestRecord exchangePasswordForTokenRequestRecord = new ExchangePasswordForTokenRequestRecord(validUserName, validUserPassword);
 
         String exchangePasswordForTokenBody = objectMapper.writeValueAsString(exchangePasswordForTokenRequestRecord);
 
@@ -245,6 +232,37 @@ public class UserControllerProperUnitTest {
         ValidJwtToken responseToken = objectMapper.readValue(responseContent, ValidJwtToken.class);
 
         assertEquals(expectedToken, responseToken);
+    }
+
+    @Test
+    void givingWrongPasswordWhenExchangeCredentialsForToken() throws Exception {
+
+        ExchangePasswordForTokenRequestRecord exchangePasswordForTokenRequestRecord = new ExchangePasswordForTokenRequestRecord(validUserName, validUserPassword);
+
+        String exchangePasswordForTokenBody = objectMapper.writeValueAsString(exchangePasswordForTokenRequestRecord);
+
+        String keycloakTokenResponse = "{\"error\":\"invalid_grant\",\"error_description\":\"Invalid user credentials\"}";
+
+        mockWebServer.enqueue(new MockResponse()
+                .setResponseCode(401)
+            .setBody(keycloakTokenResponse)
+            .addHeader("application", "x-www-form-urlencoded")
+        );
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/keycloak/user/login")
+                .with(jwt())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(exchangePasswordForTokenBody))
+            .andExpect(status().isUnauthorized())
+            .andReturn();
+
+        ResponseStatusException responseStatusException = (ResponseStatusException) mvcResult.getResolvedException();
+
+        assertNotNull(responseStatusException);
+        assertEquals(HttpStatus.UNAUTHORIZED, responseStatusException.getStatusCode());
+        assertEquals("401 UNAUTHORIZED \"Invalid user credentials\"", responseStatusException.getMessage());
+        assertEquals("Invalid user credentials", responseStatusException.getReason());
+
     }
 
     @Test
@@ -314,11 +332,9 @@ public class UserControllerProperUnitTest {
 
         SecurityContextHolder.getContext().setAuthentication(userPrincipal);
 
-        when(usersResource.get("testUser")).thenReturn(userResource);
+        when(usersResource.get(validUserName)).thenReturn(userResource);
 
-        String userId = "testUser";
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/keycloak/" + userId + "/send-verify-email")
+        mockMvc.perform(MockMvcRequestBuilders.post("/keycloak/" + validUserName + "/send-verify-email")
             .with(csrf())
         ).andExpect(status().isOk());
 
@@ -332,46 +348,38 @@ public class UserControllerProperUnitTest {
 
         SecurityContextHolder.getContext().setAuthentication(userPrincipal);
 
-        String userId = "testUser";
-
-        when(usersResource.get(userId)).thenReturn(userResource);
+        when(usersResource.get(validUserName)).thenReturn(userResource);
 
         UserRepresentation userRepresentation = new UserRepresentation();
-        userRepresentation.setId(userId);
+        userRepresentation.setId(validUserName);
 
-        when(usersResource.searchByUsername(userId, true)).thenReturn(List.of(userRepresentation));
+        when(usersResource.searchByUsername(validUserName, true)).thenReturn(List.of(userRepresentation));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/keycloak/user/" + userId + "/forgot-password")
+        mockMvc.perform(MockMvcRequestBuilders.post("/keycloak/user/" + validUserName + "/forgot-password")
             .with(csrf())
         ).andExpect(status().isOk());
 
         verify(userResource, times(1)).executeActionsEmail(List.of(UPDATE_PASSWORD));
     }
 
-
-
     UserPrincipal getUserPrincipal() {
 
         String tokenValue = "dummyToken";
-        String username = "testUser";
-        String userEmail = "test@test.pl";
         String roleName = "ROLE_USER";
 
         Jwt jwtToken = Jwt.withTokenValue(tokenValue)
             .header("alg", "none")
-            .claim("sub", username)
-            .claim("email", userEmail)
+            .claim("sub", validUserName)
+            .claim("email", validUserEmail)
             .build();
-
 
         return  UserPrincipal.builder()
             .jwt(jwtToken)
             .authorities(Set.of(new SimpleGrantedAuthority(roleName)))
-            .name(username)
-            .email(userEmail)
-            .userId(username)
+            .name(validUserName)
+            .email(validUserEmail)
+            .userId(validUserName)
             .build();
 
     }
-
 }
