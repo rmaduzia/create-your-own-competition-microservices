@@ -27,10 +27,10 @@ public class SecurityConfig {
 
         return http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/actuator/prometheus", "/actuator/health/**",
-                    "/swagger-ui", "/swagger-ui/**", "/error", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/actuator/prometheus", "/actuator/health/**", "/error").permitAll()
                 .requestMatchers("/storefront/**").permitAll()
                 .requestMatchers("/keycloak/user/create/**").permitAll()
+                .requestMatchers(AUTH_WHITELIST).permitAll()
                 .anyRequest().authenticated())
             .oauth2ResourceServer(oauth2 -> oauth2
                 .jwt(jwt -> jwt
@@ -88,19 +88,11 @@ public class SecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
         "/swagger-resources/**",
-        "/swagger-ui.html/",
-        "/v2/api-docs",
-        "/webjars/**",
-        "swagger-ui.html#/",
+        "/swagger-resources",
+        "/v3/api-docs",
         "/swagger-ui/**",
-
+        "/swagger-ui.html",
     };
-
-//    @Override
-//    public void configure(WebSecurity web) {
-//        web.ignoring().antMatchers(AUTH_WHITELIST);
-//    }
-
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -115,12 +107,12 @@ public class SecurityConfig {
             web.ignoring().requestMatchers(HttpMethod.POST, "/keycloak/user/create/**");
 
 
-//            web.ignoring().requestMatchers(
-//                    HttpMethod.OPTIONS,
-//                    "/**"
-//                )
-//                .requestMatchers("/v3/api-docs/**", "/configuration/**", "/swagger-ui/**",
-//                    "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/api-docs/**");
+//            web.ignoring().requestMatchers(HttpMethod.GET, "swagger-ui.html");
+
+            web.ignoring().requestMatchers(AUTH_WHITELIST);
+
+
+
 
         };
     }
