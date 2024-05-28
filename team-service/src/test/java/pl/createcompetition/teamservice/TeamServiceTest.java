@@ -3,11 +3,13 @@ package pl.createcompetition.teamservice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.server.ResponseStatusException;
 import pl.createcompetition.teamservice.all.CreateTeamRequest;
 import pl.createcompetition.teamservice.all.Team;
 import pl.createcompetition.teamservice.all.TeamRepository;
@@ -16,6 +18,7 @@ import pl.createcompetition.teamservice.all.VerifyMethodsForServices;
 import pl.createcompetition.teamservice.exception.ResourceAlreadyExistException;
 import pl.createcompetition.teamservice.exception.ResourceNotFoundException;
 //import pl.createcompetition.teamservice.notification.NotificationMessagesToUsersService;
+import pl.createcompetition.teamservice.keycloak.KeyCloakService;
 import pl.createcompetition.teamservice.notification.NotificationRepository;
 
 
@@ -30,8 +33,12 @@ public class TeamServiceTest {
 
     @Mock
     TeamRepository teamRepository;
+
 //    @Mock
 //    UserDetailRepository userDetailRepository;
+
+    @Mock
+    KeyCloakService keyCloakService;
 
     @Mock
     NotificationRepository notificationRepository;
@@ -39,6 +46,7 @@ public class TeamServiceTest {
     TeamService teamService;
     @Mock
     VerifyMethodsForServices verifyMethodsForServices;
+
 
 //    @Mock
 //    NotificationMessagesToUsersService notificationMessagesToUsersService;
@@ -74,13 +82,19 @@ public class TeamServiceTest {
     @Test
     public void shouldAddTeam() {
 
-        when(teamRepository.existsTeamByTeamNameIgnoreCase(team.getTeamName())).thenReturn(false);
-        when(teamRepository.save(team)).thenReturn(team);
+        Team expectedTeam = Team.builder()
+            .teamOwner(userName)
+            .teamName(createTeamRequest.getTeamName())
+            .city(createTeamRequest.getCity())
+            .build();
+
+        when(teamRepository.existsTeamByTeamNameIgnoreCase(createTeamRequest.getTeamName())).thenReturn(false);
+        when(teamRepository.save(expectedTeam)).thenReturn(team);
 
         ResponseEntity<Team> response = teamService.addTeam(createTeamRequest, userName);
 
-        verify(teamRepository, times(1)).existsTeamByTeamNameIgnoreCase(team.getTeamName());
-        verify(teamRepository, times(1)).save(team);
+        verify(teamRepository, times(1)).existsTeamByTeamNameIgnoreCase(createTeamRequest.getTeamName());
+        verify(teamRepository, times(1)).save(expectedTeam);
 
         assertEquals(response.getStatusCode(), HttpStatus.CREATED);
         assertEquals(response.getBody(), team);
@@ -148,19 +162,21 @@ public class TeamServiceTest {
 
         team.setTeamOwner("OtherOwner");
 
-        Exception exception = assertThrows(
-                ResourceNotFoundException.class,
+        ResponseStatusException exception = assertThrows(
+                ResponseStatusException.class,
                 () -> teamService.updateTeam(team.getTeamName(),team, userName),
                 "Expected doThing() to throw, but it didn't");
 
-        assertEquals("Team named: "+ team.getTeamName()+ " not found with Owner : " + "'"+ userName+"'", exception.getMessage());
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+        assertEquals("Team named: "+ team.getTeamName() + " does not belong tu: " + userName, exception.getReason());
+        assertEquals( HttpStatus.BAD_REQUEST + " \"Team named: " + team.getTeamName() + " does not belong tu: " + userName+ "\"", exception.getMessage());
     }
 
     @Test
     public void shouldAddRecruitToTeam() {
 
         when(verifyMethodsForServices.shouldFindTeam(team.getTeamName(), team.getTeamOwner())).thenReturn(team);
-//        when(userDetailRepository.findByUserName(userDetailTeamMember.getUserName())).thenReturn(Optional.of(userDetailTeamMember));
+        when(keyCloakService.getUserByUserName(anyString())).thenReturn(new UserRepresentation());
 
         ResponseEntity<?> response = teamService.addRecruitToTeam(team.getTeamName(), recruitName, userName);
 
@@ -168,9 +184,6 @@ public class TeamServiceTest {
         verify(verifyMethodsForServices, times(1)).shouldFindTeam(team.getTeamName(), team.getTeamOwner());
         assertEquals(response.getStatusCode(), HttpStatus.CREATED);
     }
-
-
-
 
 
 

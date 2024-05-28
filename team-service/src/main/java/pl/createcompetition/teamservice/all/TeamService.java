@@ -93,7 +93,8 @@ public class TeamService {
         boolean isRemoved = foundTeam.removeRecruit(userNameToDelete);
 
         if (!isRemoved)
-            throw new ResourceNotFoundException("UserName: " + userNameToDelete +  " does not belong to team: " + teamName);
+            throw new ResourceNotFoundException("UserName: " + userNameToDelete
+                +  " does not belong to team: " + teamName);
 
 
         teamRepository.save(foundTeam);
@@ -106,7 +107,7 @@ public class TeamService {
 
     private void checkIfTeamBelongToUser(Team team, String userName) {
             if (!team.getTeamOwner().equals(userName)) {
-                throw new ResourceNotFoundException("Team named: " + team.getTeamName(), "Does not long to:", userName);
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team named: " + team.getTeamName() + " does not belong tu: " + userName);
             }
         }
 
