@@ -1,9 +1,9 @@
 package pl.createcompetition.tournamentservice.query;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import java.util.function.Consumer;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 public class UserSearchQueryCriteriaConsumer implements Consumer<SearchCriteria> {
 
