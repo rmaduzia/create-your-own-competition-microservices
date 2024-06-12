@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 
 import java.sql.Timestamp;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,7 +25,6 @@ import pl.createcompetition.tournamentservice.competition.match.MatchInCompetiti
 import pl.createcompetition.tournamentservice.competition.match.MatchInCompetitionRepository;
 import pl.createcompetition.tournamentservice.competition.match.MatchInCompetitionService;
 import pl.createcompetition.tournamentservice.microserviceschanges.UserPrincipal;
-
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -55,7 +53,7 @@ public class MatchInCompetitionServiceTest {
 
         competition = Competition.builder()
                 .id(1L)
-                .competitionOwner("test@mail.com")
+                .competitionOwner(userName)
                 .competitionName("zawody1")
                 .competitionStart(Timestamp.valueOf("2020-05-01 12:30:00"))
                 .competitionEnd(Timestamp.valueOf("2020-05-02 12:30:00"))
@@ -97,7 +95,6 @@ public class MatchInCompetitionServiceTest {
         assertEquals(response.getBody(), matchInCompetition);
     }
 
-    @Disabled
     @Test
     public void shouldUpdateMatchInCompetition() {
 
@@ -117,7 +114,6 @@ public class MatchInCompetitionServiceTest {
         assertEquals(response.getBody(), matchInCompetition);
     }
 
-    @Disabled
     @Test
     public void shouldDeleteMatchInCompetition() {
 
