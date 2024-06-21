@@ -40,7 +40,7 @@ public class TournamentController {
     public ResponseEntity<?> addTournament(@Valid @RequestBody Tournament tournament,
                                            UserPrincipal userPrincipal) {
 
-        return tournamentService.addTournament(tournament,userPrincipal);
+        return tournamentService.addTournament(tournament,userPrincipal.getName());
     }
 
     @RolesAllowed("user")
@@ -49,7 +49,7 @@ public class TournamentController {
                                               UserPrincipal userPrincipal,
                                               @PathVariable String tournamentName) {
 
-        return tournamentService.updateTournament(tournamentName, tournament, userPrincipal);
+        return tournamentService.updateTournament(tournamentName, tournament, userPrincipal.getName());
 
     }
 
@@ -58,7 +58,7 @@ public class TournamentController {
     public ResponseEntity<?> deleteTournament(@PathVariable String tournamentName,
                                               UserPrincipal userPrincipal) {
 
-        return tournamentService.deleteTournament(tournamentName, userPrincipal);
+        return tournamentService.deleteTournament(tournamentName, userPrincipal.getName());
     }
 
     @RolesAllowed("user")
@@ -67,7 +67,7 @@ public class TournamentController {
                                                       @RequestBody String teamName,
                                                       UserPrincipal userPrincipal) {
 
-        return tournamentService.removeTeamFromTournament(tournamentName, teamName, userPrincipal);
+        return tournamentService.removeTeamFromTournament(tournamentName, teamName, userPrincipal.getName());
     }
 
     @RolesAllowed("user")
@@ -75,7 +75,7 @@ public class TournamentController {
     public ResponseEntity<?> startTournament(@PathVariable String tournamentName,
                                              UserPrincipal userPrincipal) {
 
-        return tournamentService.startTournament(tournamentName, userPrincipal);
+        return tournamentService.startTournament(tournamentName, userPrincipal.getName());
     }
 
     @RolesAllowed("user")
@@ -84,6 +84,6 @@ public class TournamentController {
                                                    @RequestParam Boolean matchWithEachOther,
                                                    UserPrincipal userPrincipal) {
 
-        return tournamentService.drawTeamOptions(matchWithEachOther, teamName, userPrincipal);
+        return tournamentService.drawTeamOptions(matchWithEachOther, teamName, userPrincipal.getName());
     }
 }

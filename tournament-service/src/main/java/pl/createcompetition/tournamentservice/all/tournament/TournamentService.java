@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import pl.createcompetition.tournamentservice.microserviceschanges.UserPrincipal;
 import pl.createcompetition.tournamentservice.model.PagedResponseDto;
 import pl.createcompetition.tournamentservice.query.GetQueryImplService;
 import pl.createcompetition.tournamentservice.query.PaginationInfoRequest;
@@ -27,9 +26,10 @@ public class TournamentService {
         return queryUserDetailService.execute(Tournament.class, search, paginationInfoRequest.getPageNumber(), paginationInfoRequest.getPageSize());
     }
 
-    public ResponseEntity<?> addTournament(Tournament tournament, UserPrincipal userPrincipal) {
+    public ResponseEntity<?> addTournament(Tournament tournament, String userName) {
 
         if (!tournamentRepository.existsTournamentByTournamentNameIgnoreCase(tournament.getTournamentName())) {
+            tournament.setTournamentOwner(userName);
             return ResponseEntity.status(HttpStatus.CREATED).body(tournamentRepository.save(tournament));
         } else {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Tournament named: " + tournament.getTournamentName() + " already exists");
@@ -37,32 +37,32 @@ public class TournamentService {
         }
     }
 
-    public ResponseEntity<?> updateTournament(String tournamentName, Tournament tournament, UserPrincipal userPrincipal) {
+    public ResponseEntity<?> updateTournament(String tournamentName, Tournament tournament, String userName) {
 
         if (!tournament.getTournamentName().equals(tournamentName)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tean Name doesn't match with Team object");
         }
 
-        Tournament foundTournament = shouldFindTournament(tournament.getTournamentName(), userPrincipal.getName());
-        checkIfTournamentBelongToUser(foundTournament, userPrincipal);
+        Tournament foundTournament = shouldFindTournament(tournament.getTournamentName(), userName);
+        checkIfTournamentBelongToUser(foundTournament, userName);
 
         return ResponseEntity.ok(tournamentRepository.save(tournament));
     }
 
-    public ResponseEntity<?> deleteTournament(String tournamentName, UserPrincipal userPrincipal) {
+    public ResponseEntity<?> deleteTournament(String tournamentName, String userName) {
 
-        Tournament foundTournament = shouldFindTournament(tournamentName, userPrincipal.getName());
-        checkIfTournamentBelongToUser(foundTournament, userPrincipal);
+        Tournament foundTournament = shouldFindTournament(tournamentName, userName);
+        checkIfTournamentBelongToUser(foundTournament, userName);
 
         tournamentRepository.deleteByTournamentName(tournamentName);
 
         return ResponseEntity.noContent().build();
     }
 
-    public ResponseEntity<?> removeTeamFromTournament(String tournamentName, String teamName, UserPrincipal userPrincipal) {
+    public ResponseEntity<?> removeTeamFromTournament(String tournamentName, String teamName, String userName) {
 
-        Tournament foundTournament = shouldFindTournament(tournamentName, userPrincipal.getName());
-        checkIfTournamentBelongToUser(foundTournament, userPrincipal);
+        Tournament foundTournament = shouldFindTournament(tournamentName, userName);
+        checkIfTournamentBelongToUser(foundTournament, userName);
 
         boolean isRemoved = foundTournament.deleteTeamFromTournament(teamName);
 
@@ -76,10 +76,10 @@ public class TournamentService {
         return ResponseEntity.noContent().build();
     }
 
-    public ResponseEntity<?> startTournament(String tournamentName, UserPrincipal userPrincipal) {
+    public ResponseEntity<?> startTournament(String tournamentName, String userName) {
 
-        Tournament foundTournament = shouldFindTournament(tournamentName, userPrincipal.getName());
-        checkIfTournamentBelongToUser(foundTournament, userPrincipal);
+        Tournament foundTournament = shouldFindTournament(tournamentName, userName);
+        checkIfTournamentBelongToUser(foundTournament, userName);
 
         if (foundTournament.getDrawedTeams().isEmpty()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST ,"You have to draw teams before start competition");
@@ -90,10 +90,10 @@ public class TournamentService {
 
     }
 
-    public ResponseEntity<?> drawTeamOptions(Boolean isWithEachOther, String tournamentName,UserPrincipal userPrincipal){
+    public ResponseEntity<?> drawTeamOptions(Boolean isWithEachOther, String tournamentName, String userName){
 
-        Tournament foundTournament = shouldFindTournament(tournamentName, userPrincipal.getName());
-        checkIfTournamentBelongToUser(foundTournament, userPrincipal);
+        Tournament foundTournament = shouldFindTournament(tournamentName, userName);
+        checkIfTournamentBelongToUser(foundTournament, userName);
 
         if (!foundTournament.getIsStarted()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can't draw team if competition already started");
@@ -102,32 +102,31 @@ public class TournamentService {
         Map<String,String> matchedTeams;
 
         if (isWithEachOther) {
-            matchedTeams = matchTeamsWithEachOtherInTournament(tournamentName, userPrincipal);
-            foundTournament.setDrawedTeams(matchedTeams);
-            tournamentRepository.save(foundTournament);
-            return ResponseEntity.ok().body(matchedTeams);
+            matchedTeams = matchTeamsWithEachOtherInTournament(tournamentName, userName);
         }
-        else
-            matchedTeams = matchTeamsInTournament(tournamentName, userPrincipal);
-            foundTournament.setDrawedTeams(matchedTeams);
-            tournamentRepository.save(foundTournament);
-            return ResponseEntity.ok().body(matchedTeams);
+        else {
+            matchedTeams = matchTeamsInTournament(tournamentName, userName);
+        }
+
+        foundTournament.setDrawedTeams(matchedTeams);
+        tournamentRepository.save(foundTournament);
+        return ResponseEntity.ok().body(matchedTeams);
     }
 
-    public ResponseEntity<?> setTheDatesOfTheTeamsMatches(String tournamentName, Map<String, Date> dateMatch, UserPrincipal userPrincipal) {
+    public ResponseEntity<?> setTheDatesOfTheTeamsMatches(String tournamentName, Map<String, Date> dateMatch, String userName) {
 
-        Tournament foundTournament = shouldFindTournament(tournamentName, userPrincipal.getName());
-        checkIfTournamentBelongToUser(foundTournament, userPrincipal);
+        Tournament foundTournament = shouldFindTournament(tournamentName, userName);
+        checkIfTournamentBelongToUser(foundTournament, userName);
 
         foundTournament.setMatchTimes(dateMatch);
 
         return ResponseEntity.ok(tournamentRepository.save(foundTournament));
     }
 
-    public ResponseEntity<?> deleteDateOfTheTeamsMatches(String tournamentName, String idDateMatch, UserPrincipal userPrincipal) {
+    public ResponseEntity<?> deleteDateOfTheTeamsMatches(String tournamentName, String idDateMatch, String userName) {
 
-        Tournament foundTournament = shouldFindTournament(tournamentName, userPrincipal.getName());
-        checkIfTournamentBelongToUser(foundTournament, userPrincipal);
+        Tournament foundTournament = shouldFindTournament(tournamentName, userName);
+        checkIfTournamentBelongToUser(foundTournament, userName);
 
         foundTournament.getMatchTimes().remove(idDateMatch);
         tournamentRepository.save(foundTournament);
@@ -136,31 +135,31 @@ public class TournamentService {
     }
 
 
-    private Map<String,String> matchTeamsInTournament(String tournamentName, UserPrincipal userPrincipal) {
+    private Map<String,String> matchTeamsInTournament(String tournamentName, String userName) {
 
-        List<String> listOfTeams = shouldFindTeamInUserTournament(tournamentName, userPrincipal);
+        List<String> listOfTeams = shouldFindTeamInUserTournament(tournamentName, userName);
 
         return MatchTeamsInTournament.matchTeamsInTournament(listOfTeams);
     }
 
-    private Map<String,String>  matchTeamsWithEachOtherInTournament(String tournamentName, UserPrincipal userPrincipal) {
+    private Map<String,String>  matchTeamsWithEachOtherInTournament(String tournamentName, String userName) {
 
-        List<String> listOfTeams = shouldFindTeamInUserTournament(tournamentName, userPrincipal);
+        List<String> listOfTeams = shouldFindTeamInUserTournament(tournamentName, userName);
 
         return MatchTeamsInTournament.matchTeamsWithEachOtherInTournament(listOfTeams);
     }
 
-    private List<String> shouldFindTeamInUserTournament(String tournamentName, UserPrincipal userPrincipal) {
+    private List<String> shouldFindTeamInUserTournament(String tournamentName, String userName) {
 
-        Tournament foundTournament = shouldFindTournament(tournamentName, userPrincipal.getName());
-        checkIfTournamentBelongToUser(foundTournament, userPrincipal);
+        Tournament foundTournament = shouldFindTournament(tournamentName, userName);
+        checkIfTournamentBelongToUser(foundTournament, userName);
 
         return new ArrayList<>(foundTournament.getTeams());
     }
 
-    private void checkIfTournamentBelongToUser(Tournament tournament, UserPrincipal userPrincipal) {
-        if (!tournament.getTournamentOwner().equals(userPrincipal.getName())) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tournament named: " + tournament.getTournamentName()+ " Owner: " +userPrincipal.getName());
+    private void checkIfTournamentBelongToUser(Tournament tournament, String userName) {
+        if (!tournament.getTournamentOwner().equals(userName)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found Tournament named: " + tournament.getTournamentName()+ " with Owner: " + userName);
         }
     }
 
