@@ -73,7 +73,7 @@ public class TournamentServiceTest {
         when(tournamentRepository.existsTournamentByTournamentNameIgnoreCase(tournament.getTournamentName())).thenReturn(false);
         when(tournamentRepository.save(tournament)).thenReturn(tournament);
 
-        ResponseEntity<?> response = tournamentService.addTournament(tournament, userPrincipal);
+        ResponseEntity<?> response = tournamentService.addTournament(tournament, userPrincipal.getName());
 
         verify(tournamentRepository, times(1)).save(tournament);
         verify(tournamentRepository, times(1)).existsTournamentByTournamentNameIgnoreCase(tournament.getTournamentName());
@@ -88,7 +88,7 @@ public class TournamentServiceTest {
         when(tournamentRepository.save(tournament)).thenReturn(tournament);
 
         tournament.setMaxAmountOfTeams(15);
-        ResponseEntity<?> response = tournamentService.updateTournament(tournament.getTournamentName(), tournament, userPrincipal);
+        ResponseEntity<?> response = tournamentService.updateTournament(tournament.getTournamentName(), tournament, userPrincipal.getName());
 
         verify(tournamentRepository, times(1)).save(tournament);
         verify(tournamentRepository, times(1)).findByTournamentNameAndTournamentOwner(tournament.getTournamentName(), userPrincipal.getName());
@@ -101,7 +101,7 @@ public class TournamentServiceTest {
         
         when(tournamentRepository.findByTournamentNameAndTournamentOwner(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())).thenReturn(Optional.of(tournament));
 
-        ResponseEntity<?> response = tournamentService.deleteTournament(tournament.getTournamentName(), userPrincipal);
+        ResponseEntity<?> response = tournamentService.deleteTournament(tournament.getTournamentName(), userPrincipal.getName());
 
         verify(tournamentRepository, times(1)).deleteByTournamentName(tournament.getTournamentName());
         verify(tournamentRepository, times(1)).findByTournamentNameAndTournamentOwner(tournament.getTournamentName(), userPrincipal.getName());
@@ -113,7 +113,7 @@ public class TournamentServiceTest {
 
         ResponseStatusException exception = assertThrows(
             ResponseStatusException.class,
-                () -> tournamentService.updateTournament(tournament.getTournamentName(), tournament, userPrincipal),
+                () -> tournamentService.updateTournament(tournament.getTournamentName(), tournament, userPrincipal.getName()),
                 "Expected doThing() to throw, but it didn't");
 
         verify(tournamentRepository, times(1)).findByTournamentNameAndTournamentOwner(tournament.getTournamentName(), userPrincipal.getName());
@@ -130,7 +130,7 @@ public class TournamentServiceTest {
 
         ResponseStatusException exception = assertThrows(
             ResponseStatusException.class,
-                () -> tournamentService.addTournament(tournament, userPrincipal),
+                () -> tournamentService.addTournament(tournament, userPrincipal.getName()),
                 "Expected doThing() to throw, but it didn't");
 
         verify(tournamentRepository, times(1)).existsTournamentByTournamentNameIgnoreCase(tournament.getTournamentName());
@@ -149,7 +149,7 @@ public class TournamentServiceTest {
 
         ResponseStatusException exception = assertThrows(
                 ResponseStatusException.class,
-                () -> tournamentService.updateTournament(tournament.getTournamentName(), tournament, userPrincipal),
+                () -> tournamentService.updateTournament(tournament.getTournamentName(), tournament, userPrincipal.getName()),
                 "Expected doThing() to throw, but it didn't");
 
         verify(tournamentRepository, times(1)).findByTournamentNameAndTournamentOwner(tournament.getTournamentName(), userPrincipal.getName());
@@ -171,7 +171,7 @@ public class TournamentServiceTest {
 
         dateMatch.put("1", date);
 
-        ResponseEntity<?> response = tournamentService.setTheDatesOfTheTeamsMatches(tournament.getTournamentName(), dateMatch, userPrincipal);
+        ResponseEntity<?> response = tournamentService.setTheDatesOfTheTeamsMatches(tournament.getTournamentName(), dateMatch, userPrincipal.getName());
 
         verify(tournamentRepository, times(1)).save(tournament);
         verify(tournamentRepository, times(1)).findByTournamentNameAndTournamentOwner(tournament.getTournamentName(), userPrincipal.getName());
@@ -189,8 +189,8 @@ public class TournamentServiceTest {
         Map<String, Date> dateMatch = new HashMap<>();
         dateMatch.put("1", date);
 
-        tournamentService.setTheDatesOfTheTeamsMatches(tournament.getTournamentName(), dateMatch, userPrincipal);
-        ResponseEntity<?> response = tournamentService.deleteDateOfTheTeamsMatches(tournament.getTournamentName(), "1", userPrincipal);
+        tournamentService.setTheDatesOfTheTeamsMatches(tournament.getTournamentName(), dateMatch, userPrincipal.getName());
+        ResponseEntity<?> response = tournamentService.deleteDateOfTheTeamsMatches(tournament.getTournamentName(), "1", userPrincipal.getName());
 
         verify(tournamentRepository, times(2)).save(tournament);
         verify(tournamentRepository, times(2)).findByTournamentNameAndTournamentOwner(tournament.getTournamentName(), userPrincipal.getName());
@@ -205,7 +205,7 @@ public class TournamentServiceTest {
         when(tournamentRepository.findByTournamentNameAndTournamentOwner(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())).thenReturn(Optional.of(tournament));
         lenient().when(verifyMethodsForServices.shouldFindTeam(team.getTeamName())).thenReturn(team);
 
-        ResponseEntity<?> response = tournamentService.removeTeamFromTournament(tournament.getTournamentName(), team.getTeamName(), userPrincipal);
+        ResponseEntity<?> response = tournamentService.removeTeamFromTournament(tournament.getTournamentName(), team.getTeamName(), userPrincipal.getName());
 
         verify(tournamentRepository, times(1)).save(tournament);
         assertEquals(response.getStatusCode(), HttpStatus.NO_CONTENT);
@@ -219,9 +219,9 @@ public class TournamentServiceTest {
 
         Map<String, String> drawedTeams = new TreeMap<>();
         drawedTeams.put("FirstKey", "FirstValue");
-        tournament.setDrawedTeams(drawedTeams);
+        tournament.setDrawnTeams(drawedTeams);
 
-        ResponseEntity<?> response = tournamentService.startTournament(tournament.getTournamentName(), userPrincipal);
+        ResponseEntity<?> response = tournamentService.startTournament(tournament.getTournamentName(), userPrincipal.getName());
 
         verify(tournamentRepository, times(1)).save(tournament);
         verify(tournamentRepository, times(1)).findByTournamentNameAndTournamentOwner(tournament.getTournamentName(), userPrincipal.getName());

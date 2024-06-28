@@ -46,7 +46,7 @@ public class MatchInTournamentController {
                                                   @PathVariable String tournamentName,
                                                   UserPrincipal userPrincipal) {
 
-        return matchInTournamentService.addMatchInTournament(matchInTournament, tournamentName, userPrincipal);
+        return matchInTournamentService.addMatchInTournament(matchInTournament, tournamentName, userPrincipal.getName());
     }
 
     @RolesAllowed("user")
@@ -63,7 +63,7 @@ public class MatchInTournamentController {
     public ResponseEntity<?> deleteMatchInTournament(@PathVariable Long matchId,
                                                      UserPrincipal userPrincipal) {
 
-        return matchInTournamentService.deleteMatchInTournament(matchId, userPrincipal);
+        return matchInTournamentService.deleteMatchInTournament(matchId, userPrincipal.getName());
     }
 
     @RolesAllowed("user")
@@ -73,7 +73,7 @@ public class MatchInTournamentController {
                                                           @RequestBody Map<String, Date> dateMatch,
                                                           UserPrincipal userPrincipal) {
 
-        return tournamentService.setTheDatesOfTheTeamsMatches(tournamentName, dateMatch, userPrincipal);
+        return tournamentService.setTheDatesOfTheTeamsMatches(tournamentName, dateMatch, userPrincipal.getName());
 
     }
 
@@ -83,7 +83,7 @@ public class MatchInTournamentController {
                                                          @RequestBody String idMatch,
                                                          UserPrincipal userPrincipal) {
 
-        return tournamentService.deleteDateOfTheTeamsMatches(tournamentName, idMatch, userPrincipal);
+        return tournamentService.deleteDateOfTheTeamsMatches(tournamentName, idMatch, userPrincipal.getName());
     }
 
     @RolesAllowed("user")
@@ -100,7 +100,7 @@ public class MatchInTournamentController {
     public ResponseEntity<?> closeMatch (@PathVariable Long matchId,
                                          UserPrincipal userPrincipal) {
 
-        return matchInTournamentService.closeMatch(matchId, userPrincipal);
+        return matchInTournamentService.closeMatch(matchId, userPrincipal.getName());
     }
 
 }

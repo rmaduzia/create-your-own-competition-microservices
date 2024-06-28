@@ -81,7 +81,7 @@ public class TournamentService {
         Tournament foundTournament = shouldFindTournament(tournamentName, userName);
         checkIfTournamentBelongToUser(foundTournament, userName);
 
-        if (foundTournament.getDrawedTeams().isEmpty()){
+        if (foundTournament.getDrawnTeams().isEmpty()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST ,"You have to draw teams before start competition");
         }
 
@@ -108,7 +108,7 @@ public class TournamentService {
             matchedTeams = matchTeamsInTournament(tournamentName, userName);
         }
 
-        foundTournament.setDrawedTeams(matchedTeams);
+        foundTournament.setDrawnTeams(matchedTeams);
         tournamentRepository.save(foundTournament);
         return ResponseEntity.ok().body(matchedTeams);
     }

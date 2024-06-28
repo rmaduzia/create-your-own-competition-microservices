@@ -70,7 +70,7 @@ public class MatchInTournamentServiceTest {
             Optional.of(tournament));
         when(matchInTournamentRepository.save(matchInTournament)).thenReturn(matchInTournament);
 
-        ResponseEntity<?> response = matchInTournamentService.addMatchInTournament(matchInTournament, tournament.getTournamentName(), userPrincipal);
+        ResponseEntity<?> response = matchInTournamentService.addMatchInTournament(matchInTournament, tournament.getTournamentName(), userPrincipal.getName());
 
         verify(tournamentRepository, times(1)).findByTournamentNameAndTournamentOwner(tournament.getTournamentName(), tournament.getTournamentOwner());
         verify(matchInTournamentRepository, times(1)).save(matchInTournament);
@@ -104,7 +104,7 @@ public class MatchInTournamentServiceTest {
 
         when(matchInTournamentRepository.findById(matchInTournament.getId())).thenReturn(Optional.of(matchInTournament));
 
-        ResponseEntity<?> response = matchInTournamentService.deleteMatchInTournament(matchInTournament.getId(), userPrincipal);
+        ResponseEntity<?> response = matchInTournamentService.deleteMatchInTournament(matchInTournament.getId(), userPrincipal.getName());
 
         verify(matchInTournamentRepository, times(1)).findById(matchInTournament.getId());
         verify(matchInTournamentRepository, times(1)).deleteById(matchInTournament.getId());

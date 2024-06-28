@@ -25,13 +25,13 @@ public class MatchInTournamentService {
         return getQueryImplService.execute(MatchInTournament.class, search, paginationInfoRequest.getPageNumber(), paginationInfoRequest.getPageSize());
     }
 
-    public ResponseEntity<?> addMatchInTournament(MatchInTournament matchInTournament, String tournamentName, UserPrincipal userPrincipal) {
+    public ResponseEntity<?> addMatchInTournament(MatchInTournament matchInTournament, String tournamentName, String userName) {
 
         checkIfWinnerTeamHasNotBeenApprovedBeforeMatchStarted(matchInTournament);
-        Tournament foundTournament = shouldFindTournament(tournamentName, userPrincipal.getName());
+        Tournament foundTournament = shouldFindTournament(tournamentName, userName);
         checkIfTournamentNameEqualsToPath(tournamentName, foundTournament);
 
-        checkIfTournamentBelongToUser(foundTournament, userPrincipal);
+        checkIfTournamentBelongToUser(foundTournament, userName);
         checkIfTeamParticipatingInTournament(matchInTournament, foundTournament);
         matchInTournament.setTournament(foundTournament);
 
@@ -49,10 +49,10 @@ public class MatchInTournamentService {
         return ResponseEntity.ok(matchInTournamentRepository.save(matchInTournament));
     }
 
-    public ResponseEntity<?> deleteMatchInTournament(Long matchId, UserPrincipal userPrincipal) {
+    public ResponseEntity<?> deleteMatchInTournament(Long matchId, String userName) {
 
         MatchInTournament foundMatch = findMatch(matchId);
-        checkIfTournamentBelongToUser(foundMatch.getTournament(), userPrincipal);
+        checkIfTournamentBelongToUser(foundMatch.getTournament(), userName);
 
         matchInTournamentRepository.deleteById(matchId);
 
@@ -78,12 +78,12 @@ public class MatchInTournamentService {
         return ResponseEntity.ok("You have voted");
     }
 
-    public ResponseEntity<?> closeMatch(Long matchId, UserPrincipal userPrincipal) {
+    public ResponseEntity<?> closeMatch(Long matchId, String userName) {
 
         MatchInTournament foundMatch = findMatch(matchId);
-        Tournament foundTournament = shouldFindTournament(foundMatch.getTournament().getTournamentName(), userPrincipal.getName());
+        Tournament foundTournament = shouldFindTournament(foundMatch.getTournament().getTournamentName(), userName);
 
-        checkIfTournamentBelongToUser(foundTournament, userPrincipal);
+        checkIfTournamentBelongToUser(foundTournament, userName);
         foundMatch.setIsClosed(true);
 
         return ResponseEntity.ok("Zamknięto mecz");
@@ -106,8 +106,8 @@ public class MatchInTournamentService {
         }
     }
 
-    private void checkIfTournamentBelongToUser(Tournament tournament, UserPrincipal userPrincipal) {
-        if (!tournament.getTournamentOwner().equals(userPrincipal.getName())) {
+    private void checkIfTournamentBelongToUser(Tournament tournament, String userName) {
+        if (!tournament.getTournamentOwner().equals(userName)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tournament don't belong to you ");
         }
     }
