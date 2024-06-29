@@ -3,6 +3,7 @@ package pl.createcompetition.tournamentservice.all.tournament.match;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Map;
 import lombok.AllArgsConstructor;
@@ -70,7 +71,7 @@ public class MatchInTournamentController {
     @PostMapping("matches")
     @PutMapping("matches")
     public ResponseEntity<?> setTheDatesOfTheTeamsMatches(@PathVariable String tournamentName,
-                                                          @RequestBody Map<String, Date> dateMatch,
+                                                          @RequestBody Map<String, LocalDateTime> dateMatch,
                                                           UserPrincipal userPrincipal) {
 
         return tournamentService.setTheDatesOfTheTeamsMatches(tournamentName, dateMatch, userPrincipal.getName());

@@ -28,7 +28,7 @@ import pl.createcompetition.tournamentservice.all.tournament.Tournament;
 import pl.createcompetition.tournamentservice.all.tournament.TournamentRepository;
 import pl.createcompetition.tournamentservice.all.tournament.TournamentService;
 import pl.createcompetition.tournamentservice.all.tournament.VerifyMethodsForServices;
-import pl.createcompetition.tournamentservice.all.tournament.participation.Team;
+import pl.createcompetition.tournamentservice.all.tournament.participation.TeamDto;
 import pl.createcompetition.tournamentservice.microserviceschanges.UserPrincipal;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,7 +46,7 @@ public class TournamentServiceTest {
     UserPrincipal userPrincipal;
 
     Tournament tournament;
-    Team team;
+    TeamDto teamDto;
 
     private static final String userName = "someUserName";
     
@@ -61,7 +61,7 @@ public class TournamentServiceTest {
                 .tournamentOwner(userName)
                 .tournamentName("Tourtnament1").build();
 
-        team = Team.builder()
+        teamDto = TeamDto.builder()
             .teamName("someTeamName")
             .teamOwner("someTeamOwner")
             .build();
@@ -200,12 +200,13 @@ public class TournamentServiceTest {
     @Test
     public void shouldDeleteTeamFromTournament() {
 
-        tournament.addTeamToTournament(team.getTeamName());
+        tournament.addTeamToTournament(teamDto.getTeamName());
 
         when(tournamentRepository.findByTournamentNameAndTournamentOwner(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())).thenReturn(Optional.of(tournament));
-        lenient().when(verifyMethodsForServices.shouldFindTeam(team.getTeamName())).thenReturn(team);
+        lenient().when(verifyMethodsForServices.shouldFindTeam(teamDto.getTeamName())).thenReturn(
+            teamDto);
 
-        ResponseEntity<?> response = tournamentService.removeTeamFromTournament(tournament.getTournamentName(), team.getTeamName(), userPrincipal.getName());
+        ResponseEntity<?> response = tournamentService.removeTeamFromTournament(tournament.getTournamentName(), teamDto.getTeamName(), userPrincipal.getName());
 
         verify(tournamentRepository, times(1)).save(tournament);
         assertEquals(response.getStatusCode(), HttpStatus.NO_CONTENT);

@@ -8,9 +8,6 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.createcompetition.tournamentservice.all.tournament.VerifyMethodsForServices;
 import pl.createcompetition.tournamentservice.competition.Competition;
 import pl.createcompetition.tournamentservice.competition.CompetitionRepository;
-import pl.createcompetition.tournamentservice.model.PagedResponseDto;
-import pl.createcompetition.tournamentservice.query.GetQueryImplService;
-import pl.createcompetition.tournamentservice.query.PaginationInfoRequest;
 
 @AllArgsConstructor
 @Service
@@ -22,8 +19,8 @@ public class CompetitionTeamService {
 
     public ResponseEntity<?> teamJoinCompetition(String teamName, String competitionName, String userName) {
 
-        Team foundTeam = verifyMethodsForServices.shouldFindTeam(teamName, userName);
-        checkIfTeamBelongToUser(foundTeam, userName);
+        TeamDto foundTeamDto = verifyMethodsForServices.shouldFindTeam(teamName, userName);
+        checkIfTeamBelongToUser(foundTeamDto, userName);
 
         Competition foundCompetition = getCompetition(competitionName);
 
@@ -49,8 +46,8 @@ public class CompetitionTeamService {
 
     public ResponseEntity<?> teamLeaveCompetition(String teamName, String competitionName, String userName) {
 
-        Team foundTeam = verifyMethodsForServices.shouldFindTeam(teamName, userName);
-        checkIfTeamBelongToUser(foundTeam, userName);
+        TeamDto foundTeamDto = verifyMethodsForServices.shouldFindTeam(teamName, userName);
+        checkIfTeamBelongToUser(foundTeamDto, userName);
 
         Competition foundCompetition = getCompetition(competitionName);
 
@@ -70,9 +67,9 @@ public class CompetitionTeamService {
 
     }
 
-    private void checkIfTeamBelongToUser(Team team, String userName) {
-            if (!team.getTeamOwner().equals(userName)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,  "User named: " + userName + " is not owner of team named: " + team.getTeamName());
+    private void checkIfTeamBelongToUser(TeamDto teamDto, String userName) {
+            if (!teamDto.getTeamOwner().equals(userName)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,  "User named: " + userName + " is not owner of team named: " + teamDto.getTeamName());
             }
     }
 

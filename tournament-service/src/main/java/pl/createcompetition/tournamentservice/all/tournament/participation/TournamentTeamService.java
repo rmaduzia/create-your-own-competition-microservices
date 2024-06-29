@@ -1,5 +1,6 @@
 package pl.createcompetition.tournamentservice.all.tournament.participation;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Map;
 import lombok.AllArgsConstructor;
@@ -10,11 +11,6 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.createcompetition.tournamentservice.all.tournament.Tournament;
 import pl.createcompetition.tournamentservice.all.tournament.TournamentRepository;
 import pl.createcompetition.tournamentservice.all.tournament.VerifyMethodsForServices;
-import pl.createcompetition.tournamentservice.competition.Competition;
-import pl.createcompetition.tournamentservice.competition.CompetitionRepository;
-import pl.createcompetition.tournamentservice.model.PagedResponseDto;
-import pl.createcompetition.tournamentservice.query.GetQueryImplService;
-import pl.createcompetition.tournamentservice.query.PaginationInfoRequest;
 import pl.createcompetition.tournamentservice.microserviceschanges.UserPrincipal;
 
 @AllArgsConstructor
@@ -27,8 +23,8 @@ public class TournamentTeamService {
 
     public ResponseEntity<?> teamJoinTournament(String teamName, String tournamentName,String userName) {
 
-        Team foundTeam = verifyMethodsForServices.shouldFindTeam(teamName, userName);
-        checkIfTeamBelongToUser(foundTeam, userName);
+        TeamDto foundTeamDto = verifyMethodsForServices.shouldFindTeam(teamName, userName);
+        checkIfTeamBelongToUser(foundTeamDto, userName);
 
         Tournament findTournament = getTournament(tournamentName);
 
@@ -50,8 +46,8 @@ public class TournamentTeamService {
 
     public ResponseEntity<?> teamLeaveTournament(String teamName, String tournamentName,String userName) {
 
-        Team foundTeam = verifyMethodsForServices.shouldFindTeam(teamName, userName);
-        checkIfTeamBelongToUser(foundTeam, userName);
+        TeamDto foundTeamDto = verifyMethodsForServices.shouldFindTeam(teamName, userName);
+        checkIfTeamBelongToUser(foundTeamDto, userName);
 
         Tournament findTournament = getTournament(tournamentName);
 
@@ -67,9 +63,9 @@ public class TournamentTeamService {
     }
 
 
-    private void checkIfTeamBelongToUser(Team team, String userName) {
-            if (!team.getTeamOwner().equals(userName)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,  "User named: " + userName + " is not owner of team named: " + team.getTeamName());
+    private void checkIfTeamBelongToUser(TeamDto teamDto, String userName) {
+            if (!teamDto.getTeamOwner().equals(userName)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,  "User named: " + userName + " is not owner of team named: " + teamDto.getTeamName());
             }
     }
 
@@ -78,7 +74,7 @@ public class TournamentTeamService {
                 new ResponseStatusException(HttpStatus.NOT_FOUND ,"Tournament not exists. Name: " + tournamentName));
     }
 
-    public ResponseEntity<?> setTheDatesOfTheTeamsMatches(String tournamentName, Map<String, Date> dateMatch, UserPrincipal userPrincipal) {
+    public ResponseEntity<?> setTheDatesOfTheTeamsMatches(String tournamentName, Map<String, LocalDateTime> dateMatch, UserPrincipal userPrincipal) {
 
         Tournament foundTournament = shouldFindTournament(tournamentName, userPrincipal.getName());
         checkIfTournamentBelongToUser(foundTournament, userPrincipal);

@@ -1,15 +1,18 @@
 package pl.createcompetition.tournamentservice.all.tournament;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.createcompetition.tournamentservice.model.PagedResponseDto;
+import pl.createcompetition.tournamentservice.model.TeamEntity;
 import pl.createcompetition.tournamentservice.query.GetQueryImplService;
 import pl.createcompetition.tournamentservice.query.PaginationInfoRequest;
 import pl.createcompetition.tournamentservice.util.MatchTeamsInTournament;
@@ -113,7 +116,7 @@ public class TournamentService {
         return ResponseEntity.ok().body(matchedTeams);
     }
 
-    public ResponseEntity<?> setTheDatesOfTheTeamsMatches(String tournamentName, Map<String, Date> dateMatch, String userName) {
+    public ResponseEntity<?> setTheDatesOfTheTeamsMatches(String tournamentName, Map<String, LocalDateTime> dateMatch, String userName) {
 
         Tournament foundTournament = shouldFindTournament(tournamentName, userName);
         checkIfTournamentBelongToUser(foundTournament, userName);
@@ -137,19 +140,21 @@ public class TournamentService {
 
     private Map<String,String> matchTeamsInTournament(String tournamentName, String userName) {
 
-        List<String> listOfTeams = shouldFindTeamInUserTournament(tournamentName, userName);
-
+        List<String> listOfTeams = shouldFindTeamInUserTournament(tournamentName, userName).stream().map(
+            TeamEntity::getTeamName).collect(
+            Collectors.toList());
         return MatchTeamsInTournament.matchTeamsInTournament(listOfTeams);
     }
 
     private Map<String,String>  matchTeamsWithEachOtherInTournament(String tournamentName, String userName) {
 
-        List<String> listOfTeams = shouldFindTeamInUserTournament(tournamentName, userName);
-
+        List<String> listOfTeams = shouldFindTeamInUserTournament(tournamentName, userName).stream()
+            .map(TeamEntity::getTeamName).collect(
+                Collectors.toList());
         return MatchTeamsInTournament.matchTeamsWithEachOtherInTournament(listOfTeams);
     }
 
-    private List<String> shouldFindTeamInUserTournament(String tournamentName, String userName) {
+    private List<TeamEntity> shouldFindTeamInUserTournament(String tournamentName, String userName) {
 
         Tournament foundTournament = shouldFindTournament(tournamentName, userName);
         checkIfTournamentBelongToUser(foundTournament, userName);

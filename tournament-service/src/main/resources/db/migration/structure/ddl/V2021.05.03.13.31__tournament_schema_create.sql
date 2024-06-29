@@ -86,7 +86,7 @@ CREATE TABLE match_times_in_tournament
 (
     tournament_id BIGINT       NOT NULL,
     id            VARCHAR(255) NOT NULL,
-    match_time    DATE,
+    match_time    DATETIME,
 
     PRIMARY KEY (tournament_id, id),
 

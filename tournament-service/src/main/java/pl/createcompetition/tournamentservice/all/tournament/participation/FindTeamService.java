@@ -15,15 +15,15 @@ public class FindTeamService {
 
     private static final String teamServiceUrlEndpoint = "http://localhost:8080/team/get-information";
 
-    public Team findTeam(String teamName, String teamOwner) {
+    public TeamDto findTeam(String teamName, String teamOwner) {
        return getTeam(teamName, teamOwner);
     }
 
-    public Team findTeam(String teamName) {
+    public TeamDto findTeam(String teamName) {
         return getTeam(teamName, null);
     }
 
-    private Team getTeam (String teamName, String teamOwner) {
+    private TeamDto getTeam (String teamName, String teamOwner) {
 
         String teamOwnerParam = teamOwner == null ?
             "" : "&teamOwner=" + teamOwner;
@@ -37,6 +37,6 @@ public class FindTeamService {
             .onStatus(HttpStatusCode::isError, (request, response) -> {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND,  "We did not find team named: " + teamName + "please try again later and contact support if problem will still exists");
             })
-            .body(Team.class);
+            .body(TeamDto.class);
     }
 }

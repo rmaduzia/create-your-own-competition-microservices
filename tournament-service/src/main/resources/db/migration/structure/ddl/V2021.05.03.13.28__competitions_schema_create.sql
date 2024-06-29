@@ -12,8 +12,6 @@ CREATE TABLE competitions
     street_number       INT,
     max_amount_of_teams INT,
     competition_owner   VARCHAR(255)
-
-
 );
 
 
@@ -29,8 +27,6 @@ CREATE TABLE matches_in_competitions
     match_date          DATE,
     winner_team         VARCHAR(255),
     competition_id      BIGINT
-
-
 );
 
 

@@ -14,6 +14,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import jakarta.persistence.*;
+import pl.createcompetition.tournamentservice.all.tournament.Tournament;
+import pl.createcompetition.tournamentservice.competition.Competition;
 
 
 @EqualsAndHashCode(of = {"id", "tag"})
@@ -34,28 +36,22 @@ public class Tag {
     @NotBlank(message = "Tag name can't be empty")
     private String tag;
 
-//    @ManyToMany(mappedBy = "tag")
-//    @JsonBackReference
-//    @Builder.Default
-//    private Set<Competition> competitions = new HashSet<>();
-//
-//    @ManyToMany(mappedBy = "tag")
-//    @JsonBackReference
-//    @Builder.Default
-//    private Set<Tournament> tournaments = new HashSet<>();
-//
-//    @ManyToMany(mappedBy = "tag")
-//    @JsonBackReference
-//    @Builder.Default
-//    private Set<Team> teams = new HashSet<>();
+    @ManyToMany(mappedBy = "tag")
+    @JsonBackReference
+    @Builder.Default
+    private Set<Competition> competitions = new HashSet<>();
+
+    @ManyToMany(mappedBy = "tag")
+    @JsonBackReference
+    @Builder.Default
+    private Set<Tournament> tournaments = new HashSet<>();
 
     @Data
     @AllArgsConstructor
     public static class TagsDto {
         private String tag;
-//        private Set<Competition> competitions;
-//        private Set<Tournament> tournaments;
-//        private Set<Team> teams;
+        private Set<Competition> competitions;
+        private Set<Tournament> tournaments;
     }
 }
 

@@ -21,9 +21,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
+import pl.createcompetition.tournamentservice.all.tournament.participation.TeamDto;
 import pl.createcompetition.tournamentservice.competition.Competition.CompetitionDto;
 import pl.createcompetition.tournamentservice.competition.match.MatchInCompetition;
 import pl.createcompetition.tournamentservice.model.Tag;
+import pl.createcompetition.tournamentservice.model.TeamEntity;
 import pl.createcompetition.tournamentservice.query.QueryDtoInterface;
 
 @EqualsAndHashCode(of = {"id", "competitionName"})
@@ -88,7 +90,7 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
             joinColumns = @JoinColumn(name = "competition_id", foreignKey = @ForeignKey(name = "FK_COMPETITION_TEAM_COMPETITION_ID")),
             inverseJoinColumns = @JoinColumn(name = "team_id", foreignKey = @ForeignKey(name = "FK_COMPETITION_TEAM_TEAM_ID")))
     @Builder.Default
-    private Set<String> teams = new HashSet<>();
+    private Set<TeamEntity> teams = new HashSet<>();
 
     @Builder.Default
     @OneToMany(
@@ -98,6 +100,15 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
 
     public void addTagToCompetition(Tag tag) {
         this.tag.add(tag);
+    }
+
+    public boolean removeTeam(String teamName) {
+        return teams.removeIf(v -> v.getTeamName().equals(teamName));
+    }
+
+    public boolean addTeam(String teamName) {
+        TeamEntity teamEntity = new TeamEntity(teamName);
+        return teams.add(teamEntity);
     }
 
     public void addManyTagToCompetition(Set<Tag> tag) {
@@ -119,7 +130,7 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
         private java.sql.Timestamp competitionStart;
         private java.sql.Timestamp competitionEnd;
         private Boolean isOpenRecruitment;
-        private Set<String> teams;
+        private Set<TeamEntity> teams;
         private Set<Tag> tag;
         private List<MatchInCompetition> matchInCompetition;
     }

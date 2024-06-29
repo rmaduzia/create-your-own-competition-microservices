@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.createcompetition.tournamentservice.all.tournament.participation.FindTeamService;
-import pl.createcompetition.tournamentservice.all.tournament.participation.Team;
+import pl.createcompetition.tournamentservice.all.tournament.participation.TeamDto;
 import pl.createcompetition.tournamentservice.competition.Competition;
 import pl.createcompetition.tournamentservice.competition.CompetitionRepository;
 
@@ -17,11 +17,11 @@ public class VerifyMethodsForServices {
     private final CompetitionRepository competitionRepository;
     private final FindTeamService findTeamService;
 
-    public Team shouldFindTeam(String teamName, String teamOwner) {
+    public TeamDto shouldFindTeam(String teamName, String teamOwner) {
         return findTeamService.findTeam(teamName, teamOwner);
     }
 
-    public Team shouldFindTeam(String teamName) {
+    public TeamDto shouldFindTeam(String teamName) {
         return findTeamService.findTeam(teamName);
     }
 

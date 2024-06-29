@@ -4,26 +4,26 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.createcompetition.tournamentservice.all.tournament.participation.Team.TeamDto;
+import pl.createcompetition.tournamentservice.all.tournament.participation.TeamDto.TeamDtoOutput;
 import pl.createcompetition.tournamentservice.query.QueryDtoInterface;
 
 @AllArgsConstructor
 @Builder
 @Data
-public class Team implements QueryDtoInterface<TeamDto> {
+public class TeamDto implements QueryDtoInterface<TeamDtoOutput> {
 
     private String teamName;
     private String teamOwner;
 
     @Override
-    public TeamDto map() {
-        return new TeamDto(teamName,teamOwner);
+    public TeamDtoOutput map() {
+        return new TeamDtoOutput(teamName,teamOwner);
     }
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class TeamDto {
+    public static class TeamDtoOutput {
         private String teamName;
         private String teamOwner;
     }

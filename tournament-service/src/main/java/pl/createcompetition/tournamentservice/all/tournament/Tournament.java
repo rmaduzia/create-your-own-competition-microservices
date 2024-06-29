@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -28,6 +29,7 @@ import org.hibernate.validator.constraints.Range;
 import pl.createcompetition.tournamentservice.all.tournament.Tournament.TournamentDto;
 import pl.createcompetition.tournamentservice.all.tournament.match.MatchInTournament;
 import pl.createcompetition.tournamentservice.model.Tag;
+import pl.createcompetition.tournamentservice.model.TeamEntity;
 import pl.createcompetition.tournamentservice.query.QueryDtoInterface;
 
 @EqualsAndHashCode(of="id")
@@ -79,7 +81,7 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
     @MapKeyColumn(name = "id")
     @Column(name = "duel")
     @Builder.Default
-    private Map<String, String> drawedTeams = new TreeMap<>();
+    private Map<String, String> drawnTeams = new TreeMap<>();
 
     @ElementCollection
     @CollectionTable(name = "match_times_in_tournament", joinColumns = @JoinColumn(name = "tournament_id", referencedColumnName = "id",
@@ -87,7 +89,7 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
     @MapKeyColumn(name = "id")
     @Column(name = "match_time")
     @Builder.Default
-    private Map<String, Date> matchTimes = new TreeMap<>();
+    private Map<String, LocalDateTime> matchTimes = new TreeMap<>();
 
     @Builder.Default
     @OneToMany(
@@ -109,14 +111,18 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
     @JoinTable(name = "tournament_teams",
             joinColumns = @JoinColumn(name = "tournament_id", foreignKey = @ForeignKey(name = "FK_TOURNAMENT_TEAMS_TOURNAMENT_ID")),
             inverseJoinColumns = @JoinColumn(name = "team_id", foreignKey = @ForeignKey(name = "FK_TOURNAMENT_TEAMS_TEAM_ID")))
-    private Set<String> teams = new HashSet<>();
+//    @ManyToOne
+//    @JoinColumn(name = "team_name")
+//    @JsonManagedReference
+    private Set<TeamEntity> teams = new HashSet<>();
 
-    public void addTeamToTournament(String teams) {
-        this.teams.add(teams);
+    public void addTeamToTournament(String teamName) {
+        TeamEntity teamEntity = new TeamEntity(teamName);
+        this.teams.add(teamEntity);
     }
 
-    public boolean deleteTeamFromTournament(String teams) {
-        return this.teams.remove(teams);
+    public boolean deleteTeamFromTournament(String teamName) {
+        return this.teams.removeIf(v -> v.getTeamName().equals(teamName));
     }
 
     @Override
