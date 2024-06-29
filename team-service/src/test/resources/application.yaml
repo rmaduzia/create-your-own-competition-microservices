@@ -25,7 +25,7 @@ spring:
     user: root
     password: root
 #    url: jdbc:mysql://localhost:3306/create_competition?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
-    schemas: create_competition
+    schemas: team-service
 #    locations: classpath:test/resources/db/migration/structure/ddl
     locations: classpath:/db/migration/structure/ddl
     out-of-order: true

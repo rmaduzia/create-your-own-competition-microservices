@@ -80,7 +80,7 @@ public class EndToEndTesting {
     static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0")
             .withUsername("root")
             .withPassword("root")
-            .withDatabaseName("create_competition")
+            .withDatabaseName("team-service")
             .withCreateContainerCmdModifier(cmd -> cmd.withHostConfig(new HostConfig().withPortBindings(portBinding))
                     .withExposedPorts(ExposedPort.tcp(MYSQL_CONTAINER_PORT)));
 
