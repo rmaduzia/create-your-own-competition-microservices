@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -67,12 +68,12 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
     @Column(columnDefinition = "DATE")
     @NotBlank(message = "Pick time start of competition")
     @Future
-    private java.sql.Timestamp competitionStart;
+    private LocalDateTime competitionStart;
 
     @Column(columnDefinition = "DATE")
     @NotBlank(message = "Pick time end of competition")
     @Past
-    private java.sql.Timestamp competitionEnd;
+    private LocalDateTime competitionEnd;
 
     private Boolean isOpenRecruitment;
 
@@ -127,8 +128,8 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
         private String city;
         private String street;
         private int street_number;
-        private java.sql.Timestamp competitionStart;
-        private java.sql.Timestamp competitionEnd;
+        private LocalDateTime competitionStart;
+        private LocalDateTime competitionEnd;
         private Boolean isOpenRecruitment;
         private Set<TeamEntity> teams;
         private Set<Tag> tag;

@@ -2,9 +2,9 @@ CREATE TABLE competitions
 (
     id                  BIGINT PRIMARY KEY,
     city                VARCHAR(255),
-    competition_end     DATE,
+    competition_end     DATETIME,
     competition_name    VARCHAR(255),
-    competition_start   DATE,
+    competition_start   DATETIME,
     is_open_recruitment BOOLEAN,
     max_amount_users    INT,
     owner               VARCHAR(255),
@@ -14,8 +14,6 @@ CREATE TABLE competitions
     competition_owner   VARCHAR(255)
 );
 
-
-
 CREATE TABLE matches_in_competitions
 (
     id                  BIGINT PRIMARY KEY,
@@ -24,12 +22,10 @@ CREATE TABLE matches_in_competitions
     is_closed           BOOLEAN,
     is_match_was_played BOOLEAN,
     is_winner_confirmed BOOLEAN,
-    match_date          DATE,
+    match_date          DATETIME,
     winner_team         VARCHAR(255),
     competition_id      BIGINT
 );
-
-
 
 CREATE TABLE matches_in_competition
 (
@@ -38,11 +34,10 @@ CREATE TABLE matches_in_competition
     second_team_name    VARCHAR(255),
     is_winner_confirmed BOOLEAN,
     is_match_was_played BOOLEAN,
-    match_date          DATE,
+    match_date          DATETIME,
     winner_team         VARCHAR(255),
     competition_id      BIGINT
 );
-
 
 CREATE TABLE votes_for_winning_team_in_competition_matches
 (

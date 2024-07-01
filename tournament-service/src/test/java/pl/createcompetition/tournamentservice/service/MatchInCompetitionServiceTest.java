@@ -7,7 +7,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,8 +55,8 @@ public class MatchInCompetitionServiceTest {
                 .id(1L)
                 .competitionOwner(userName)
                 .competitionName("zawody1")
-                .competitionStart(Timestamp.valueOf("2020-05-01 12:30:00"))
-                .competitionEnd(Timestamp.valueOf("2020-05-02 12:30:00"))
+                .competitionStart(LocalDateTime.now())
+                .competitionEnd(LocalDateTime.now())
                 .city("Gdynia")
                 .maxAmountOfTeams(10)
                 .build();

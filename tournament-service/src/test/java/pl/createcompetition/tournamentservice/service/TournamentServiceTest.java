@@ -7,6 +7,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -166,8 +167,8 @@ public class TournamentServiceTest {
         when(tournamentRepository.findByTournamentNameAndTournamentOwner(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())).thenReturn(Optional.of(tournament));
         when(tournamentRepository.save(tournament)).thenReturn(tournament);
 
-        Date date = new Date();
-        Map<String, Date> dateMatch = new HashMap<>();
+        LocalDateTime date = LocalDateTime.now();
+        Map<String, LocalDateTime> dateMatch = new HashMap<>();
 
         dateMatch.put("1", date);
 
@@ -185,8 +186,8 @@ public class TournamentServiceTest {
 
         when(tournamentRepository.findByTournamentNameAndTournamentOwner(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())).thenReturn(Optional.of(tournament));
 
-        Date date = new Date();
-        Map<String, Date> dateMatch = new HashMap<>();
+        LocalDateTime date = LocalDateTime.now();
+        Map<String, LocalDateTime> dateMatch = new HashMap<>();
         dateMatch.put("1", date);
 
         tournamentService.setTheDatesOfTheTeamsMatches(tournament.getTournamentName(), dateMatch, userPrincipal.getName());

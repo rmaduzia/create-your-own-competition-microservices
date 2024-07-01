@@ -2,7 +2,7 @@ package pl.createcompetition.tournamentservice.all.tournament.match;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.AllArgsConstructor;
@@ -42,8 +42,7 @@ public class MatchInTournament implements QueryDtoInterface<MatchInTournamentDto
     private String secondTeamName;
 
     @Column(columnDefinition = "DATE")
-//    private java.sql.Timestamp matchDate;
-    private LocalDate matchDate;
+    private LocalDateTime matchDate;
 
     @NotBlank(message = "Team name can't be empty")
     @Pattern(regexp="^[a-zA-Z]*$", message = "Team name can't contain number")
@@ -82,8 +81,7 @@ public class MatchInTournament implements QueryDtoInterface<MatchInTournamentDto
         private Tournament tournament;
         private String firstTeamName;
         private String secondTeamName;
-//        private java.sql.Timestamp matchDate;
-        private LocalDate matchDate;
+        private LocalDateTime matchDate;
         private String winnerTeam;
         private Map<String, String> voteForWinnerTeam = new HashMap<>();
         private Boolean isWinnerConfirmed;

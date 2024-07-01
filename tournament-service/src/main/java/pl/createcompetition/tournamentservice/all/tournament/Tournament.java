@@ -12,7 +12,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +69,7 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
     @Column(columnDefinition = "DATE")
     @NotBlank(message = "Pick time start of tournament")
     @Future
-    private java.sql.Timestamp tournamentStart;
+    private LocalDateTime tournamentStart;
 
     private Boolean isStarted;
     private Boolean isFinished;

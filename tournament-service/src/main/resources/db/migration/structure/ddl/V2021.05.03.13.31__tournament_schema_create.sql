@@ -26,11 +26,9 @@ CREATE TABLE matches_in_tournaments
     is_closed           BOOLEAN,
     is_match_was_played BOOLEAN,
     is_winner_confirmed BOOLEAN,
-    match_date          DATE,
+    match_date          DATETIME,
     winner_team         VARCHAR(255),
     tournament_id       BIGINT
-
-
 );
 
 CREATE TABLE votes_for_winning_team_in_tournament_matches
@@ -45,9 +43,7 @@ CREATE TABLE votes_for_winning_team_in_tournament_matches
     CONSTRAINT FK_VOTES_FOR_WINNING_TEAM_IN_TOURNAMENT_MATCHES_COMPETITION_ID
         FOREIGN KEY (match_in_tournament_id)
             REFERENCES matches_in_tournaments (id)
-
 );
-
 
 CREATE TABLE matches_in_tournament
 (
@@ -56,15 +52,11 @@ CREATE TABLE matches_in_tournament
     first_team_name           VARCHAR(255),
     second_team_name          VARCHAR(255),
     is_winner_confirmed       BOOLEAN,
-    match_date                DATE,
+    match_date                DATETIME,
     winner_team               VARCHAR(255),
     tournament_id             BIGINT,
     is_match_was_played       BOOLEAN
-
-
 );
-
-
 
 CREATE TABLE drawed_teams_in_tournament
 (
@@ -77,8 +69,6 @@ CREATE TABLE drawed_teams_in_tournament
     CONSTRAINT FK_DRAWED_TEAMS_IN_TOURNAMENT_TOURNAMENT_ID
         FOREIGN KEY (tournament_id)
             REFERENCES tournaments (id)
-
-
 );
 
 

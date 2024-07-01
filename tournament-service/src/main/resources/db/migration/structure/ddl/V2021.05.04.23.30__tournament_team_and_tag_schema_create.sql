@@ -15,9 +15,6 @@ CREATE TABLE tournament_teams
 
 );
 
-
-
-
 CREATE TABLE tournament_tags
 (
     tournament_id BIGINT NOT NULL,
@@ -32,5 +29,4 @@ CREATE TABLE tournament_tags
     CONSTRAINT FK_TOURNAMENT_TAGS_TAG_ID
         FOREIGN KEY (tag_id)
             REFERENCES tags (id)
-
 );
