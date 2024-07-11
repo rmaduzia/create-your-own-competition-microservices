@@ -1,4 +1,4 @@
-package pl.createcompetition.tournamentservice.all.tournament.participation;
+package pl.createcompetition.tournamentservice.tournament.participation;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

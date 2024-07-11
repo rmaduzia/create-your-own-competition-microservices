@@ -1,10 +1,10 @@
-package pl.createcompetition.tournamentservice.all.tournament.participation;
+package pl.createcompetition.tournamentservice.tournament.participation;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.createcompetition.tournamentservice.all.tournament.participation.TeamDto.TeamDtoOutput;
+import pl.createcompetition.tournamentservice.tournament.participation.TeamDto.TeamDtoOutput;
 import pl.createcompetition.tournamentservice.query.QueryDtoInterface;
 
 @AllArgsConstructor

@@ -1,11 +1,11 @@
-package pl.createcompetition.tournamentservice.all.tournament;
+package pl.createcompetition.tournamentservice.tournament;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import pl.createcompetition.tournamentservice.all.tournament.participation.FindTeamService;
-import pl.createcompetition.tournamentservice.all.tournament.participation.TeamDto;
+import pl.createcompetition.tournamentservice.tournament.participation.FindTeamService;
+import pl.createcompetition.tournamentservice.tournament.participation.TeamDto;
 import pl.createcompetition.tournamentservice.competition.Competition;
 import pl.createcompetition.tournamentservice.competition.CompetitionRepository;
 

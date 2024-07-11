@@ -19,7 +19,7 @@ import org.mockito.quality.Strictness;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
-import pl.createcompetition.tournamentservice.all.tournament.VerifyMethodsForServices;
+import pl.createcompetition.tournamentservice.tournament.VerifyMethodsForServices;
 import pl.createcompetition.tournamentservice.competition.Competition;
 import pl.createcompetition.tournamentservice.competition.match.MatchInCompetition;
 import pl.createcompetition.tournamentservice.competition.match.MatchInCompetitionRepository;

@@ -1,4 +1,4 @@
-package pl.createcompetition.tournamentservice.all.tournament.match;
+package pl.createcompetition.tournamentservice.tournament.match;
 
 import java.util.Collections;
 import lombok.AllArgsConstructor;
@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import pl.createcompetition.tournamentservice.all.tournament.Tournament;
-import pl.createcompetition.tournamentservice.all.tournament.TournamentRepository;
+import pl.createcompetition.tournamentservice.tournament.Tournament;
+import pl.createcompetition.tournamentservice.tournament.TournamentRepository;
 import pl.createcompetition.tournamentservice.microserviceschanges.UserPrincipal;
 import pl.createcompetition.tournamentservice.model.PagedResponseDto;
 import pl.createcompetition.tournamentservice.query.GetQueryImplService;

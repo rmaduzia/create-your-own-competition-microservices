@@ -1,4 +1,4 @@
-package pl.createcompetition.tournamentservice.all.tournament.match;
+package pl.createcompetition.tournamentservice.tournament.match;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

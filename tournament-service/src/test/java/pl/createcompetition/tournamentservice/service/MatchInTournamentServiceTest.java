@@ -14,11 +14,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import pl.createcompetition.tournamentservice.all.tournament.Tournament;
-import pl.createcompetition.tournamentservice.all.tournament.TournamentRepository;
-import pl.createcompetition.tournamentservice.all.tournament.match.MatchInTournament;
-import pl.createcompetition.tournamentservice.all.tournament.match.MatchInTournamentRepository;
-import pl.createcompetition.tournamentservice.all.tournament.match.MatchInTournamentService;
+import pl.createcompetition.tournamentservice.tournament.Tournament;
+import pl.createcompetition.tournamentservice.tournament.TournamentRepository;
+import pl.createcompetition.tournamentservice.tournament.match.MatchInTournament;
+import pl.createcompetition.tournamentservice.tournament.match.MatchInTournamentRepository;
+import pl.createcompetition.tournamentservice.tournament.match.MatchInTournamentService;
 import pl.createcompetition.tournamentservice.microserviceschanges.UserPrincipal;
 
 

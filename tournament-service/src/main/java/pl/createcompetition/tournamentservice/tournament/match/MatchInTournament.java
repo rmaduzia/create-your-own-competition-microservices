@@ -1,4 +1,4 @@
-package pl.createcompetition.tournamentservice.all.tournament.match;
+package pl.createcompetition.tournamentservice.tournament.match;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -12,8 +12,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.createcompetition.tournamentservice.all.tournament.Tournament;
-import pl.createcompetition.tournamentservice.all.tournament.match.MatchInTournament.MatchInTournamentDto;
+import pl.createcompetition.tournamentservice.tournament.Tournament;
+import pl.createcompetition.tournamentservice.tournament.match.MatchInTournament.MatchInTournamentDto;
 import pl.createcompetition.tournamentservice.query.QueryDtoInterface;
 
 @EqualsAndHashCode(of = {"id"})

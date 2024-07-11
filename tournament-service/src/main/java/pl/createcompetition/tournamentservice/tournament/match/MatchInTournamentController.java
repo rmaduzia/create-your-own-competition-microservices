@@ -1,10 +1,9 @@
-package pl.createcompetition.tournamentservice.all.tournament.match;
+package pl.createcompetition.tournamentservice.tournament.match;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pl.createcompetition.tournamentservice.all.tournament.TournamentService;
+import pl.createcompetition.tournamentservice.tournament.TournamentService;
 import pl.createcompetition.tournamentservice.microserviceschanges.UserPrincipal;
 import pl.createcompetition.tournamentservice.model.PagedResponseDto;
 import pl.createcompetition.tournamentservice.query.PaginationInfoRequest;

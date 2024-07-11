@@ -22,7 +22,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
-import pl.createcompetition.tournamentservice.all.tournament.participation.TeamDto;
 import pl.createcompetition.tournamentservice.competition.Competition.CompetitionDto;
 import pl.createcompetition.tournamentservice.competition.match.MatchInCompetition;
 import pl.createcompetition.tournamentservice.model.Tag;

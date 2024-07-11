@@ -1,4 +1,4 @@
-package pl.createcompetition.tournamentservice.all.tournament;
+package pl.createcompetition.tournamentservice.tournament;
 
 import static pl.createcompetition.tournamentservice.config.AppConstants.MAX_AMOUNT_OF_TEAMS_IN_TOURNAMENT;
 
@@ -25,8 +25,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
-import pl.createcompetition.tournamentservice.all.tournament.Tournament.TournamentDto;
-import pl.createcompetition.tournamentservice.all.tournament.match.MatchInTournament;
+import pl.createcompetition.tournamentservice.tournament.Tournament.TournamentDto;
+import pl.createcompetition.tournamentservice.tournament.match.MatchInTournament;
 import pl.createcompetition.tournamentservice.model.Tag;
 import pl.createcompetition.tournamentservice.model.TeamEntity;
 import pl.createcompetition.tournamentservice.query.QueryDtoInterface;

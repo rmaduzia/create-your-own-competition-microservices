@@ -8,7 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -25,11 +24,11 @@ import org.mockito.quality.Strictness;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
-import pl.createcompetition.tournamentservice.all.tournament.Tournament;
-import pl.createcompetition.tournamentservice.all.tournament.TournamentRepository;
-import pl.createcompetition.tournamentservice.all.tournament.TournamentService;
-import pl.createcompetition.tournamentservice.all.tournament.VerifyMethodsForServices;
-import pl.createcompetition.tournamentservice.all.tournament.participation.TeamDto;
+import pl.createcompetition.tournamentservice.tournament.Tournament;
+import pl.createcompetition.tournamentservice.tournament.TournamentRepository;
+import pl.createcompetition.tournamentservice.tournament.TournamentService;
+import pl.createcompetition.tournamentservice.tournament.VerifyMethodsForServices;
+import pl.createcompetition.tournamentservice.tournament.participation.TeamDto;
 import pl.createcompetition.tournamentservice.microserviceschanges.UserPrincipal;
 
 @ExtendWith(MockitoExtension.class)
