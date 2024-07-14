@@ -40,9 +40,8 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
         if (resourceAccess != null && resourceAccess.get("account") != null) {
 
             Map<String, Object> account = (Map<String, Object>) resourceAccess.get("account");
-
             if (account.containsKey("roles")) {
-                resourceRoles = (Collection<String>) realmAccess.get("roles");
+                resourceRoles = (Collection<String>) account.get("roles");
                 allRoles.addAll(resourceRoles);
             }
         }
