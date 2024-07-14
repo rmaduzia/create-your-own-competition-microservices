@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
@@ -43,34 +44,34 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
 
     @Column(unique = true)
     @NotBlank(message = "Competition can't be empty")
-    @Pattern(regexp="^[a-zA-Z]*$", message = "Competition name can't contain number")
+    @Pattern(regexp="^[^0-9]*$", message = "Competition name can't contain number")
     private String competitionName;
 
     @NotBlank(message = "Competition owner can't be empty")
-    @Pattern(regexp="^[a-zA-Z]*$", message = "Competition owner name can't contain number")
+    @Pattern(regexp="^[^0-9]*$", message = "Competition owner name can't contain number")
     private String competitionOwner;
 
     @NotBlank(message = "City can't be empty")
-    @Pattern(regexp="^[a-zA-Z]*$", message = "City name can't contain number")
+    @Pattern(regexp="^[^0-9]*$", message = "City name can't contain number")
     private String city;
 
     @NotBlank(message = "Street can't be empty")
-    @Pattern(regexp="^[a-zA-Z]*$", message = "Street name can't contain number")
+    @Pattern(regexp="^[^0-9]*$", message = "Street name can't contain number")
     private String street;
 
     @Min(value = 1, message = "Street number can't be lower then 1")
-    private int street_number;
+    private int streetNumber;
 
     @Range(min = 2, max = MAX_AMOUNT_OF_TEAMS_IN_COMPETITION, message = "Number of team have to be between 2 and 30")
     private int maxAmountOfTeams;
 
     @Column(columnDefinition = "DATE")
-    @NotBlank(message = "Pick time start of competition")
+    @NotNull(message = "Pick time start of competition")
     @Future
     private LocalDateTime competitionStart;
 
     @Column(columnDefinition = "DATE")
-    @NotBlank(message = "Pick time end of competition")
+    @NotNull(message = "Pick time end of competition")
     @Past
     private LocalDateTime competitionEnd;
 
@@ -85,6 +86,7 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
     private Set<Tag> tag = new HashSet<>();
 
     @JsonManagedReference
+//    @JsonBackReference
     @ManyToMany
     @JoinTable(name = "competition_team",
             joinColumns = @JoinColumn(name = "competition_id", foreignKey = @ForeignKey(name = "FK_COMPETITION_TEAM_COMPETITION_ID")),
@@ -117,8 +119,24 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
 
     @Override
     public CompetitionDto map() {
-        return new CompetitionDto(competitionName, city, street, street_number, competitionStart, competitionEnd, isOpenRecruitment, teams,tag, matchInCompetition);
+        return new CompetitionDto(competitionName, city, street, streetNumber, competitionStart, competitionEnd, isOpenRecruitment, teams,tag, matchInCompetition);
     }
+
+    public static Competition createCompetition(CompetitionCreateRequest request, String competitionOwner) {
+
+        return Competition.builder()
+            .competitionName(request.getCompetitionName())
+            .competitionOwner(competitionOwner)
+            .city(request.getCity())
+            .street(request.getStreet())
+            .streetNumber(request.getStreetNumber())
+            .maxAmountOfTeams(request.getMaxAmountOfTeams())
+            .competitionStart(request.getCompetitionStart())
+            .competitionEnd(request.getCompetitionEnd())
+            .isOpenRecruitment(request.getIsOpenRecruitment())
+            .build();
+    }
+
 
     @Data
     @AllArgsConstructor
