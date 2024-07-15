@@ -1,6 +1,6 @@
 CREATE TABLE tournaments
 (
-    id                  BIGINT NOT NULL PRIMARY KEY,
+    id                  BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     city                VARCHAR(255),
     max_amount_of_teams INT,
     street              VARCHAR(255) DEFAULT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE tournaments
 
 CREATE TABLE matches_in_tournaments
 (
-    id                  BIGINT PRIMARY KEY,
+    id                  BIGINT PRIMARY KEY AUTO_INCREMENT,
     first_team_name     VARCHAR(255),
     second_team_name    VARCHAR(255),
     is_closed           BOOLEAN,
@@ -47,7 +47,7 @@ CREATE TABLE votes_for_winning_team_in_tournament_matches
 
 CREATE TABLE matches_in_tournament
 (
-    id                        BIGINT PRIMARY KEY,
+    id                        BIGINT PRIMARY KEY AUTO_INCREMENT,
     confirming_winner_counter INT,
     first_team_name           VARCHAR(255),
     second_team_name          VARCHAR(255),

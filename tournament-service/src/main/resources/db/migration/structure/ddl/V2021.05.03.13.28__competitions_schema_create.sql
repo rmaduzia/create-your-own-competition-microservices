@@ -1,6 +1,6 @@
 CREATE TABLE competitions
 (
-    id                  BIGINT PRIMARY KEY,
+    id                  BIGINT PRIMARY KEY AUTO_INCREMENT,
     city                VARCHAR(255),
     competition_end     DATETIME,
     competition_name    VARCHAR(255),
@@ -16,7 +16,7 @@ CREATE TABLE competitions
 
 CREATE TABLE matches_in_competitions
 (
-    id                  BIGINT PRIMARY KEY,
+    id                  BIGINT PRIMARY KEY AUTO_INCREMENT,
     first_team_name     VARCHAR(255),
     second_team_name    VARCHAR(255),
     is_closed           BOOLEAN,
@@ -29,7 +29,7 @@ CREATE TABLE matches_in_competitions
 
 CREATE TABLE matches_in_competition
 (
-    id                  BIGINT PRIMARY KEY,
+    id                  BIGINT PRIMARY KEY AUTO_INCREMENT,
     first_team_name     VARCHAR(255),
     second_team_name    VARCHAR(255),
     is_winner_confirmed BOOLEAN,
