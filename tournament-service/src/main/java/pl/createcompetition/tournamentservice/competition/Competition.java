@@ -2,13 +2,11 @@ package pl.createcompetition.tournamentservice.competition;
 
 import static pl.createcompetition.tournamentservice.config.AppConstants.MAX_AMOUNT_OF_TEAMS_IN_COMPETITION;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -38,6 +36,7 @@ import pl.createcompetition.tournamentservice.query.QueryDtoInterface;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Competition implements QueryDtoInterface<CompetitionDto> {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -72,21 +71,18 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
 
     @Column(columnDefinition = "DATE")
     @NotNull(message = "Pick time end of competition")
-    @Past
+    @Future
     private LocalDateTime competitionEnd;
 
     private Boolean isOpenRecruitment;
 
-    @JsonManagedReference
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "competition_tag",
             joinColumns = @JoinColumn(name = "competition_id", foreignKey = @ForeignKey(name = "FK_COMPETITION_TAG_COMPETITION_ID")),
             inverseJoinColumns = @JoinColumn(name = "tag_id", foreignKey = @ForeignKey(name="FK_COMPETITION_TAG_TAGS_ID")))
     @Builder.Default
-    private Set<Tag> tag = new HashSet<>();
+    private Set<Tag> tags = new HashSet<>();
 
-    @JsonManagedReference
-//    @JsonBackReference
     @ManyToMany
     @JoinTable(name = "competition_team",
             joinColumns = @JoinColumn(name = "competition_id", foreignKey = @ForeignKey(name = "FK_COMPETITION_TEAM_COMPETITION_ID")),
@@ -101,7 +97,7 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
     private List<MatchInCompetition> matchInCompetition = new ArrayList<>();
 
     public void addTagToCompetition(Tag tag) {
-        this.tag.add(tag);
+        this.tags.add(tag);
     }
 
     public boolean removeTeam(String teamName) {
@@ -114,15 +110,16 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
     }
 
     public void addManyTagToCompetition(Set<Tag> tag) {
-        this.tag.addAll(tag);
+        this.tags.addAll(tag);
     }
 
     @Override
     public CompetitionDto map() {
-        return new CompetitionDto(competitionName, city, street, streetNumber, competitionStart, competitionEnd, isOpenRecruitment, teams,tag, matchInCompetition);
+        return new CompetitionDto(competitionName, city, street, streetNumber, competitionStart, competitionEnd, isOpenRecruitment, teams,
+            tags, matchInCompetition);
     }
 
-    public static Competition createCompetition(CompetitionCreateRequest request, String competitionOwner) {
+    public static Competition createCompetition(CompetitionCreateUpdateRequest request, String competitionOwner) {
 
         return Competition.builder()
             .competitionName(request.getCompetitionName())

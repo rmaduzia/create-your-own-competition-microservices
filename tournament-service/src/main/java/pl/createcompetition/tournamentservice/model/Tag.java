@@ -1,6 +1,7 @@
 package pl.createcompetition.tournamentservice.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -36,13 +37,13 @@ public class Tag {
     @NotBlank(message = "Tag name can't be empty")
     private String tag;
 
-    @ManyToMany(mappedBy = "tag")
-    @JsonBackReference
+    @ManyToMany(mappedBy = "tags")
+    @JsonBackReference("competition-tag")
     @Builder.Default
     private Set<Competition> competitions = new HashSet<>();
 
-    @ManyToMany(mappedBy = "tag")
-    @JsonBackReference
+    @ManyToMany(mappedBy = "tags")
+    @JsonBackReference("tournament-tag")
     @Builder.Default
     private Set<Tournament> tournaments = new HashSet<>();
 
@@ -52,6 +53,10 @@ public class Tag {
         private String tag;
         private Set<Competition> competitions;
         private Set<Tournament> tournaments;
+    }
+
+    public Tag(String tag) {
+        this.tag = tag;
     }
 }
 

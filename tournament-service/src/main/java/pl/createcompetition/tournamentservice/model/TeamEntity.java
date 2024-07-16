@@ -5,20 +5,21 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import java.util.HashSet;
+import java.util.Set;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
+import pl.createcompetition.tournamentservice.competition.Competition;
+import pl.createcompetition.tournamentservice.tournament.Tournament;
 
-@Entity
+@EqualsAndHashCode(of = {"id", "teamName"})
 @Table(name = "teams")
-//@Data
-//@Builder
-//@AllArgsConstructor
-//@NoArgsConstructor
 @Getter
+@Setter
+@Entity
 public class TeamEntity {
 
     @Id
@@ -28,10 +29,14 @@ public class TeamEntity {
     @Column(name = "team_name")
     private String teamName;
 
+    @ManyToMany(mappedBy = "teams")
+    private Set<Competition> competitions = new HashSet<>();
+
+    @ManyToMany(mappedBy = "teams")
+    private Set<Tournament> tournaments = new HashSet<>();
+
     public TeamEntity(String teamName) {
         this.teamName = teamName;
     }
-
-
 
 }
