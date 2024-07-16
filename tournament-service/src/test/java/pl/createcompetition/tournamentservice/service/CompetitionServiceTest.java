@@ -18,9 +18,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 import pl.createcompetition.tournamentservice.competition.Competition;
+import pl.createcompetition.tournamentservice.competition.CompetitionMapper;
 import pl.createcompetition.tournamentservice.competition.CompetitionRepository;
 import pl.createcompetition.tournamentservice.competition.CompetitionService;
-import pl.createcompetition.tournamentservice.competition.CompetitionCreateRequest;
+import pl.createcompetition.tournamentservice.competition.CompetitionCreateUpdateRequest;
 import pl.createcompetition.tournamentservice.microserviceschanges.UserPrincipal;
 import pl.createcompetition.tournamentservice.tournament.VerifyMethodsForServices;
 
@@ -29,6 +30,8 @@ public class CompetitionServiceTest {
 
     @Mock
     CompetitionRepository competitionRepository;
+    @Mock
+    CompetitionMapper competitionMapper;
     @InjectMocks
     CompetitionService competitionService;
     @Mock
@@ -37,7 +40,7 @@ public class CompetitionServiceTest {
     @Mock
     UserPrincipal userPrincipal;
     Competition competition;
-    CompetitionCreateRequest competitionCreateRequest;
+    CompetitionCreateUpdateRequest competitionCreateUpdateRequest;
 
     private static final String userName = "someUserName";
 
@@ -56,7 +59,7 @@ public class CompetitionServiceTest {
                 .build();
 
 
-        competitionCreateRequest = CompetitionCreateRequest.builder()
+        competitionCreateUpdateRequest = CompetitionCreateUpdateRequest.builder()
             .competitionName("zawody1")
             .competitionStart(Timestamp.valueOf("2020-05-01 12:30:00").toLocalDateTime())
             .competitionEnd(Timestamp.valueOf("2020-05-02 12:30:00").toLocalDateTime())
@@ -71,7 +74,8 @@ public class CompetitionServiceTest {
         when(competitionRepository.existsCompetitionByCompetitionNameIgnoreCase(competition.getCompetitionName())).thenReturn(false);
         when(competitionRepository.save(competition)).thenReturn(competition);
 
-        ResponseEntity<?> response = competitionService.addCompetition(competitionCreateRequest, userPrincipal.getName());
+        ResponseEntity<?> response = competitionService.addCompetition(
+            competitionCreateUpdateRequest, userPrincipal.getName());
 
         verify(competitionRepository, times(1)).existsCompetitionByCompetitionNameIgnoreCase(competition.getCompetitionName());
         assertEquals(response.getStatusCode(), HttpStatus.CREATED);
@@ -85,10 +89,11 @@ public class CompetitionServiceTest {
         when(competitionRepository.save(competition)).thenReturn(competition);
         competition.setMaxAmountOfTeams(15);
 
-        ResponseEntity<?> response = competitionService.updateCompetition(competition.getCompetitionName(),competition, userPrincipal.getName());
+        ResponseEntity<?> response = competitionService.updateCompetition(competition.getCompetitionName(),competitionCreateUpdateRequest, userPrincipal.getName());
 
         verify(verifyMethodsForServices, times(1)).shouldFindCompetition(competition.getCompetitionName());
         verify(competitionRepository, times(1)).save(competition);
+
         assertEquals(response.getStatusCode(), HttpStatus.OK);
         assertEquals(response.getBody(), competition);
     }
@@ -112,7 +117,7 @@ public class CompetitionServiceTest {
 
         ResponseStatusException exception = assertThrows(
                 ResponseStatusException.class,
-                () -> competitionService.updateCompetition(competition.getCompetitionName(),competition, userPrincipal.getName()),
+                () -> competitionService.updateCompetition(competition.getCompetitionName(),competitionCreateUpdateRequest, userPrincipal.getName()),
                 "Expected doThing() to throw, but it didn't");
 
         verify(verifyMethodsForServices, times(1)).shouldFindCompetition(competition.getCompetitionName());
@@ -126,7 +131,7 @@ public class CompetitionServiceTest {
 
         ResponseStatusException exception = assertThrows(
                 ResponseStatusException.class,
-                () -> competitionService.addCompetition(competitionCreateRequest, userPrincipal.getName()),
+                () -> competitionService.addCompetition(competitionCreateUpdateRequest, userPrincipal.getName()),
                 "Expected doThing() to throw, but it didn't");
 
         verify(competitionRepository, times(1)).existsCompetitionByCompetitionNameIgnoreCase(competition.getCompetitionName());
@@ -145,7 +150,7 @@ public class CompetitionServiceTest {
 
         ResponseStatusException exception = assertThrows(
                 ResponseStatusException.class,
-                () -> competitionService.updateCompetition(competition.getCompetitionName(), competition, userPrincipal.getName()),
+                () -> competitionService.updateCompetition(competition.getCompetitionName(), competitionCreateUpdateRequest, userPrincipal.getName()),
                 "Expected doThing() to throw, but it didn't");
 
         verify(verifyMethodsForServices, times(1)).shouldFindCompetition(competition.getCompetitionName());

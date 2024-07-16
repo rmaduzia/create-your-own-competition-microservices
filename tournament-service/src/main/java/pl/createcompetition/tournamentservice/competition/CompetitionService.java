@@ -17,32 +17,35 @@ public class CompetitionService {
     private final CompetitionRepository competitionRepository;
     private final GetQueryImplService<Competition,?> queryUserDetailService;
     private final VerifyMethodsForServices verifyMethodsForServices;
+    private final CompetitionMapper competitionMapper;
 
     public PagedResponseDto<?> searchCompetition(String search, PaginationInfoRequest paginationInfoRequest) {
 
         return queryUserDetailService.execute(Competition.class, search, paginationInfoRequest.getPageNumber(), paginationInfoRequest.getPageSize());
     }
 
-    public ResponseEntity<?> addCompetition(CompetitionCreateRequest competitionCreateRequest, String userName) {
+    public ResponseEntity<?> addCompetition(CompetitionCreateUpdateRequest competitionCreateUpdateRequest, String userName) {
 
         if(!competitionRepository.existsCompetitionByCompetitionNameIgnoreCase(
-            competitionCreateRequest.getCompetitionName())) {
-            Competition competition = Competition.createCompetition(competitionCreateRequest, userName);
+            competitionCreateUpdateRequest.getCompetitionName())) {
+            Competition competition = Competition.createCompetition(competitionCreateUpdateRequest, userName);
             return ResponseEntity.status(HttpStatus.CREATED).body(competitionRepository.save(competition));
         } else{
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Competition already exists. Named: " + competitionCreateRequest.getCompetitionName());
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Competition already exists. Named: " + competitionCreateUpdateRequest.getCompetitionName());
         }
     }
 
-    public ResponseEntity<?> updateCompetition(String competitionName, Competition competition, String userName) {
+    public ResponseEntity<?> updateCompetition(String competitionName, CompetitionCreateUpdateRequest competitionCreateUpdateRequest, String userName) {
 
-        if (!competition.getCompetitionName().equals(competitionName)) {
+        if (!competitionCreateUpdateRequest.getCompetitionName().equals(competitionName)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Competition Name doesn't match with Competition object");
         }
-        Competition findCompetition = verifyMethodsForServices.shouldFindCompetition(competition.getCompetitionName());
-        verifyMethodsForServices.checkIfCompetitionBelongToUser(findCompetition.getCompetitionOwner(), userName);
+        Competition foundCompetition = verifyMethodsForServices.shouldFindCompetition(competitionCreateUpdateRequest.getCompetitionName());
+        verifyMethodsForServices.checkIfCompetitionBelongToUser(foundCompetition.getCompetitionOwner(), userName);
 
-        return ResponseEntity.ok(competitionRepository.save(competition));
+        competitionMapper.updateCompetitionFromDto(competitionCreateUpdateRequest, foundCompetition);
+
+        return ResponseEntity.ok(competitionRepository.save(foundCompetition));
     }
 
     public ResponseEntity<?> deleteCompetition(String competitionName, String userName){
@@ -53,4 +56,5 @@ public class CompetitionService {
         competitionRepository.deleteById(findCompetition.getId());
         return ResponseEntity.noContent().build();
     }
+
 }

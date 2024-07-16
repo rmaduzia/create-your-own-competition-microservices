@@ -35,27 +35,19 @@ public class CompetitionController {
 
     @PostMapping
     @RolesAllowed("user")
-    public ResponseEntity<?> createCompetition(@Valid @RequestBody CompetitionCreateRequest competitionCreateRequest,
+    public ResponseEntity<?> createCompetition(@Valid @RequestBody CompetitionCreateUpdateRequest competitionCreateUpdateRequest,
                                             UserPrincipal userPrincipal) {
 
-        return competitionService.addCompetition(competitionCreateRequest, userPrincipal.getName());
-    }
-
-    @PostMapping("testing")
-    @RolesAllowed("user")
-    public String simpleget(@Valid @RequestBody CompetitionCreateRequest competition,
-        UserPrincipal userPrincipal) {
-
-        return "testing";
+        return competitionService.addCompetition(competitionCreateUpdateRequest, userPrincipal.getName());
     }
 
     @PutMapping("{competitionName}")
     @RolesAllowed("user")
-    public ResponseEntity<?> updateCompetition(@Valid @RequestBody Competition competition,
+    public ResponseEntity<?> updateCompetition(@Valid @RequestBody CompetitionCreateUpdateRequest competitionCreateUpdateRequest,
                                                UserPrincipal userPrincipal,
                                                @PathVariable String competitionName) {
 
-        return competitionService.updateCompetition(competitionName, competition, userPrincipal.getName());
+        return competitionService.updateCompetition(competitionName, competitionCreateUpdateRequest, userPrincipal.getName());
     }
 
     @DeleteMapping("{competitionName}")
