@@ -11,8 +11,10 @@ import java.sql.Timestamp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +32,10 @@ public class CompetitionServiceTest {
 
     @Mock
     CompetitionRepository competitionRepository;
-    @Mock
-    CompetitionMapper competitionMapper;
+//    @Mock
+    @Spy
+    CompetitionMapper competitionMapper = Mappers.getMapper(CompetitionMapper.class);
+
     @InjectMocks
     CompetitionService competitionService;
     @Mock
@@ -84,7 +88,7 @@ public class CompetitionServiceTest {
 
     @Test
     public void shouldUpdateCompetition() {
-        
+
         when(verifyMethodsForServices.shouldFindCompetition(competition.getCompetitionName())).thenReturn(competition);
         when(competitionRepository.save(competition)).thenReturn(competition);
         competition.setMaxAmountOfTeams(15);
@@ -95,7 +99,7 @@ public class CompetitionServiceTest {
         verify(competitionRepository, times(1)).save(competition);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
-        assertEquals(response.getBody(), competition);
+        assertEquals(response.getBody(), competitionCreateUpdateRequest);
     }
 
     @Test

@@ -45,7 +45,9 @@ public class CompetitionService {
 
         competitionMapper.updateCompetitionFromDto(competitionCreateUpdateRequest, foundCompetition);
 
-        return ResponseEntity.ok(competitionRepository.save(foundCompetition));
+        CompetitionCreateUpdateRequest savedCompetition = competitionMapper.mapCompetitionToSimpleCompetitionDto(competitionRepository.save(foundCompetition));
+
+        return ResponseEntity.ok(savedCompetition);
     }
 
     public ResponseEntity<?> deleteCompetition(String competitionName, String userName){
