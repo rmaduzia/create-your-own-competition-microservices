@@ -1,4 +1,4 @@
-package pl.createcompetition.tournamentservice.tournament.participation;
+package pl.createcompetition.tournamentservice.competition;
 
 import jakarta.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;

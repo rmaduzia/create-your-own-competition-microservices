@@ -1,4 +1,4 @@
-package pl.createcompetition.tournamentservice.tournament.participation;
+package pl.createcompetition.tournamentservice.competition;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -8,6 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.createcompetition.tournamentservice.tournament.VerifyMethodsForServices;
 import pl.createcompetition.tournamentservice.competition.Competition;
 import pl.createcompetition.tournamentservice.competition.CompetitionRepository;
+import pl.createcompetition.tournamentservice.tournament.participation.TeamDto;
 
 @AllArgsConstructor
 @Service
