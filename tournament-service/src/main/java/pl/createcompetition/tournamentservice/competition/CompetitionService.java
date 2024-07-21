@@ -53,7 +53,7 @@ public class CompetitionService {
     public ResponseEntity<?> deleteCompetition(String competitionName, String userName){
 
         Competition findCompetition = verifyMethodsForServices.shouldFindCompetition(competitionName);
-        verifyMethodsForServices.checkIfCompetitionBelongToUser(findCompetition.getCompetitionName(), userName);
+        verifyMethodsForServices.checkIfCompetitionBelongToUser(findCompetition.getCompetitionOwner(), userName);
 
         competitionRepository.deleteById(findCompetition.getId());
         return ResponseEntity.noContent().build();
