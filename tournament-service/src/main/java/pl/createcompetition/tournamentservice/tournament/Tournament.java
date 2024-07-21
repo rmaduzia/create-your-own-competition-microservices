@@ -97,22 +97,17 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
     private List<MatchInTournament> matchInTournament = new ArrayList<>();
 
     @ManyToMany
-    @JsonManagedReference
     @Builder.Default
     @JoinTable(name = "tournament_tags",
             joinColumns = @JoinColumn(name = "tournament_id", foreignKey = @ForeignKey(name = "FK_TOURNAMENT_TAGS_TOURNAMENT_ID")),
             inverseJoinColumns = @JoinColumn(name = "tag_id", foreignKey = @ForeignKey(name = "FK_TOURNAMENT_TAGS_TAG_ID")))
-    private Set<Tag> tag = new HashSet<>();
+    private Set<Tag> tags = new HashSet<>();
 
     @ManyToMany
-    @JsonManagedReference
     @Builder.Default
     @JoinTable(name = "tournament_teams",
             joinColumns = @JoinColumn(name = "tournament_id", foreignKey = @ForeignKey(name = "FK_TOURNAMENT_TEAMS_TOURNAMENT_ID")),
             inverseJoinColumns = @JoinColumn(name = "team_id", foreignKey = @ForeignKey(name = "FK_TOURNAMENT_TEAMS_TEAM_ID")))
-//    @ManyToOne
-//    @JoinColumn(name = "team_name")
-//    @JsonManagedReference
     private Set<TeamEntity> teams = new HashSet<>();
 
     public void addTeamToTournament(String teamName) {
@@ -126,7 +121,8 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
 
     @Override
     public TournamentDto map() {
-        return new TournamentDto(tournamentOwner, tournamentName, maxAmountOfTeams, city, street, street_number, tag, matchInTournament);
+        return new TournamentDto(tournamentOwner, tournamentName, maxAmountOfTeams, city, street, street_number,
+            tags, matchInTournament);
     }
 
     @Data
