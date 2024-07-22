@@ -36,7 +36,7 @@ public class TournamentController {
 
     @RolesAllowed("user")
     @PostMapping
-    public ResponseEntity<?> addTournament(@Valid @RequestBody Tournament tournament,
+    public ResponseEntity<?> addTournament(@Valid @RequestBody TournamentCreateUpdateRequest tournament,
                                            UserPrincipal userPrincipal) {
 
         return tournamentService.addTournament(tournament,userPrincipal.getName());
@@ -44,7 +44,7 @@ public class TournamentController {
 
     @RolesAllowed("user")
     @PutMapping("{tournamentName}")
-    public ResponseEntity<?> updateTournament(@Valid @RequestBody Tournament tournament,
+    public ResponseEntity<?> updateTournament(@Valid @RequestBody TournamentCreateUpdateRequest tournament,
                                               UserPrincipal userPrincipal,
                                               @PathVariable String tournamentName) {
 

@@ -2,6 +2,7 @@ package pl.createcompetition.tournamentservice.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -15,9 +16,12 @@ import java.util.TreeMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -25,6 +29,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 import pl.createcompetition.tournamentservice.tournament.Tournament;
+import pl.createcompetition.tournamentservice.tournament.TournamentCreateUpdateRequest;
+import pl.createcompetition.tournamentservice.tournament.TournamentMapper;
 import pl.createcompetition.tournamentservice.tournament.TournamentRepository;
 import pl.createcompetition.tournamentservice.tournament.TournamentService;
 import pl.createcompetition.tournamentservice.tournament.VerifyMethodsForServices;
@@ -41,10 +47,13 @@ public class TournamentServiceTest {
     TournamentService tournamentService;
     @Mock
     VerifyMethodsForServices verifyMethodsForServices;
+    @Spy
+    TournamentMapper tournamentMapper = Mappers.getMapper(TournamentMapper.class);
 
     @Mock
     UserPrincipal userPrincipal;
 
+    TournamentCreateUpdateRequest tournamentCreateUpdateRequest;
     Tournament tournament;
     TeamDto teamDto;
 
@@ -56,14 +65,22 @@ public class TournamentServiceTest {
         when(userPrincipal.getName()).thenReturn(userName);
 
         tournament = Tournament.builder()
-                .id(1L)
-                .maxAmountOfTeams(10)
-                .tournamentOwner(userName)
-                .tournamentName("Tourtnament1").build();
+            .maxAmountOfTeams(10)
+            .tournamentOwner(userName)
+            .tournamentName("Tourtnament1")
+            .isFinished(false)
+            .build();
+
+        tournamentCreateUpdateRequest = TournamentCreateUpdateRequest.builder()
+            .maxAmountOfTeams(10)
+            .tournamentOwner(userName)
+            .tournamentName("Tourtnament1")
+            .build();
 
         teamDto = TeamDto.builder()
             .teamName("someTeamName")
             .teamOwner("someTeamOwner")
+
             .build();
     }
 
@@ -73,10 +90,11 @@ public class TournamentServiceTest {
         when(tournamentRepository.existsTournamentByTournamentNameIgnoreCase(tournament.getTournamentName())).thenReturn(false);
         when(tournamentRepository.save(tournament)).thenReturn(tournament);
 
-        ResponseEntity<?> response = tournamentService.addTournament(tournament, userPrincipal.getName());
+        ResponseEntity<?> response = tournamentService.addTournament(tournamentCreateUpdateRequest, userPrincipal.getName());
 
         verify(tournamentRepository, times(1)).save(tournament);
         verify(tournamentRepository, times(1)).existsTournamentByTournamentNameIgnoreCase(tournament.getTournamentName());
+
         assertEquals(response.getStatusCode(), HttpStatus.CREATED);
         assertEquals(response.getBody(), tournament);
     }
@@ -88,7 +106,7 @@ public class TournamentServiceTest {
         when(tournamentRepository.save(tournament)).thenReturn(tournament);
 
         tournament.setMaxAmountOfTeams(15);
-        ResponseEntity<?> response = tournamentService.updateTournament(tournament.getTournamentName(), tournament, userPrincipal.getName());
+        ResponseEntity<?> response = tournamentService.updateTournament(tournament.getTournamentName(), tournamentCreateUpdateRequest, userPrincipal.getName());
 
         verify(tournamentRepository, times(1)).save(tournament);
         verify(tournamentRepository, times(1)).findByTournamentNameAndTournamentOwner(tournament.getTournamentName(), userPrincipal.getName());
@@ -113,7 +131,7 @@ public class TournamentServiceTest {
 
         ResponseStatusException exception = assertThrows(
             ResponseStatusException.class,
-                () -> tournamentService.updateTournament(tournament.getTournamentName(), tournament, userPrincipal.getName()),
+                () -> tournamentService.updateTournament(tournament.getTournamentName(), tournamentCreateUpdateRequest, userPrincipal.getName()),
                 "Expected doThing() to throw, but it didn't");
 
         verify(tournamentRepository, times(1)).findByTournamentNameAndTournamentOwner(tournament.getTournamentName(), userPrincipal.getName());
@@ -130,7 +148,7 @@ public class TournamentServiceTest {
 
         ResponseStatusException exception = assertThrows(
             ResponseStatusException.class,
-                () -> tournamentService.addTournament(tournament, userPrincipal.getName()),
+                () -> tournamentService.addTournament(tournamentCreateUpdateRequest, userPrincipal.getName()),
                 "Expected doThing() to throw, but it didn't");
 
         verify(tournamentRepository, times(1)).existsTournamentByTournamentNameIgnoreCase(tournament.getTournamentName());
@@ -149,7 +167,7 @@ public class TournamentServiceTest {
 
         ResponseStatusException exception = assertThrows(
                 ResponseStatusException.class,
-                () -> tournamentService.updateTournament(tournament.getTournamentName(), tournament, userPrincipal.getName()),
+                () -> tournamentService.updateTournament(tournament.getTournamentName(), tournamentCreateUpdateRequest, userPrincipal.getName()),
                 "Expected doThing() to throw, but it didn't");
 
         verify(tournamentRepository, times(1)).findByTournamentNameAndTournamentOwner(tournament.getTournamentName(), userPrincipal.getName());

@@ -9,7 +9,9 @@ CREATE TABLE tournaments
     tournament_owner    VARCHAR(255),
     is_finished         BOOLEAN,
     is_started          BOOLEAN,
-    tournament_start    TIMESTAMP
+    tournament_start    DATETIME,
+    tournament_end      DATETIME
+
 
 
 );

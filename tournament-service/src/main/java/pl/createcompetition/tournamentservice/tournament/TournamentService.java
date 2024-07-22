@@ -22,33 +22,37 @@ public class TournamentService {
 
     private final TournamentRepository tournamentRepository;
     private final GetQueryImplService<Tournament,?> queryUserDetailService;
+    private final TournamentMapper tournamentMapper;
 
     public PagedResponseDto<?> searchTournament(String search, PaginationInfoRequest paginationInfoRequest) {
 
         return queryUserDetailService.execute(Tournament.class, search, paginationInfoRequest.getPageNumber(), paginationInfoRequest.getPageSize());
     }
 
-    public ResponseEntity<?> addTournament(Tournament tournament, String userName) {
+    public ResponseEntity<?> addTournament(TournamentCreateUpdateRequest tournamentCreateUpdateRequest, String userName) {
 
-        if (!tournamentRepository.existsTournamentByTournamentNameIgnoreCase(tournament.getTournamentName())) {
-            tournament.setTournamentOwner(userName);
+        if (!tournamentRepository.existsTournamentByTournamentNameIgnoreCase(tournamentCreateUpdateRequest.getTournamentName())) {
+
+            Tournament tournament = Tournament.createTournamentFromDto(tournamentCreateUpdateRequest, userName);
+
             return ResponseEntity.status(HttpStatus.CREATED).body(tournamentRepository.save(tournament));
         } else {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Tournament named: " + tournament.getTournamentName() + " already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Tournament named: " + tournamentCreateUpdateRequest.getTournamentName() + " already exists");
 
         }
     }
 
-    public ResponseEntity<?> updateTournament(String tournamentName, Tournament tournament, String userName) {
+    public ResponseEntity<?> updateTournament(String tournamentName, TournamentCreateUpdateRequest tournamentCreateUpdateRequest, String userName) {
 
-        if (!tournament.getTournamentName().equals(tournamentName)) {
+        if (!tournamentCreateUpdateRequest.getTournamentName().equals(tournamentName)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tean Name doesn't match with Team object");
         }
 
-        Tournament foundTournament = shouldFindTournament(tournament.getTournamentName(), userName);
+        Tournament foundTournament = shouldFindTournament(tournamentCreateUpdateRequest.getTournamentName(), userName);
         checkIfTournamentBelongToUser(foundTournament, userName);
+        tournamentMapper.updateTournamentFromDto(tournamentCreateUpdateRequest, foundTournament);
 
-        return ResponseEntity.ok(tournamentRepository.save(tournament));
+        return ResponseEntity.ok(tournamentRepository.save(foundTournament));
     }
 
     public ResponseEntity<?> deleteTournament(String tournamentName, String userName) {

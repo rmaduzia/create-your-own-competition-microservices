@@ -2,13 +2,13 @@ package pl.createcompetition.tournamentservice.tournament;
 
 import static pl.createcompetition.tournamentservice.config.AppConstants.MAX_AMOUNT_OF_TEAMS_IN_TOURNAMENT;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,7 +31,8 @@ import pl.createcompetition.tournamentservice.model.Tag;
 import pl.createcompetition.tournamentservice.model.TeamEntity;
 import pl.createcompetition.tournamentservice.query.QueryDtoInterface;
 
-@EqualsAndHashCode(of="id")
+//@EqualsAndHashCode(of = {"id", "tournamentName"})
+@EqualsAndHashCode(of = {"id"})
 @Table(name = "tournaments")
 @Entity
 @Getter
@@ -49,7 +50,7 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
     private String tournamentOwner;
 
     @NotBlank(message = "Tournament name can't be empty")
-    @Pattern(regexp="^[a-zA-Z]*$", message = "Tournament name can't contain number")
+    @Pattern(regexp="^[^0-9]*$", message = "Tournament name can't contain number")
     private String tournamentName;
 
     @Range(min = 2, max =MAX_AMOUNT_OF_TEAMS_IN_TOURNAMENT, message = "Number of teams have to be beetwen 2 and 30")
@@ -60,16 +61,21 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
     private String city;
 
     @NotBlank(message = "Street can't be empty")
-    @Pattern(regexp="^[a-zA-Z]*$", message = "Street name can't contain number")
+    @Pattern(regexp="^[^0-9]*$", message = "Street name can't contain number")
     private String street;
 
     @Min(value = 1, message = "Street number can't be lower then 1")
-    private int street_number;
+    private int streetNumber;
 
     @Column(columnDefinition = "DATE")
     @NotBlank(message = "Pick time start of tournament")
     @Future
     private LocalDateTime tournamentStart;
+
+    @Column(columnDefinition = "DATE")
+    @NotNull(message = "Pick time end of competition")
+    @Future
+    private LocalDateTime tournamentEnd;
 
     private Boolean isStarted;
     private Boolean isFinished;
@@ -121,8 +127,24 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
 
     @Override
     public TournamentDto map() {
-        return new TournamentDto(tournamentOwner, tournamentName, maxAmountOfTeams, city, street, street_number,
+        return new TournamentDto(tournamentOwner, tournamentName, maxAmountOfTeams, city, street,
+            streetNumber,
             tags, matchInTournament);
+    }
+
+    public static Tournament createTournamentFromDto(TournamentCreateUpdateRequest source, String tournamentOwner) {
+        return Tournament.builder()
+            .tournamentName(source.getTournamentName())
+            .tournamentOwner(tournamentOwner)
+            .maxAmountOfTeams(source.getMaxAmountOfTeams())
+            .city(source.getCity())
+            .street(source.getStreet())
+            .streetNumber(source.getStreetNumber())
+            .tournamentStart(source.getTournamentStart())
+            .tournamentEnd(source.getTournamentEnd())
+            .isStarted(source.getIsStarted())
+            .isFinished(false)
+            .build();
     }
 
     @Data
