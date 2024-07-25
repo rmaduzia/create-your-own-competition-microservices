@@ -26,8 +26,7 @@ public class CompetitionService {
 
     public ResponseEntity<?> addCompetition(CompetitionCreateUpdateRequest competitionCreateUpdateRequest, String userName) {
 
-        if(!competitionRepository.existsCompetitionByCompetitionNameIgnoreCase(
-            competitionCreateUpdateRequest.getCompetitionName())) {
+        if(!competitionRepository.existsCompetitionByCompetitionNameIgnoreCase(competitionCreateUpdateRequest.getCompetitionName())) {
             Competition competition = Competition.createCompetition(competitionCreateUpdateRequest, userName);
             return ResponseEntity.status(HttpStatus.CREATED).body(competitionRepository.save(competition));
         } else{
