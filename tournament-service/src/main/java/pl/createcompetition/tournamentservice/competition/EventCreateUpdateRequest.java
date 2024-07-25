@@ -19,7 +19,7 @@ import org.hibernate.validator.constraints.Range;
 @NoArgsConstructor
 @Data
 @Builder
-public class CompetitionCreateUpdateRequest {
+public class EventCreateUpdateRequest {
 
     @Column(unique = true)
     @NotBlank(message = "Competition can't be empty")

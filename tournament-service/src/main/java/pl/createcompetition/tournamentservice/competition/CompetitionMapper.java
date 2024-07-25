@@ -9,10 +9,10 @@ import org.mapstruct.ReportingPolicy;
 public interface CompetitionMapper {
 
     @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
-    void updateCompetitionFromDto(CompetitionCreateUpdateRequest source, @MappingTarget Competition target);
+    void updateCompetitionFromDto(EventCreateUpdateRequest source, @MappingTarget Competition target);
 
     @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
-    CompetitionCreateUpdateRequest mapCompetitionToSimpleCompetitionDto(Competition source);
+    EventCreateUpdateRequest mapCompetitionToSimpleCompetitionDto(Competition source);
 
 
 }

@@ -120,7 +120,7 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
             tags, matchInCompetition);
     }
 
-    public static Competition createCompetition(CompetitionCreateUpdateRequest request, String competitionOwner) {
+    public static Competition createCompetition(EventCreateUpdateRequest request, String competitionOwner) {
 
         return Competition.builder()
             .eventName(request.getEventName())
