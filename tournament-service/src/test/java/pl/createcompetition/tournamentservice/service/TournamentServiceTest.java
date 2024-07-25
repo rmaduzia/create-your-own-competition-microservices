@@ -73,7 +73,6 @@ public class TournamentServiceTest {
 
         tournamentCreateUpdateRequest = TournamentCreateUpdateRequest.builder()
             .maxAmountOfTeams(10)
-            .tournamentOwner(userName)
             .tournamentName("Tourtnament1")
             .build();
 

@@ -6,8 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.createcompetition.tournamentservice.tournament.VerifyMethodsForServices;
-import pl.createcompetition.tournamentservice.competition.Competition;
-import pl.createcompetition.tournamentservice.competition.CompetitionRepository;
 import pl.createcompetition.tournamentservice.tournament.participation.TeamDto;
 
 @AllArgsConstructor
@@ -75,7 +73,7 @@ public class CompetitionTeamService {
     }
 
     private Competition getCompetition(String competitionName) {
-        return competitionRepository.findByCompetitionName(competitionName).orElseThrow(() ->
+        return competitionRepository.findByEventName(competitionName).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND ,"Competition not exists, Name: " +competitionName));
     }
 }

@@ -21,9 +21,6 @@ import org.hibernate.validator.constraints.Range;
 @Builder
 public class TournamentCreateUpdateRequest {
 
-    @NotBlank(message = "Tournament owner can't be empty")
-    private String tournamentOwner;
-
     @NotBlank(message = "Tournament name can't be empty")
     @Pattern(regexp="^[^0-9]*$", message = "Tournament name can't contain number")
     private String tournamentName;
@@ -43,7 +40,7 @@ public class TournamentCreateUpdateRequest {
     private int streetNumber;
 
     @Column(columnDefinition = "DATE")
-    @NotBlank(message = "Pick time start of tournament")
+    @NotNull(message = "Pick time start of tournament")
     @Future
     private LocalDateTime tournamentStart;
 

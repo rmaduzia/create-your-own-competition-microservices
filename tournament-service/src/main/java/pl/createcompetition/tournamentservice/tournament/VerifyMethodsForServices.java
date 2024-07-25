@@ -26,7 +26,7 @@ public class VerifyMethodsForServices {
     }
 
     public Competition shouldFindCompetition(String competitionName) {
-        return competitionRepository.findByCompetitionName(competitionName).orElseThrow(() ->
+        return competitionRepository.findByEventName(competitionName).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Competition not exists, Name: " +competitionName));
     }
 

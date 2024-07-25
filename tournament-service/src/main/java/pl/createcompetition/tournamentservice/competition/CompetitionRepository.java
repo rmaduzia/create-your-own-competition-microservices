@@ -7,8 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CompetitionRepository extends JpaRepository<Competition, Long>{
 
-    Optional<Competition> findByCompetitionName(String competitionName);
-    boolean existsCompetitionByCompetitionNameIgnoreCase(String competitionName);
-    Optional<Competition> findByCompetitionNameAndCompetitionOwner(String competitionName, String competitionOwner);
-    
+    Optional<Competition> findByEventName(String eventName);
+    boolean existsCompetitionByEventNameIgnoreCase(String eventName);
+
 }

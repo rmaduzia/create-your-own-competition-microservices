@@ -27,7 +27,7 @@ import pl.createcompetition.tournamentservice.model.Tag;
 import pl.createcompetition.tournamentservice.model.TeamEntity;
 import pl.createcompetition.tournamentservice.query.QueryDtoInterface;
 
-@EqualsAndHashCode(of = {"id", "competitionName"})
+@EqualsAndHashCode(of = {"id", "eventName"})
 @Table(name = "competitions")
 @Entity
 @Getter
@@ -44,11 +44,11 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
     @Column(unique = true)
     @NotBlank(message = "Competition can't be empty")
     @Pattern(regexp="^[^0-9]*$", message = "Competition name can't contain number")
-    private String competitionName;
+    private String eventName;
 
     @NotBlank(message = "Competition owner can't be empty")
     @Pattern(regexp="^[^0-9]*$", message = "Competition owner name can't contain number")
-    private String competitionOwner;
+    private String eventOwner;
 
     @NotBlank(message = "City can't be empty")
     @Pattern(regexp="^[^0-9]*$", message = "City name can't contain number")
@@ -56,7 +56,7 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
 
     @NotBlank(message = "Street can't be empty")
     @Pattern(regexp="^[^0-9]*$", message = "Street name can't contain number")
-    private String street;
+    private String streetName;
 
     @Min(value = 1, message = "Street number can't be lower then 1")
     private int streetNumber;
@@ -67,12 +67,12 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
     @Column(columnDefinition = "DATE")
     @NotNull(message = "Pick time start of competition")
     @Future
-    private LocalDateTime competitionStart;
+    private LocalDateTime eventStartDate;
 
     @Column(columnDefinition = "DATE")
     @NotNull(message = "Pick time end of competition")
     @Future
-    private LocalDateTime competitionEnd;
+    private LocalDateTime eventEndDate;
 
     private Boolean isOpenRecruitment;
 
@@ -115,21 +115,22 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
 
     @Override
     public CompetitionDto map() {
-        return new CompetitionDto(competitionName, city, street, streetNumber, competitionStart, competitionEnd, isOpenRecruitment, teams,
+        return new CompetitionDto(eventName, city, streetName, streetNumber, eventStartDate,
+            eventEndDate, isOpenRecruitment, teams,
             tags, matchInCompetition);
     }
 
     public static Competition createCompetition(CompetitionCreateUpdateRequest request, String competitionOwner) {
 
         return Competition.builder()
-            .competitionName(request.getCompetitionName())
-            .competitionOwner(competitionOwner)
+            .eventName(request.getEventName())
+            .eventOwner(competitionOwner)
             .city(request.getCity())
-            .street(request.getStreet())
+            .streetName(request.getStreetName())
             .streetNumber(request.getStreetNumber())
             .maxAmountOfTeams(request.getMaxAmountOfTeams())
-            .competitionStart(request.getCompetitionStart())
-            .competitionEnd(request.getCompetitionEnd())
+            .eventStartDate(request.getEventStartDate())
+            .eventEndDate(request.getEventEndDate())
             .isOpenRecruitment(request.getIsOpenRecruitment())
             .build();
     }
@@ -138,12 +139,12 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
     @Data
     @AllArgsConstructor
     public static class CompetitionDto {
-        private String competitionName;
+        private String eventName;
         private String city;
-        private String street;
-        private int street_number;
-        private LocalDateTime competitionStart;
-        private LocalDateTime competitionEnd;
+        private String streetName;
+        private int streetNumber;
+        private LocalDateTime eventStartDate;
+        private LocalDateTime eventEndDate;
         private Boolean isOpenRecruitment;
         private Set<TeamEntity> teams;
         private Set<Tag> tag;

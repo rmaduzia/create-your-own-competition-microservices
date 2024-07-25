@@ -26,21 +26,21 @@ public class CompetitionService {
 
     public ResponseEntity<?> addCompetition(CompetitionCreateUpdateRequest competitionCreateUpdateRequest, String userName) {
 
-        if(!competitionRepository.existsCompetitionByCompetitionNameIgnoreCase(competitionCreateUpdateRequest.getCompetitionName())) {
+        if(!competitionRepository.existsCompetitionByEventNameIgnoreCase(competitionCreateUpdateRequest.getEventName())) {
             Competition competition = Competition.createCompetition(competitionCreateUpdateRequest, userName);
             return ResponseEntity.status(HttpStatus.CREATED).body(competitionRepository.save(competition));
         } else{
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Competition already exists. Named: " + competitionCreateUpdateRequest.getCompetitionName());
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Competition already exists. Named: " + competitionCreateUpdateRequest.getEventName());
         }
     }
 
     public ResponseEntity<?> updateCompetition(String competitionName, CompetitionCreateUpdateRequest competitionCreateUpdateRequest, String userName) {
 
-        if (!competitionCreateUpdateRequest.getCompetitionName().equals(competitionName)) {
+        if (!competitionCreateUpdateRequest.getEventName().equals(competitionName)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Competition Name doesn't match with Competition object");
         }
-        Competition foundCompetition = verifyMethodsForServices.shouldFindCompetition(competitionCreateUpdateRequest.getCompetitionName());
-        verifyMethodsForServices.checkIfCompetitionBelongToUser(foundCompetition.getCompetitionOwner(), userName);
+        Competition foundCompetition = verifyMethodsForServices.shouldFindCompetition(competitionCreateUpdateRequest.getEventName());
+        verifyMethodsForServices.checkIfCompetitionBelongToUser(foundCompetition.getEventOwner(), userName);
 
         competitionMapper.updateCompetitionFromDto(competitionCreateUpdateRequest, foundCompetition);
 
@@ -52,7 +52,7 @@ public class CompetitionService {
     public ResponseEntity<?> deleteCompetition(String competitionName, String userName){
 
         Competition findCompetition = verifyMethodsForServices.shouldFindCompetition(competitionName);
-        verifyMethodsForServices.checkIfCompetitionBelongToUser(findCompetition.getCompetitionOwner(), userName);
+        verifyMethodsForServices.checkIfCompetitionBelongToUser(findCompetition.getEventOwner(), userName);
 
         competitionRepository.deleteById(findCompetition.getId());
         return ResponseEntity.noContent().build();

@@ -53,10 +53,10 @@ public class MatchInCompetitionServiceTest {
 
         competition = Competition.builder()
                 .id(1L)
-                .competitionOwner(userName)
-                .competitionName("zawody1")
-                .competitionStart(LocalDateTime.now())
-                .competitionEnd(LocalDateTime.now())
+                .eventOwner(userName)
+                .eventName("zawody1")
+                .eventStartDate(LocalDateTime.now())
+                .eventEndDate(LocalDateTime.now())
                 .city("Gdynia")
                 .maxAmountOfTeams(10)
                 .build();
@@ -83,12 +83,12 @@ public class MatchInCompetitionServiceTest {
     @Test
     public void shouldAddMatchInCompetition() {
 
-        lenient().when(verifyMethodsForServices.shouldFindCompetition(competition.getCompetitionName())).thenReturn(competition);
+        lenient().when(verifyMethodsForServices.shouldFindCompetition(competition.getEventName())).thenReturn(competition);
         when(matchInCompetitionRepository.save(matchInCompetition)).thenReturn(matchInCompetition);
 
-        ResponseEntity<?> response = matchInCompetitionService.addMatchInCompetition(matchInCompetition, competition.getCompetitionName(), userPrincipal);
+        ResponseEntity<?> response = matchInCompetitionService.addMatchInCompetition(matchInCompetition, competition.getEventName(), userPrincipal);
 
-        verify(verifyMethodsForServices, times(1)).shouldFindCompetition(competition.getCompetitionName());
+        verify(verifyMethodsForServices, times(1)).shouldFindCompetition(competition.getEventName());
         verify(matchInCompetitionRepository, times(1)).save(matchInCompetition);
 
         assertEquals(response.getStatusCode(), HttpStatus.CREATED);
@@ -99,7 +99,7 @@ public class MatchInCompetitionServiceTest {
     public void shouldUpdateMatchInCompetition() {
 
         when(matchInCompetitionRepository.findById(competition.getId())).thenReturn(java.util.Optional.of(matchInCompetition));
-        lenient().when(verifyMethodsForServices.shouldFindCompetition(competition.getCompetitionName())).thenReturn(competition);
+        lenient().when(verifyMethodsForServices.shouldFindCompetition(competition.getEventName())).thenReturn(competition);
         when(matchInCompetitionRepository.save(matchInCompetition)).thenReturn(matchInCompetition);
 
         matchInCompetition.setIsMatchWasPlayed(true);
@@ -107,7 +107,7 @@ public class MatchInCompetitionServiceTest {
         ResponseEntity<?> response = matchInCompetitionService.updateMatchInCompetition(matchInCompetition, matchInCompetition.getId(), userPrincipal);
 
         verify(matchInCompetitionRepository, times(1)).findById(matchInCompetition.getId());
-        verify(verifyMethodsForServices, times(1)).shouldFindCompetition(competition.getCompetitionName());
+        verify(verifyMethodsForServices, times(1)).shouldFindCompetition(competition.getEventName());
         verify(matchInCompetitionRepository, times(1)).save(matchInCompetition);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
@@ -132,7 +132,7 @@ public class MatchInCompetitionServiceTest {
         matchInCompetition.setIsMatchWasPlayed(false);
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class,
-                () -> matchInCompetitionService.addMatchInCompetition(matchInCompetition, competition.getCompetitionName(), userPrincipal),
+                () -> matchInCompetitionService.addMatchInCompetition(matchInCompetition, competition.getEventName(), userPrincipal),
                 "Expected doThing() to throw, but it didn't");
 
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
@@ -143,14 +143,14 @@ public class MatchInCompetitionServiceTest {
     @Test
     public void shouldThrowExceptionTeamNotParticipatingInCompetition() {
 
-        when(verifyMethodsForServices.shouldFindCompetition(competition.getCompetitionName())).thenReturn(competition);
+        when(verifyMethodsForServices.shouldFindCompetition(competition.getEventName())).thenReturn(competition);
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class,
-                () -> matchInCompetitionService.addMatchInCompetition(otherMatchInCompetition, competition.getCompetitionName(), userPrincipal),
+                () -> matchInCompetitionService.addMatchInCompetition(otherMatchInCompetition, competition.getEventName(), userPrincipal),
                 "Expected doThing() to throw, but it didn't");
 
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
-        assertEquals("Match are not part of competition named: "+competition.getCompetitionName(), exception.getReason());
+        assertEquals("Match are not part of competition named: "+competition.getEventName(), exception.getReason());
 
     }
 
@@ -170,7 +170,7 @@ public class MatchInCompetitionServiceTest {
     public void shouldThrowExceptionThatCompetititonNotBelongToUser() {
 
         when(matchInCompetitionRepository.findById(competition.getId())).thenReturn(java.util.Optional.of(matchInCompetition));
-        competition.setCompetitionOwner("OtherOwner");
+        competition.setEventOwner("OtherOwner");
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class,
                 () -> matchInCompetitionService.deleteMatchInCompetition(matchInCompetition.getId(), userPrincipal),

@@ -68,7 +68,7 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
     private int streetNumber;
 
     @Column(columnDefinition = "DATE")
-    @NotBlank(message = "Pick time start of tournament")
+    @NotNull(message = "Pick time start of tournament")
     @Future
     private LocalDateTime tournamentStart;
 

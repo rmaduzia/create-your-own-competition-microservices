@@ -38,7 +38,7 @@ public class MatchInCompetitionService {
 
         matchInCompetition.addMatchToCompetition(foundCompetition);
 
-        verifyMethodsForServices.checkIfCompetitionBelongToUser(foundCompetition.getCompetitionName(), userPrincipal.getName());
+        verifyMethodsForServices.checkIfCompetitionBelongToUser(foundCompetition.getEventName(), userPrincipal.getName());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(matchInCompetitionRepository.save(matchInCompetition));
     }
@@ -47,11 +47,11 @@ public class MatchInCompetitionService {
 
         checkIfWinnerTeamHasNotBeenApprovedBeforeMatchStarted(matchInCompetition);
         MatchInCompetition foundMatch = findMatch(matchId);
-        Competition foundCompetition = verifyMethodsForServices.shouldFindCompetition(matchInCompetition.getCompetition().getCompetitionName());
+        Competition foundCompetition = verifyMethodsForServices.shouldFindCompetition(matchInCompetition.getCompetition().getEventName());
 
         checkIfCompetitionBelongToUser(foundMatch, userPrincipal);
         checkIfTeamParticipatingInCompetition(matchInCompetition, foundCompetition);
-        verifyMethodsForServices.checkIfCompetitionBelongToUser(foundCompetition.getCompetitionName(), userPrincipal.getName());
+        verifyMethodsForServices.checkIfCompetitionBelongToUser(foundCompetition.getEventName(), userPrincipal.getName());
 
         return ResponseEntity.ok(matchInCompetitionRepository.save(matchInCompetition));
     }
@@ -89,7 +89,7 @@ public class MatchInCompetitionService {
     public ResponseEntity<?> closeMatch(Long matchId, UserPrincipal userPrincipal) {
 
         MatchInCompetition foundMatch = findMatch(matchId);
-        verifyMethodsForServices.shouldFindCompetition(foundMatch.getCompetition().getCompetitionName());
+        verifyMethodsForServices.shouldFindCompetition(foundMatch.getCompetition().getEventName());
 
         checkIfCompetitionBelongToUser(foundMatch, userPrincipal);
         foundMatch.setIsClosed(true);
@@ -108,13 +108,13 @@ public class MatchInCompetitionService {
 
 
     private void checkIfCompetitionByNameBelongToUser(String competitionName, Competition competition) {
-        if (!competition.getCompetitionName().equals(competitionName)) {
+        if (!competition.getEventName().equals(competitionName)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST ,"Competition don't belong to you");
         }
     }
 
     private void checkIfCompetitionBelongToUser(MatchInCompetition matchInCompetition, UserPrincipal userPrincipal) {
-        if (!matchInCompetition.getCompetition().getCompetitionOwner().equals(userPrincipal.getName())) {
+        if (!matchInCompetition.getCompetition().getEventOwner().equals(userPrincipal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Competition don't belong to you");
         }
     }
@@ -126,7 +126,7 @@ public class MatchInCompetitionService {
 
     private void checkIfTeamParticipatingInCompetition(MatchInCompetition matchInCompetition, Competition competition) {
         if (!competition.getMatchInCompetition().contains(matchInCompetition)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Match are not part of competition named: " + competition.getCompetitionName());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Match are not part of competition named: " + competition.getEventName());
         }
     }
 

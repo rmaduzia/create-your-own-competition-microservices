@@ -120,14 +120,14 @@ public class CompetitionControllerTests {
 
         Competition createdCompetition = response.getBody().as(Competition.class);
 
-        assertEquals(competitionCreateUpdateRequest.getCompetitionName(), createdCompetition.getCompetitionName());
-        assertEquals(mainUserName, createdCompetition.getCompetitionOwner());
+        assertEquals(competitionCreateUpdateRequest.getEventName(), createdCompetition.getEventName());
+        assertEquals(mainUserName, createdCompetition.getEventOwner());
         assertEquals(competitionCreateUpdateRequest.getCity(), createdCompetition.getCity());
-        assertEquals(competitionCreateUpdateRequest.getStreet(), createdCompetition.getStreet());
+        assertEquals(competitionCreateUpdateRequest.getStreetName(), createdCompetition.getStreetName());
         assertEquals(competitionCreateUpdateRequest.getStreetNumber(), createdCompetition.getStreetNumber());
         assertEquals(competitionCreateUpdateRequest.getMaxAmountOfTeams(), createdCompetition.getMaxAmountOfTeams());
-        assertEquals(competitionCreateUpdateRequest.getCompetitionStart(), createdCompetition.getCompetitionStart());
-        assertEquals(competitionCreateUpdateRequest.getCompetitionEnd(), createdCompetition.getCompetitionEnd());
+        assertEquals(competitionCreateUpdateRequest.getEventStartDate(), createdCompetition.getEventStartDate());
+        assertEquals(competitionCreateUpdateRequest.getEventEndDate(), createdCompetition.getEventEndDate());
         assertEquals(competitionCreateUpdateRequest.getIsOpenRecruitment(), createdCompetition.getIsOpenRecruitment());
         assertTrue(createdCompetition.getTags().isEmpty());
         assertTrue(createdCompetition.getTeams().isEmpty());
@@ -148,7 +148,7 @@ public class CompetitionControllerTests {
             .post("competition");
 
         assertEquals(HttpStatus.CONFLICT.value(), response.getStatusCode());
-        assertEquals("Competition already exists. Named: " + competitionCreateUpdateRequest.getCompetitionName(),
+        assertEquals("Competition already exists. Named: " + competitionCreateUpdateRequest.getEventName(),
             response.jsonPath().getString("message"));
     }
 
@@ -166,7 +166,7 @@ public class CompetitionControllerTests {
         CompetitionCreateUpdateRequest updateRequest = competitionMapper.mapCompetitionToSimpleCompetitionDto(competition);
 
         updateRequest.setCity(updatedCityName);
-        updateRequest.setStreet(updatedStreet);
+        updateRequest.setStreetName(updatedStreet);
         updateRequest.setStreetNumber(updatedStreetNumber);
         updateRequest.setMaxAmountOfTeams(maxAmountOfTeams);
         updateRequest.setIsOpenRecruitment(closeRecruitment);
@@ -177,17 +177,17 @@ public class CompetitionControllerTests {
             .contentType("application/json")
             .body(updateRequest)
             .when()
-            .put("competition/" + updateRequest.getCompetitionName());
+            .put("competition/" + updateRequest.getEventName());
 
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
 
         CompetitionCreateUpdateRequest updatedCompetition = response.getBody().as(CompetitionCreateUpdateRequest.class);
 
-        assertEquals(updateRequest.getCompetitionName(), updatedCompetition.getCompetitionName());
-        assertEquals(updateRequest.getCompetitionStart(), updatedCompetition.getCompetitionStart());
-        assertEquals(updateRequest.getCompetitionEnd(), updatedCompetition.getCompetitionEnd());
+        assertEquals(updateRequest.getEventName(), updatedCompetition.getEventName());
+        assertEquals(updateRequest.getEventStartDate(), updatedCompetition.getEventStartDate());
+        assertEquals(updateRequest.getEventEndDate(), updatedCompetition.getEventEndDate());
         assertEquals(updateRequest.getCity(), updatedCompetition.getCity());
-        assertEquals(updateRequest.getStreet(), updatedCompetition.getStreet());
+        assertEquals(updateRequest.getStreetName(), updatedCompetition.getStreetName());
         assertEquals(updateRequest.getStreetNumber(), updatedCompetition.getStreetNumber());
         assertEquals(updateRequest.getMaxAmountOfTeams(), updatedCompetition.getMaxAmountOfTeams());
         assertEquals(updateRequest.getIsOpenRecruitment(), updatedCompetition.getIsOpenRecruitment());
@@ -215,7 +215,7 @@ public class CompetitionControllerTests {
         CompetitionCreateUpdateRequest competitionCreateUpdateRequest = getcompetitionCreateUpdateRequest();
         String invalidCompetitionName = "different name";
 
-        competitionCreateUpdateRequest.setCompetitionName(invalidCompetitionName);
+        competitionCreateUpdateRequest.setEventName(invalidCompetitionName);
 
         Response response = given().header("Authorization", "Bearer " + userToken)
             .contentType("application/json")
@@ -238,7 +238,7 @@ public class CompetitionControllerTests {
             .contentType("application/json")
             .body(competitionCreateUpdateRequest)
             .when()
-            .put("competition/" + competitionCreateUpdateRequest.getCompetitionName());
+            .put("competition/" + competitionCreateUpdateRequest.getEventName());
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode());
         assertEquals("You are not owner of this Competition", response.jsonPath().getString("message"));
@@ -252,13 +252,13 @@ public class CompetitionControllerTests {
         CompetitionCreateUpdateRequest competitionCreateUpdateRequest = getcompetitionCreateUpdateRequest();
         String competitionNameWhichNotExists = "someWrongCompetitionName";
 
-        competitionCreateUpdateRequest.setCompetitionName(competitionNameWhichNotExists);
+        competitionCreateUpdateRequest.setEventName(competitionNameWhichNotExists);
 
         Response response = given().header("Authorization", "Bearer " + userToken)
             .contentType("application/json")
             .body(competitionCreateUpdateRequest)
             .when()
-            .put("competition/" + competitionCreateUpdateRequest.getCompetitionName());
+            .put("competition/" + competitionCreateUpdateRequest.getEventName());
 
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
         assertEquals("Competition not exists, Name: " + competitionNameWhichNotExists, response.jsonPath().getString("message"));
@@ -268,29 +268,29 @@ public class CompetitionControllerTests {
     void shouldDeleteCompetition() {
 
         Competition competition = getCompetition();
-        competition.setCompetitionOwner(mainUserName);
+        competition.setEventOwner(mainUserName);
         competitionRepository.save(competition);
 
         Response response = given().header("Authorization", "Bearer " + userToken)
             .contentType("application/json")
-            .pathParam("competitionName" , competition.getCompetitionName())
+            .pathParam("competitionName" , competition.getEventName())
             .delete("competition/{competitionName}");
 
         assertEquals(204, response.getStatusCode());
-        assertEquals(Optional.empty(), competitionRepository.findByCompetitionName(competition.getCompetitionName()));
+        assertEquals(Optional.empty(), competitionRepository.findByEventName(competition.getEventName()));
     }
 
     @Test
     void shouldThrowErrorThatCompetitionDoesNotBelongToUserWhenDeleteCompetition() {
 
         Competition competition = getCompetition();
-        competition.setCompetitionOwner("someOtherOwner");
+        competition.setEventOwner("someOtherOwner");
 
         competitionRepository.save(competition);
 
         Response response = given().header("Authorization", "Bearer " + userToken)
             .contentType("application/json")
-            .pathParam("competitionName" , competition.getCompetitionName())
+            .pathParam("competitionName" , competition.getEventName())
             .delete("competition/{competitionName}");
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode());
@@ -319,7 +319,7 @@ public class CompetitionControllerTests {
 
     public void saveCompetitionWithDifferentOwner() {
         Competition competition = getCompetition();
-        competition.setCompetitionOwner("someOtherOwner");
+        competition.setEventOwner("someOtherOwner");
 
         competitionRepository.save(competition);
     }
@@ -335,12 +335,12 @@ public class CompetitionControllerTests {
         boolean openRecruitment = true;
 
         return Competition.builder()
-            .competitionName(competitionName)
-            .competitionOwner(mainUserName)
-            .competitionStart(startDate)
-            .competitionEnd(endDate)
+            .eventName(competitionName)
+            .eventOwner(mainUserName)
+            .eventStartDate(startDate)
+            .eventEndDate(endDate)
             .city(city)
-            .street(street)
+            .streetName(street)
             .streetNumber(streetNumber)
             .maxAmountOfTeams(maxAmountOfTeams)
             .isOpenRecruitment(openRecruitment)
@@ -359,11 +359,11 @@ public class CompetitionControllerTests {
         boolean isRecruitmentOpen = true;
 
         return CompetitionCreateUpdateRequest.builder()
-            .competitionName(competitionName)
-            .competitionStart(startDate)
-            .competitionEnd(endDate)
+            .eventName(competitionName)
+            .eventStartDate(startDate)
+            .eventEndDate(endDate)
             .city(city)
-            .street(street)
+            .streetName(street)
             .streetNumber(streetNumber)
             .maxAmountOfTeams(maxAmountOfTeams)
             .isOpenRecruitment(isRecruitmentOpen)

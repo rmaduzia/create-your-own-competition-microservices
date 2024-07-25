@@ -23,7 +23,7 @@ public class CompetitionCreateUpdateRequest {
 
     @Column(unique = true)
     @NotBlank(message = "Competition can't be empty")
-    private String competitionName;
+    private String eventName;
 
     @NotBlank(message = "City can't be empty")
     @Pattern(regexp="^[^0-9]*$", message = "City name can't contain number")
@@ -31,7 +31,7 @@ public class CompetitionCreateUpdateRequest {
 
     @NotBlank(message = "Street can't be empty")
     @Pattern(regexp="^[^0-9]*$", message = "Street name can't contain number")
-    private String street;
+    private String streetName;
 
     @Min(value = 1, message = "Street number can't be lower then 1")
     private int streetNumber;
@@ -42,12 +42,12 @@ public class CompetitionCreateUpdateRequest {
     @Column(columnDefinition = "DATE")
     @NotNull(message = "Pick time start of competition")
     @Future
-    private LocalDateTime competitionStart;
+    private LocalDateTime eventStartDate;
 
     @Column(columnDefinition = "DATE")
     @NotNull(message = "Pick time end of competition")
     @Future
-    private LocalDateTime competitionEnd;
+    private LocalDateTime eventEndDate;
 
     private Boolean isOpenRecruitment;
 

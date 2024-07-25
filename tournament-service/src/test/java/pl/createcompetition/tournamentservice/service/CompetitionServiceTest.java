@@ -54,19 +54,19 @@ public class CompetitionServiceTest {
         when(userPrincipal.getName()).thenReturn(userName);
 
         competition = Competition.builder()
-                .competitionOwner("test@mail.com")
-                .competitionName("zawody1")
-                .competitionStart(Timestamp.valueOf("2020-05-01 12:30:00").toLocalDateTime())
-                .competitionEnd(Timestamp.valueOf("2020-05-02 12:30:00").toLocalDateTime())
+                .eventOwner("test@mail.com")
+                .eventName("zawody1")
+                .eventStartDate(Timestamp.valueOf("2020-05-01 12:30:00").toLocalDateTime())
+                .eventEndDate(Timestamp.valueOf("2020-05-02 12:30:00").toLocalDateTime())
                 .city("Gdynia")
                 .maxAmountOfTeams(10)
                 .build();
 
 
         competitionCreateUpdateRequest = CompetitionCreateUpdateRequest.builder()
-            .competitionName("zawody1")
-            .competitionStart(Timestamp.valueOf("2020-05-01 12:30:00").toLocalDateTime())
-            .competitionEnd(Timestamp.valueOf("2020-05-02 12:30:00").toLocalDateTime())
+            .eventName("zawody1")
+            .eventStartDate(Timestamp.valueOf("2020-05-01 12:30:00").toLocalDateTime())
+            .eventEndDate(Timestamp.valueOf("2020-05-02 12:30:00").toLocalDateTime())
             .city("Gdynia")
             .maxAmountOfTeams(10)
             .build();
@@ -75,13 +75,13 @@ public class CompetitionServiceTest {
     @Test
     public void shouldAddCompetition() {
 
-        when(competitionRepository.existsCompetitionByCompetitionNameIgnoreCase(competition.getCompetitionName())).thenReturn(false);
+        when(competitionRepository.existsCompetitionByEventNameIgnoreCase(competition.getEventName())).thenReturn(false);
         when(competitionRepository.save(competition)).thenReturn(competition);
 
         ResponseEntity<?> response = competitionService.addCompetition(
             competitionCreateUpdateRequest, userPrincipal.getName());
 
-        verify(competitionRepository, times(1)).existsCompetitionByCompetitionNameIgnoreCase(competition.getCompetitionName());
+        verify(competitionRepository, times(1)).existsCompetitionByEventNameIgnoreCase(competition.getEventName());
         assertEquals(response.getStatusCode(), HttpStatus.CREATED);
         assertEquals(competition, response.getBody());
     }
@@ -89,13 +89,13 @@ public class CompetitionServiceTest {
     @Test
     public void shouldUpdateCompetition() {
 
-        when(verifyMethodsForServices.shouldFindCompetition(competition.getCompetitionName())).thenReturn(competition);
+        when(verifyMethodsForServices.shouldFindCompetition(competition.getEventName())).thenReturn(competition);
         when(competitionRepository.save(competition)).thenReturn(competition);
         competition.setMaxAmountOfTeams(15);
 
-        ResponseEntity<?> response = competitionService.updateCompetition(competition.getCompetitionName(),competitionCreateUpdateRequest, userPrincipal.getName());
+        ResponseEntity<?> response = competitionService.updateCompetition(competition.getEventName(),competitionCreateUpdateRequest, userPrincipal.getName());
 
-        verify(verifyMethodsForServices, times(1)).shouldFindCompetition(competition.getCompetitionName());
+        verify(verifyMethodsForServices, times(1)).shouldFindCompetition(competition.getEventName());
         verify(competitionRepository, times(1)).save(competition);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
@@ -105,11 +105,11 @@ public class CompetitionServiceTest {
     @Test
     public void shouldDeleteCompetition() {
 
-        when(verifyMethodsForServices.shouldFindCompetition(competition.getCompetitionName())).thenReturn(competition);
+        when(verifyMethodsForServices.shouldFindCompetition(competition.getEventName())).thenReturn(competition);
 
-        ResponseEntity<?> response = competitionService.deleteCompetition(competition.getCompetitionName(), userPrincipal.getName());
+        ResponseEntity<?> response = competitionService.deleteCompetition(competition.getEventName(), userPrincipal.getName());
 
-        verify(verifyMethodsForServices, times(1)).shouldFindCompetition(competition.getCompetitionName());
+        verify(verifyMethodsForServices, times(1)).shouldFindCompetition(competition.getEventName());
         verify(competitionRepository, times(1)).deleteById(competition.getId());
         assertEquals(response.getStatusCode(), HttpStatus.NO_CONTENT);
     }
@@ -117,47 +117,47 @@ public class CompetitionServiceTest {
     @Test
     public void shouldThrowExceptionCompetitionNotExists() {
 
-        when(verifyMethodsForServices.shouldFindCompetition(competition.getCompetitionName())).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Competition not exists, Name: " + competition.getCompetitionName()));
+        when(verifyMethodsForServices.shouldFindCompetition(competition.getEventName())).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Competition not exists, Name: " + competition.getEventName()));
 
         ResponseStatusException exception = assertThrows(
                 ResponseStatusException.class,
-                () -> competitionService.updateCompetition(competition.getCompetitionName(),competitionCreateUpdateRequest, userPrincipal.getName()),
+                () -> competitionService.updateCompetition(competition.getEventName(),competitionCreateUpdateRequest, userPrincipal.getName()),
                 "Expected doThing() to throw, but it didn't");
 
-        verify(verifyMethodsForServices, times(1)).shouldFindCompetition(competition.getCompetitionName());
-        assertEquals("Competition not exists, Name: "+ competition.getCompetitionName(), exception.getReason());
+        verify(verifyMethodsForServices, times(1)).shouldFindCompetition(competition.getEventName());
+        assertEquals("Competition not exists, Name: "+ competition.getEventName(), exception.getReason());
     }
 
     @Test
     public void shouldThrowExceptionCompetitionAlreadyExists() {
 
-        when(competitionRepository.existsCompetitionByCompetitionNameIgnoreCase(competition.getCompetitionName())).thenReturn(true);
+        when(competitionRepository.existsCompetitionByEventNameIgnoreCase(competition.getEventName())).thenReturn(true);
 
         ResponseStatusException exception = assertThrows(
                 ResponseStatusException.class,
                 () -> competitionService.addCompetition(competitionCreateUpdateRequest, userPrincipal.getName()),
                 "Expected doThing() to throw, but it didn't");
 
-        verify(competitionRepository, times(1)).existsCompetitionByCompetitionNameIgnoreCase(competition.getCompetitionName());
-        assertEquals("Competition already exists. Named: "+ competition.getCompetitionName(), exception.getReason());
+        verify(competitionRepository, times(1)).existsCompetitionByEventNameIgnoreCase(competition.getEventName());
+        assertEquals("Competition already exists. Named: "+ competition.getEventName(), exception.getReason());
     }
 
     @Test
     public void shouldThrowExceptionCompetitionNotBelongToUser() {
 
-        when(verifyMethodsForServices.shouldFindCompetition(competition.getCompetitionName())).thenReturn(competition);
-        competition.setCompetitionOwner("OtherOwner");
+        when(verifyMethodsForServices.shouldFindCompetition(competition.getEventName())).thenReturn(competition);
+        competition.setEventOwner("OtherOwner");
 
         doThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not owner of this Competition"))
-            .when(verifyMethodsForServices).checkIfCompetitionBelongToUser(competition.getCompetitionOwner(), userName);
+            .when(verifyMethodsForServices).checkIfCompetitionBelongToUser(competition.getEventOwner(), userName);
 
 
         ResponseStatusException exception = assertThrows(
                 ResponseStatusException.class,
-                () -> competitionService.updateCompetition(competition.getCompetitionName(), competitionCreateUpdateRequest, userPrincipal.getName()),
+                () -> competitionService.updateCompetition(competition.getEventName(), competitionCreateUpdateRequest, userPrincipal.getName()),
                 "Expected doThing() to throw, but it didn't");
 
-        verify(verifyMethodsForServices, times(1)).shouldFindCompetition(competition.getCompetitionName());
+        verify(verifyMethodsForServices, times(1)).shouldFindCompetition(competition.getEventName());
 
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
         assertEquals("You are not owner of this Competition", exception.getReason());
