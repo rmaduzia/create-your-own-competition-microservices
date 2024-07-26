@@ -69,7 +69,7 @@ public class TournamentTeamService {
     }
 
     private Tournament getTournament(String tournamentName) {
-        return tournamentRepository.findByTournamentName(tournamentName).orElseThrow(() ->
+        return tournamentRepository.findByEventName(tournamentName).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND ,"Tournament not exists. Name: " + tournamentName));
     }
 
@@ -95,13 +95,13 @@ public class TournamentTeamService {
     }
 
     private void checkIfTournamentBelongToUser(Tournament tournament, UserPrincipal userPrincipal) {
-        if (!tournament.getTournamentOwner().equals(userPrincipal.getName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tournament named: " + tournament.getTournamentName() + " does not belong to: " + userPrincipal.getName());
+        if (!tournament.getEventOwner().equals(userPrincipal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tournament named: " + tournament.getEventName() + " does not belong to: " + userPrincipal.getName());
         }
     }
 
     private Tournament shouldFindTournament(String tournamentName, String tournamentOwner) {
-        return tournamentRepository.findByTournamentNameAndTournamentOwner(tournamentName, tournamentOwner).orElseThrow(() ->
+        return tournamentRepository.findByEventNameAndEventOwner(tournamentName, tournamentOwner).orElseThrow(() ->
             new ResponseStatusException(HttpStatus.NOT_FOUND ,"Tournament : " + tournamentName + "not exists"));
     }
 

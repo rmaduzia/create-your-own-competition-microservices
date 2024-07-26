@@ -47,11 +47,11 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
     private Long id;
 
     @NotBlank(message = "Tournament owner can't be empty")
-    private String tournamentOwner;
+    private String eventOwner;
 
     @NotBlank(message = "Tournament name can't be empty")
     @Pattern(regexp="^[^0-9]*$", message = "Tournament name can't contain number")
-    private String tournamentName;
+    private String eventName;
 
     @Range(min = 2, max =MAX_AMOUNT_OF_TEAMS_IN_TOURNAMENT, message = "Number of teams have to be beetwen 2 and 30")
     private int maxAmountOfTeams;
@@ -62,7 +62,7 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
 
     @NotBlank(message = "Street can't be empty")
     @Pattern(regexp="^[^0-9]*$", message = "Street name can't contain number")
-    private String street;
+    private String streetName;
 
     @Min(value = 1, message = "Street number can't be lower then 1")
     private int streetNumber;
@@ -70,12 +70,12 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
     @Column(columnDefinition = "DATE")
     @NotNull(message = "Pick time start of tournament")
     @Future
-    private LocalDateTime tournamentStart;
+    private LocalDateTime eventStartDate;
 
     @Column(columnDefinition = "DATE")
     @NotNull(message = "Pick time end of competition")
     @Future
-    private LocalDateTime tournamentEnd;
+    private LocalDateTime eventEndDate;
 
     private Boolean isStarted;
     private Boolean isFinished;
@@ -127,21 +127,21 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
 
     @Override
     public TournamentDto map() {
-        return new TournamentDto(tournamentOwner, tournamentName, maxAmountOfTeams, city, street,
+        return new TournamentDto(eventOwner, eventName, maxAmountOfTeams, city, streetName,
             streetNumber,
             tags, matchInTournament);
     }
 
     public static Tournament createTournamentFromDto(TournamentCreateUpdateRequest source, String tournamentOwner) {
         return Tournament.builder()
-            .tournamentName(source.getTournamentName())
-            .tournamentOwner(tournamentOwner)
+            .eventName(source.getEventName())
+            .eventOwner(tournamentOwner)
             .maxAmountOfTeams(source.getMaxAmountOfTeams())
             .city(source.getCity())
-            .street(source.getStreet())
+            .streetName(source.getStreetName())
             .streetNumber(source.getStreetNumber())
-            .tournamentStart(source.getTournamentStart())
-            .tournamentEnd(source.getTournamentEnd())
+            .eventStartDate(source.getEventStartDate())
+            .eventEndDate(source.getEventEndDate())
             .isStarted(source.getIsStarted())
             .isFinished(false)
             .build();

@@ -43,7 +43,7 @@ public class MatchInTournamentService {
         checkIfMatchExists(matchId);
         checkIfWinnerTeamHasNotBeenApprovedBeforeMatchStarted(matchInTournament);
 
-        Tournament foundTournament = shouldFindTournament(matchInTournament.getTournament().getTournamentName(), userPrincipal.getName());
+        Tournament foundTournament = shouldFindTournament(matchInTournament.getTournament().getEventName(), userPrincipal.getName());
         checkIfTeamParticipatingInTournament(matchInTournament, foundTournament);
 
         return ResponseEntity.ok(matchInTournamentRepository.save(matchInTournament));
@@ -81,7 +81,7 @@ public class MatchInTournamentService {
     public ResponseEntity<?> closeMatch(Long matchId, String userName) {
 
         MatchInTournament foundMatch = findMatch(matchId);
-        Tournament foundTournament = shouldFindTournament(foundMatch.getTournament().getTournamentName(), userName);
+        Tournament foundTournament = shouldFindTournament(foundMatch.getTournament().getEventName(), userName);
 
         checkIfTournamentBelongToUser(foundTournament, userName);
         foundMatch.setIsClosed(true);
@@ -101,13 +101,13 @@ public class MatchInTournamentService {
 
 
     private void checkIfTournamentNameEqualsToPath(String tournamentName, Tournament tournament) {
-        if (!tournamentName.equals(tournament.getTournamentName())) {
+        if (!tournamentName.equals(tournament.getEventName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST ,"Tournament in path are not equals to body");
         }
     }
 
     private void checkIfTournamentBelongToUser(Tournament tournament, String userName) {
-        if (!tournament.getTournamentOwner().equals(userName)) {
+        if (!tournament.getEventOwner().equals(userName)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tournament don't belong to you ");
         }
     }
@@ -125,7 +125,7 @@ public class MatchInTournamentService {
 
     private void checkIfTeamParticipatingInTournament(MatchInTournament matchInTournament, Tournament tournament) {
         if (!tournament.getMatchInTournament().contains(matchInTournament)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,  matchInTournament.getFirstTeamName() + " are not part of competition named: " + tournament.getTournamentName());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,  matchInTournament.getFirstTeamName() + " are not part of competition named: " + tournament.getEventName());
         }
     }
 
@@ -136,7 +136,7 @@ public class MatchInTournamentService {
     }
 
     private Tournament shouldFindTournament(String tournamentName, String tournamentOwner) {
-        return tournamentRepository.findByTournamentNameAndTournamentOwner(tournamentName, tournamentOwner).orElseThrow(() ->
+        return tournamentRepository.findByEventNameAndEventOwner(tournamentName, tournamentOwner).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Tournament not exists, Name: " + tournamentName));
     }
 }

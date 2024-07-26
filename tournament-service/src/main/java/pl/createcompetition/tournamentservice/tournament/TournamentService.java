@@ -31,24 +31,24 @@ public class TournamentService {
 
     public ResponseEntity<?> addTournament(TournamentCreateUpdateRequest tournamentCreateUpdateRequest, String userName) {
 
-        if (!tournamentRepository.existsTournamentByTournamentNameIgnoreCase(tournamentCreateUpdateRequest.getTournamentName())) {
+        if (!tournamentRepository.existsTournamentByEventNameIgnoreCase(tournamentCreateUpdateRequest.getEventName())) {
 
             Tournament tournament = Tournament.createTournamentFromDto(tournamentCreateUpdateRequest, userName);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(tournamentRepository.save(tournament));
         } else {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Tournament named: " + tournamentCreateUpdateRequest.getTournamentName() + " already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Tournament named: " + tournamentCreateUpdateRequest.getEventName() + " already exists");
 
         }
     }
 
     public ResponseEntity<?> updateTournament(String tournamentName, TournamentCreateUpdateRequest tournamentCreateUpdateRequest, String userName) {
 
-        if (!tournamentCreateUpdateRequest.getTournamentName().equals(tournamentName)) {
+        if (!tournamentCreateUpdateRequest.getEventName().equals(tournamentName)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tean Name doesn't match with Team object");
         }
 
-        Tournament foundTournament = shouldFindTournament(tournamentCreateUpdateRequest.getTournamentName(), userName);
+        Tournament foundTournament = shouldFindTournament(tournamentCreateUpdateRequest.getEventName(), userName);
         checkIfTournamentBelongToUser(foundTournament, userName);
         tournamentMapper.updateTournamentFromDto(tournamentCreateUpdateRequest, foundTournament);
 
@@ -60,7 +60,7 @@ public class TournamentService {
         Tournament foundTournament = shouldFindTournament(tournamentName, userName);
         checkIfTournamentBelongToUser(foundTournament, userName);
 
-        tournamentRepository.deleteByTournamentName(tournamentName);
+        tournamentRepository.deleteByEventName(tournamentName);
 
         return ResponseEntity.noContent().build();
     }
@@ -166,13 +166,13 @@ public class TournamentService {
     }
 
     private void checkIfTournamentBelongToUser(Tournament tournament, String userName) {
-        if (!tournament.getTournamentOwner().equals(userName)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found Tournament named: " + tournament.getTournamentName()+ " with Owner: " + userName);
+        if (!tournament.getEventOwner().equals(userName)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found Tournament named: " + tournament.getEventName()+ " with Owner: " + userName);
         }
     }
 
     private Tournament shouldFindTournament(String tournamentName, String tournamentOwner) {
-        return tournamentRepository.findByTournamentNameAndTournamentOwner(tournamentName, tournamentOwner).orElseThrow(() ->
+        return tournamentRepository.findByEventNameAndEventOwner(tournamentName, tournamentOwner).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Tournament not exists. Name: " + tournamentName));
     }
 

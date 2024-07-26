@@ -50,5 +50,7 @@ public class EventCreateUpdateRequest {
     private LocalDateTime eventEndDate;
 
     private Boolean isOpenRecruitment;
+    private Boolean isEventStarted;
+    private Boolean isEventFinished;
 
 }

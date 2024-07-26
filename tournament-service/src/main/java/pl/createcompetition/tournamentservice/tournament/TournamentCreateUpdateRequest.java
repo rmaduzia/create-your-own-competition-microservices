@@ -23,7 +23,7 @@ public class TournamentCreateUpdateRequest {
 
     @NotBlank(message = "Tournament name can't be empty")
     @Pattern(regexp="^[^0-9]*$", message = "Tournament name can't contain number")
-    private String tournamentName;
+    private String eventName;
 
     @Range(min = 2, max =MAX_AMOUNT_OF_TEAMS_IN_TOURNAMENT, message = "Number of teams have to be beetwen 2 and 30")
     private int maxAmountOfTeams;
@@ -34,7 +34,7 @@ public class TournamentCreateUpdateRequest {
 
     @NotBlank(message = "Street can't be empty")
     @Pattern(regexp="^[^0-9]*$", message = "Street name can't contain number")
-    private String street;
+    private String streetName;
 
     @Min(value = 1, message = "Street number can't be lower then 1")
     private int streetNumber;
@@ -42,13 +42,14 @@ public class TournamentCreateUpdateRequest {
     @Column(columnDefinition = "DATE")
     @NotNull(message = "Pick time start of tournament")
     @Future
-    private LocalDateTime tournamentStart;
+    private LocalDateTime eventStartDate;
 
     @Column(columnDefinition = "DATE")
     @NotNull(message = "Pick time end of competition")
     @Future
-    private LocalDateTime tournamentEnd;
+    private LocalDateTime eventEndDate;
 
+    private Boolean isOpenRecruitment;
     private Boolean isStarted;
     private Boolean isFinished;
 }

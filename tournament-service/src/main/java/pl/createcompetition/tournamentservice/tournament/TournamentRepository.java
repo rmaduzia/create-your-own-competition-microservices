@@ -6,10 +6,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TournamentRepository extends JpaRepository<Tournament, Long> {
-    Optional<Tournament> findByTournamentName(String tournamentName);
-    Optional<Tournament> findByTournamentNameAndTournamentOwner(String tournamentName, String tournamentOwner);
-    void deleteByTournamentName(String tournamentName);
+    Optional<Tournament> findByEventName(String eventName);
+    Optional<Tournament> findByEventNameAndEventOwner(String eventName, String tournamentOwner);
+    void deleteByEventName(String tournamentName);
 
-    boolean existsTournamentByTournamentNameIgnoreCase(String tournamentName);
+    boolean existsTournamentByEventNameIgnoreCase(String eventName);
 
 }

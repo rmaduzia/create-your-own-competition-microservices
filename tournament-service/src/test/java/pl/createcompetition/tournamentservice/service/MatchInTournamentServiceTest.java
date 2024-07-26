@@ -49,8 +49,8 @@ public class MatchInTournamentServiceTest {
         tournament = Tournament.builder()
                 .id(1L)
                 .maxAmountOfTeams(10)
-                .tournamentOwner(userName)
-                .tournamentName("Tourtnament1").build();
+                .eventOwner(userName)
+                .eventName("Tourtnament1").build();
 
         matchInTournament = MatchInTournament.builder()
                 .id(1L)
@@ -66,13 +66,13 @@ public class MatchInTournamentServiceTest {
     @Test
     public void shouldAddMatchInTournament() {
 
-        when(tournamentRepository.findByTournamentNameAndTournamentOwner(tournament.getTournamentName(), tournament.getTournamentOwner())).thenReturn(
+        when(tournamentRepository.findByEventNameAndEventOwner(tournament.getEventName(), tournament.getEventOwner())).thenReturn(
             Optional.of(tournament));
         when(matchInTournamentRepository.save(matchInTournament)).thenReturn(matchInTournament);
 
-        ResponseEntity<?> response = matchInTournamentService.addMatchInTournament(matchInTournament, tournament.getTournamentName(), userPrincipal.getName());
+        ResponseEntity<?> response = matchInTournamentService.addMatchInTournament(matchInTournament, tournament.getEventName(), userPrincipal.getName());
 
-        verify(tournamentRepository, times(1)).findByTournamentNameAndTournamentOwner(tournament.getTournamentName(), tournament.getTournamentOwner());
+        verify(tournamentRepository, times(1)).findByEventNameAndEventOwner(tournament.getEventName(), tournament.getEventOwner());
         verify(matchInTournamentRepository, times(1)).save(matchInTournament);
 
         assertEquals(response.getStatusCode(), HttpStatus.CREATED);
@@ -83,7 +83,7 @@ public class MatchInTournamentServiceTest {
     public void shouldUpdateMatchInTournament() {
 
         when(matchInTournamentRepository.existsById(matchInTournament.getId())).thenReturn(true);
-        when(tournamentRepository.findByTournamentNameAndTournamentOwner(tournament.getTournamentName(), tournament.getTournamentOwner())).thenReturn(
+        when(tournamentRepository.findByEventNameAndEventOwner(tournament.getEventName(), tournament.getEventOwner())).thenReturn(
             Optional.of(tournament));
         when(matchInTournamentRepository.save(matchInTournament)).thenReturn(matchInTournament);
 
@@ -92,7 +92,7 @@ public class MatchInTournamentServiceTest {
         ResponseEntity<?> response = matchInTournamentService.updateMatchInTournament(matchInTournament, matchInTournament.getId(), userPrincipal);
 
         verify(matchInTournamentRepository, times(1)).existsById(matchInTournament.getId());
-        verify(tournamentRepository, times(1)).findByTournamentNameAndTournamentOwner(tournament.getTournamentName(), tournament.getTournamentOwner());
+        verify(tournamentRepository, times(1)).findByEventNameAndEventOwner(tournament.getEventName(), tournament.getEventOwner());
         verify(matchInTournamentRepository, times(1)).save(matchInTournament);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
