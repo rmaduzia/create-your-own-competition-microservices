@@ -20,7 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 import pl.createcompetition.tournamentservice.competition.Competition;
-import pl.createcompetition.tournamentservice.competition.CompetitionMapper;
+import pl.createcompetition.tournamentservice.competition.EventMapper;
 import pl.createcompetition.tournamentservice.competition.CompetitionRepository;
 import pl.createcompetition.tournamentservice.competition.CompetitionService;
 import pl.createcompetition.tournamentservice.competition.EventCreateUpdateRequest;
@@ -34,7 +34,7 @@ public class CompetitionServiceTest {
     CompetitionRepository competitionRepository;
 //    @Mock
     @Spy
-    CompetitionMapper competitionMapper = Mappers.getMapper(CompetitionMapper.class);
+EventMapper eventMapper = Mappers.getMapper(EventMapper.class);
 
     @InjectMocks
     CompetitionService competitionService;

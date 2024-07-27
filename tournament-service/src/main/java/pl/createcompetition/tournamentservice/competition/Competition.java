@@ -75,8 +75,8 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
     private LocalDateTime eventEndDate;
 
     private Boolean isOpenRecruitment;
-    private Boolean isStarted;
-    private Boolean isFinished;
+    private Boolean isEventStarted;
+    private Boolean isEventFinished;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "competition_tag",

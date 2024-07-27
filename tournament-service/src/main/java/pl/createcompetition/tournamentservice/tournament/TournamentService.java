@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import pl.createcompetition.tournamentservice.competition.EventCreateUpdateRequest;
 import pl.createcompetition.tournamentservice.model.PagedResponseDto;
 import pl.createcompetition.tournamentservice.model.TeamEntity;
 import pl.createcompetition.tournamentservice.query.GetQueryImplService;
@@ -29,28 +30,28 @@ public class TournamentService {
         return queryUserDetailService.execute(Tournament.class, search, paginationInfoRequest.getPageNumber(), paginationInfoRequest.getPageSize());
     }
 
-    public ResponseEntity<?> addTournament(TournamentCreateUpdateRequest tournamentCreateUpdateRequest, String userName) {
+    public ResponseEntity<?> addTournament(EventCreateUpdateRequest eventCreateUpdateRequest, String userName) {
 
-        if (!tournamentRepository.existsTournamentByEventNameIgnoreCase(tournamentCreateUpdateRequest.getEventName())) {
+        if (!tournamentRepository.existsTournamentByEventNameIgnoreCase(eventCreateUpdateRequest.getEventName())) {
 
-            Tournament tournament = Tournament.createTournamentFromDto(tournamentCreateUpdateRequest, userName);
+            Tournament tournament = Tournament.createTournamentFromDto(eventCreateUpdateRequest, userName);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(tournamentRepository.save(tournament));
         } else {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Tournament named: " + tournamentCreateUpdateRequest.getEventName() + " already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Tournament named: " + eventCreateUpdateRequest.getEventName() + " already exists");
 
         }
     }
 
-    public ResponseEntity<?> updateTournament(String tournamentName, TournamentCreateUpdateRequest tournamentCreateUpdateRequest, String userName) {
+    public ResponseEntity<?> updateTournament(String tournamentName, EventCreateUpdateRequest eventCreateUpdateRequest, String userName) {
 
-        if (!tournamentCreateUpdateRequest.getEventName().equals(tournamentName)) {
+        if (!eventCreateUpdateRequest.getEventName().equals(tournamentName)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tean Name doesn't match with Team object");
         }
 
-        Tournament foundTournament = shouldFindTournament(tournamentCreateUpdateRequest.getEventName(), userName);
+        Tournament foundTournament = shouldFindTournament(eventCreateUpdateRequest.getEventName(), userName);
         checkIfTournamentBelongToUser(foundTournament, userName);
-        tournamentMapper.updateTournamentFromDto(tournamentCreateUpdateRequest, foundTournament);
+        tournamentMapper.updateTournamentFromDto(eventCreateUpdateRequest, foundTournament);
 
         return ResponseEntity.ok(tournamentRepository.save(foundTournament));
     }
@@ -91,7 +92,7 @@ public class TournamentService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST ,"You have to draw teams before start competition");
         }
 
-        foundTournament.setIsStarted(true);
+        foundTournament.setIsEventStarted(true);
         return ResponseEntity.ok(tournamentRepository.save(foundTournament));
 
     }
@@ -101,7 +102,7 @@ public class TournamentService {
         Tournament foundTournament = shouldFindTournament(tournamentName, userName);
         checkIfTournamentBelongToUser(foundTournament, userName);
 
-        if (!foundTournament.getIsStarted()) {
+        if (!foundTournament.getIsEventStarted()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can't draw team if competition already started");
         }
 

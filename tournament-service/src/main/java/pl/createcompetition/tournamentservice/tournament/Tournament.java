@@ -25,6 +25,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
+import pl.createcompetition.tournamentservice.competition.EventCreateUpdateRequest;
 import pl.createcompetition.tournamentservice.tournament.Tournament.TournamentDto;
 import pl.createcompetition.tournamentservice.tournament.match.MatchInTournament;
 import pl.createcompetition.tournamentservice.model.Tag;
@@ -77,8 +78,9 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
     @Future
     private LocalDateTime eventEndDate;
 
-    private Boolean isStarted;
-    private Boolean isFinished;
+    private Boolean isOpenRecruitment;
+    private Boolean isEventStarted;
+    private Boolean isEventFinished;
 
     @ElementCollection
     @CollectionTable(name = "drawed_teams_in_tournament", joinColumns = @JoinColumn(name = "tournament_id", referencedColumnName = "id"),
@@ -132,7 +134,7 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
             tags, matchInTournament);
     }
 
-    public static Tournament createTournamentFromDto(TournamentCreateUpdateRequest source, String tournamentOwner) {
+    public static Tournament createTournamentFromDto(EventCreateUpdateRequest source, String tournamentOwner) {
         return Tournament.builder()
             .eventName(source.getEventName())
             .eventOwner(tournamentOwner)
@@ -142,8 +144,8 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
             .streetNumber(source.getStreetNumber())
             .eventStartDate(source.getEventStartDate())
             .eventEndDate(source.getEventEndDate())
-            .isStarted(source.getIsStarted())
-            .isFinished(false)
+            .isEventStarted(source.getIsEventStarted())
+            .isEventFinished(false)
             .build();
     }
 

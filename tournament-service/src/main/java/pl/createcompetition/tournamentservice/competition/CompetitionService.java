@@ -17,7 +17,7 @@ public class CompetitionService {
     private final CompetitionRepository competitionRepository;
     private final GetQueryImplService<Competition,?> queryUserDetailService;
     private final VerifyMethodsForServices verifyMethodsForServices;
-    private final CompetitionMapper competitionMapper;
+    private final EventMapper eventMapper;
 
     public PagedResponseDto<?> searchCompetition(String search, PaginationInfoRequest paginationInfoRequest) {
 
@@ -43,9 +43,9 @@ public class CompetitionService {
             eventCreateUpdateRequest.getEventName());
         verifyMethodsForServices.checkIfCompetitionBelongToUser(foundCompetition.getEventOwner(), userName);
 
-        competitionMapper.updateCompetitionFromDto(eventCreateUpdateRequest, foundCompetition);
+        eventMapper.updateCompetitionFromDto(eventCreateUpdateRequest, foundCompetition);
 
-        EventCreateUpdateRequest savedCompetition = competitionMapper.mapCompetitionToSimpleCompetitionDto(competitionRepository.save(foundCompetition));
+        EventCreateUpdateRequest savedCompetition = eventMapper.mapCompetitionToSimpleCompetitionDto(competitionRepository.save(foundCompetition));
 
         return ResponseEntity.ok(savedCompetition);
     }

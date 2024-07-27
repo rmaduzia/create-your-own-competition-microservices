@@ -6,7 +6,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring")
-public interface CompetitionMapper {
+public interface EventMapper {
 
     @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
     void updateCompetitionFromDto(EventCreateUpdateRequest source, @MappingTarget Competition target);

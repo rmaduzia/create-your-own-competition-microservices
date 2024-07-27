@@ -39,7 +39,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.createcompetition.tournamentservice.competition.Competition;
 import pl.createcompetition.tournamentservice.competition.EventCreateUpdateRequest;
-import pl.createcompetition.tournamentservice.competition.CompetitionMapper;
+import pl.createcompetition.tournamentservice.competition.EventMapper;
 import pl.createcompetition.tournamentservice.competition.CompetitionRepository;
 
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
@@ -51,7 +51,7 @@ public class CompetitionControllerTests {
     CompetitionRepository competitionRepository;
 
     @Autowired
-    CompetitionMapper competitionMapper;
+    EventMapper eventMapper;
 
     private static String userToken;
 
@@ -163,7 +163,7 @@ public class CompetitionControllerTests {
 
         Competition competition = getCompetition();
 
-        EventCreateUpdateRequest updateRequest = competitionMapper.mapCompetitionToSimpleCompetitionDto(competition);
+        EventCreateUpdateRequest updateRequest = eventMapper.mapCompetitionToSimpleCompetitionDto(competition);
 
         updateRequest.setCity(updatedCityName);
         updateRequest.setStreetName(updatedStreet);

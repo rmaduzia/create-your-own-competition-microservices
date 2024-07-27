@@ -27,8 +27,8 @@ import org.mockito.quality.Strictness;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
+import pl.createcompetition.tournamentservice.competition.EventCreateUpdateRequest;
 import pl.createcompetition.tournamentservice.tournament.Tournament;
-import pl.createcompetition.tournamentservice.tournament.TournamentCreateUpdateRequest;
 import pl.createcompetition.tournamentservice.tournament.TournamentMapper;
 import pl.createcompetition.tournamentservice.tournament.TournamentRepository;
 import pl.createcompetition.tournamentservice.tournament.TournamentService;
@@ -52,7 +52,7 @@ public class TournamentServiceTest {
     @Mock
     UserPrincipal userPrincipal;
 
-    TournamentCreateUpdateRequest tournamentCreateUpdateRequest;
+    EventCreateUpdateRequest tournamentCreateUpdateRequest;
     Tournament tournament;
     TeamDto teamDto;
 
@@ -67,10 +67,10 @@ public class TournamentServiceTest {
             .maxAmountOfTeams(10)
             .eventOwner(userName)
             .eventName("Tourtnament1")
-            .isFinished(false)
+            .isEventFinished(false)
             .build();
 
-        tournamentCreateUpdateRequest = TournamentCreateUpdateRequest.builder()
+        tournamentCreateUpdateRequest = EventCreateUpdateRequest.builder()
             .maxAmountOfTeams(10)
             .eventName("Tourtnament1")
             .build();

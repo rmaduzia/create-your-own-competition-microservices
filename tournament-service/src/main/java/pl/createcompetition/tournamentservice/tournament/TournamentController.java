@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import pl.createcompetition.tournamentservice.competition.EventCreateUpdateRequest;
 import pl.createcompetition.tournamentservice.microserviceschanges.UserPrincipal;
 import pl.createcompetition.tournamentservice.model.PagedResponseDto;
 import pl.createcompetition.tournamentservice.query.PaginationInfoRequest;
@@ -36,7 +37,7 @@ public class TournamentController {
 
     @RolesAllowed("user")
     @PostMapping
-    public ResponseEntity<?> addTournament(@Valid @RequestBody TournamentCreateUpdateRequest tournament,
+    public ResponseEntity<?> addTournament(@Valid @RequestBody EventCreateUpdateRequest tournament,
                                            UserPrincipal userPrincipal) {
 
         return tournamentService.addTournament(tournament,userPrincipal.getName());
@@ -44,7 +45,7 @@ public class TournamentController {
 
     @RolesAllowed("user")
     @PutMapping("{tournamentName}")
-    public ResponseEntity<?> updateTournament(@Valid @RequestBody TournamentCreateUpdateRequest tournament,
+    public ResponseEntity<?> updateTournament(@Valid @RequestBody EventCreateUpdateRequest tournament,
                                               UserPrincipal userPrincipal,
                                               @PathVariable String tournamentName) {
 
