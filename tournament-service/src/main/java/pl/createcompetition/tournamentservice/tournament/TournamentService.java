@@ -38,7 +38,7 @@ public class TournamentService {
 
             return ResponseEntity.status(HttpStatus.CREATED).body(tournamentRepository.save(tournament));
         } else {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Tournament named: " + eventCreateUpdateRequest.getEventName() + " already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Tournament already exists. Named: " + eventCreateUpdateRequest.getEventName());
 
         }
     }
@@ -46,11 +46,10 @@ public class TournamentService {
     public ResponseEntity<?> updateTournament(String tournamentName, EventCreateUpdateRequest eventCreateUpdateRequest, String userName) {
 
         if (!eventCreateUpdateRequest.getEventName().equals(tournamentName)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tean Name doesn't match with Team object");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tournament Name doesn't match with Tournament object");
         }
 
-        Tournament foundTournament = shouldFindTournament(eventCreateUpdateRequest.getEventName(), userName);
-        checkIfTournamentBelongToUser(foundTournament, userName);
+        Tournament foundTournament = shouldFindTournamentByNameAndOwner(eventCreateUpdateRequest.getEventName(), userName);
         tournamentMapper.updateTournamentFromDto(eventCreateUpdateRequest, foundTournament);
 
         return ResponseEntity.ok(tournamentRepository.save(foundTournament));
@@ -58,17 +57,17 @@ public class TournamentService {
 
     public ResponseEntity<?> deleteTournament(String tournamentName, String userName) {
 
-        Tournament foundTournament = shouldFindTournament(tournamentName, userName);
+        Tournament foundTournament = shouldFindTournamentByNameAndOwner(tournamentName, userName);
         checkIfTournamentBelongToUser(foundTournament, userName);
 
-        tournamentRepository.deleteByEventName(tournamentName);
+        tournamentRepository.deleteById(foundTournament.getId());
 
         return ResponseEntity.noContent().build();
     }
 
     public ResponseEntity<?> removeTeamFromTournament(String tournamentName, String teamName, String userName) {
 
-        Tournament foundTournament = shouldFindTournament(tournamentName, userName);
+        Tournament foundTournament = shouldFindTournamentByNameAndOwner(tournamentName, userName);
         checkIfTournamentBelongToUser(foundTournament, userName);
 
         boolean isRemoved = foundTournament.deleteTeamFromTournament(teamName);
@@ -85,24 +84,24 @@ public class TournamentService {
 
     public ResponseEntity<?> startTournament(String tournamentName, String userName) {
 
-        Tournament foundTournament = shouldFindTournament(tournamentName, userName);
+        Tournament foundTournament = shouldFindTournamentByNameAndOwner(tournamentName, userName);
         checkIfTournamentBelongToUser(foundTournament, userName);
 
         if (foundTournament.getDrawnTeams().isEmpty()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST ,"You have to draw teams before start competition");
         }
 
-        foundTournament.setIsEventStarted(true);
+        foundTournament.setEventStarted(true);
         return ResponseEntity.ok(tournamentRepository.save(foundTournament));
 
     }
 
     public ResponseEntity<?> drawTeamOptions(Boolean isWithEachOther, String tournamentName, String userName){
 
-        Tournament foundTournament = shouldFindTournament(tournamentName, userName);
+        Tournament foundTournament = shouldFindTournamentByNameAndOwner(tournamentName, userName);
         checkIfTournamentBelongToUser(foundTournament, userName);
 
-        if (!foundTournament.getIsEventStarted()) {
+        if (!foundTournament.isEventStarted()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can't draw team if competition already started");
         }
 
@@ -122,7 +121,7 @@ public class TournamentService {
 
     public ResponseEntity<?> setTheDatesOfTheTeamsMatches(String tournamentName, Map<String, LocalDateTime> dateMatch, String userName) {
 
-        Tournament foundTournament = shouldFindTournament(tournamentName, userName);
+        Tournament foundTournament = shouldFindTournamentByNameAndOwner(tournamentName, userName);
         checkIfTournamentBelongToUser(foundTournament, userName);
 
         foundTournament.setMatchTimes(dateMatch);
@@ -132,7 +131,7 @@ public class TournamentService {
 
     public ResponseEntity<?> deleteDateOfTheTeamsMatches(String tournamentName, String idDateMatch, String userName) {
 
-        Tournament foundTournament = shouldFindTournament(tournamentName, userName);
+        Tournament foundTournament = shouldFindTournamentByNameAndOwner(tournamentName, userName);
         checkIfTournamentBelongToUser(foundTournament, userName);
 
         foundTournament.getMatchTimes().remove(idDateMatch);
@@ -160,7 +159,7 @@ public class TournamentService {
 
     private List<TeamEntity> shouldFindTeamInUserTournament(String tournamentName, String userName) {
 
-        Tournament foundTournament = shouldFindTournament(tournamentName, userName);
+        Tournament foundTournament = shouldFindTournamentByNameAndOwner(tournamentName, userName);
         checkIfTournamentBelongToUser(foundTournament, userName);
 
         return new ArrayList<>(foundTournament.getTeams());
@@ -168,15 +167,12 @@ public class TournamentService {
 
     private void checkIfTournamentBelongToUser(Tournament tournament, String userName) {
         if (!tournament.getEventOwner().equals(userName)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found Tournament named: " + tournament.getEventName()+ " with Owner: " + userName);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not owner of this Tournament");
         }
     }
 
-    private Tournament shouldFindTournament(String tournamentName, String tournamentOwner) {
+    private Tournament shouldFindTournamentByNameAndOwner(String tournamentName, String tournamentOwner) {
         return tournamentRepository.findByEventNameAndEventOwner(tournamentName, tournamentOwner).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Tournament not exists. Name: " + tournamentName));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found tournament where Name: " + tournamentName + " and Owner: " + tournamentOwner));
     }
-
-
-
 }

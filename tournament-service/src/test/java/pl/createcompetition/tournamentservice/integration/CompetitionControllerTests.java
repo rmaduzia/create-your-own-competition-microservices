@@ -108,7 +108,7 @@ public class CompetitionControllerTests {
     @Test
     void shouldAddCompetition() {
 
-        EventCreateUpdateRequest eventCreateUpdateRequest = getcompetitionCreateUpdateRequest();
+        EventCreateUpdateRequest eventCreateUpdateRequest = getCompetitionCreateUpdateRequest();
 
         Response response = given().header("Authorization", "Bearer " + userToken)
             .contentType("application/json")
@@ -128,7 +128,7 @@ public class CompetitionControllerTests {
         assertEquals(eventCreateUpdateRequest.getMaxAmountOfTeams(), createdCompetition.getMaxAmountOfTeams());
         assertEquals(eventCreateUpdateRequest.getEventStartDate(), createdCompetition.getEventStartDate());
         assertEquals(eventCreateUpdateRequest.getEventEndDate(), createdCompetition.getEventEndDate());
-        assertEquals(eventCreateUpdateRequest.getIsOpenRecruitment(), createdCompetition.getIsOpenRecruitment());
+        assertEquals(eventCreateUpdateRequest.isOpenRecruitment(), createdCompetition.isOpenRecruitment());
         assertTrue(createdCompetition.getTags().isEmpty());
         assertTrue(createdCompetition.getTeams().isEmpty());
         assertTrue(createdCompetition.getMatchInCompetition().isEmpty());
@@ -139,7 +139,7 @@ public class CompetitionControllerTests {
 
         saveCompetition();
 
-        EventCreateUpdateRequest eventCreateUpdateRequest = getcompetitionCreateUpdateRequest();
+        EventCreateUpdateRequest eventCreateUpdateRequest = getCompetitionCreateUpdateRequest();
 
         Response response = given().header("Authorization", "Bearer " + userToken)
             .contentType("application/json")
@@ -169,7 +169,7 @@ public class CompetitionControllerTests {
         updateRequest.setStreetName(updatedStreet);
         updateRequest.setStreetNumber(updatedStreetNumber);
         updateRequest.setMaxAmountOfTeams(maxAmountOfTeams);
-        updateRequest.setIsOpenRecruitment(closeRecruitment);
+        updateRequest.setOpenRecruitment(closeRecruitment);
 
         competitionRepository.save(competition);
 
@@ -191,13 +191,13 @@ public class CompetitionControllerTests {
         assertEquals(updateRequest.getStreetName(), updatedCompetition.getStreetName());
         assertEquals(updateRequest.getStreetNumber(), updatedCompetition.getStreetNumber());
         assertEquals(updateRequest.getMaxAmountOfTeams(), updatedCompetition.getMaxAmountOfTeams());
-        assertEquals(updateRequest.getIsOpenRecruitment(), updatedCompetition.getIsOpenRecruitment());
+        assertEquals(updateRequest.isOpenRecruitment(), updatedCompetition.isOpenRecruitment());
     }
 
     @Test
     void shouldThrowErrorThatCompetitionFromParamDoesNotMatchWithRequestBody() {
 
-        EventCreateUpdateRequest eventCreateUpdateRequest = getcompetitionCreateUpdateRequest();
+        EventCreateUpdateRequest eventCreateUpdateRequest = getCompetitionCreateUpdateRequest();
         String invalidCompetitionName = "different name";
 
         Response response = given().header("Authorization", "Bearer " + userToken)
@@ -213,7 +213,7 @@ public class CompetitionControllerTests {
     @Test
     void shouldThrowErrorThatCompetitionRequestBodyDoesNotMatchWithParam() {
 
-        EventCreateUpdateRequest eventCreateUpdateRequest = getcompetitionCreateUpdateRequest();
+        EventCreateUpdateRequest eventCreateUpdateRequest = getCompetitionCreateUpdateRequest();
         String invalidCompetitionName = "different name";
 
         eventCreateUpdateRequest.setEventName(invalidCompetitionName);
@@ -233,7 +233,7 @@ public class CompetitionControllerTests {
 
         saveCompetitionWithDifferentOwner();
 
-        EventCreateUpdateRequest eventCreateUpdateRequest = getcompetitionCreateUpdateRequest();
+        EventCreateUpdateRequest eventCreateUpdateRequest = getCompetitionCreateUpdateRequest();
 
         Response response = given().header("Authorization", "Bearer " + userToken)
             .contentType("application/json")
@@ -250,7 +250,7 @@ public class CompetitionControllerTests {
 
         saveCompetition();
 
-        EventCreateUpdateRequest eventCreateUpdateRequest = getcompetitionCreateUpdateRequest();
+        EventCreateUpdateRequest eventCreateUpdateRequest = getCompetitionCreateUpdateRequest();
         String competitionNameWhichNotExists = "someWrongCompetitionName";
 
         eventCreateUpdateRequest.setEventName(competitionNameWhichNotExists);
@@ -348,7 +348,7 @@ public class CompetitionControllerTests {
             .build();
     }
 
-    private static EventCreateUpdateRequest getcompetitionCreateUpdateRequest() {
+    private static EventCreateUpdateRequest getCompetitionCreateUpdateRequest() {
 
         LocalDateTime startDate = Timestamp.valueOf("2090-05-01 12:30:00").toLocalDateTime();
         LocalDateTime endDate = Timestamp.valueOf("2091-05-02 12:30:00").toLocalDateTime();

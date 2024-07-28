@@ -74,9 +74,9 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
     @Future
     private LocalDateTime eventEndDate;
 
-    private Boolean isOpenRecruitment;
-    private Boolean isEventStarted;
-    private Boolean isEventFinished;
+    private boolean isOpenRecruitment;
+    private boolean isEventStarted;
+    private boolean isEventFinished;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "competition_tag",
@@ -122,18 +122,20 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
             tags, matchInCompetition);
     }
 
-    public static Competition createCompetition(EventCreateUpdateRequest request, String competitionOwner) {
+    public static Competition createCompetition(EventCreateUpdateRequest source, String competitionOwner) {
 
         return Competition.builder()
-            .eventName(request.getEventName())
+            .eventName(source.getEventName())
             .eventOwner(competitionOwner)
-            .city(request.getCity())
-            .streetName(request.getStreetName())
-            .streetNumber(request.getStreetNumber())
-            .maxAmountOfTeams(request.getMaxAmountOfTeams())
-            .eventStartDate(request.getEventStartDate())
-            .eventEndDate(request.getEventEndDate())
-            .isOpenRecruitment(request.getIsOpenRecruitment())
+            .city(source.getCity())
+            .streetName(source.getStreetName())
+            .streetNumber(source.getStreetNumber())
+            .maxAmountOfTeams(source.getMaxAmountOfTeams())
+            .eventStartDate(source.getEventStartDate())
+            .eventEndDate(source.getEventEndDate())
+            .isOpenRecruitment(source.isOpenRecruitment())
+            .isEventStarted(source.isEventStarted())
+            .isEventFinished(false)
             .build();
     }
 

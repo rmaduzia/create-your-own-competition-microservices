@@ -78,9 +78,9 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
     @Future
     private LocalDateTime eventEndDate;
 
-    private Boolean isOpenRecruitment;
-    private Boolean isEventStarted;
-    private Boolean isEventFinished;
+    private boolean isOpenRecruitment;
+    private boolean isEventStarted;
+    private boolean isEventFinished;
 
     @ElementCollection
     @CollectionTable(name = "drawed_teams_in_tournament", joinColumns = @JoinColumn(name = "tournament_id", referencedColumnName = "id"),
@@ -144,8 +144,9 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
             .streetNumber(source.getStreetNumber())
             .eventStartDate(source.getEventStartDate())
             .eventEndDate(source.getEventEndDate())
-            .isEventStarted(source.getIsEventStarted())
+            .isEventStarted(source.isEventStarted())
             .isEventFinished(false)
+            .isOpenRecruitment(source.isOpenRecruitment())
             .build();
     }
 

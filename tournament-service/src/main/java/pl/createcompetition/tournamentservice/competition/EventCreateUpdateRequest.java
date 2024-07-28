@@ -49,8 +49,8 @@ public class EventCreateUpdateRequest {
     @Future
     private LocalDateTime eventEndDate;
 
-    private Boolean isOpenRecruitment;
-    private Boolean isEventStarted;
-    private Boolean isEventFinished;
+    private boolean isOpenRecruitment;
+    private boolean isEventStarted;
+    private boolean isEventFinished;
 
 }
