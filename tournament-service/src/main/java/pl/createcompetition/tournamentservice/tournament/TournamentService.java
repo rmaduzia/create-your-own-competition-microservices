@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.createcompetition.tournamentservice.competition.EventCreateUpdateRequest;
+import pl.createcompetition.tournamentservice.competition.EventMapper;
 import pl.createcompetition.tournamentservice.model.PagedResponseDto;
 import pl.createcompetition.tournamentservice.model.TeamEntity;
 import pl.createcompetition.tournamentservice.query.GetQueryImplService;
@@ -23,7 +24,7 @@ public class TournamentService {
 
     private final TournamentRepository tournamentRepository;
     private final GetQueryImplService<Tournament,?> queryUserDetailService;
-    private final TournamentMapper tournamentMapper;
+    private final EventMapper eventMapper;
 
     public PagedResponseDto<?> searchTournament(String search, PaginationInfoRequest paginationInfoRequest) {
 
@@ -39,7 +40,6 @@ public class TournamentService {
             return ResponseEntity.status(HttpStatus.CREATED).body(tournamentRepository.save(tournament));
         } else {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Tournament already exists. Named: " + eventCreateUpdateRequest.getEventName());
-
         }
     }
 
@@ -50,7 +50,7 @@ public class TournamentService {
         }
 
         Tournament foundTournament = shouldFindTournamentByNameAndOwner(eventCreateUpdateRequest.getEventName(), userName);
-        tournamentMapper.updateTournamentFromDto(eventCreateUpdateRequest, foundTournament);
+        eventMapper.updateTournamentFromDto(eventCreateUpdateRequest, foundTournament);
 
         return ResponseEntity.ok(tournamentRepository.save(foundTournament));
     }

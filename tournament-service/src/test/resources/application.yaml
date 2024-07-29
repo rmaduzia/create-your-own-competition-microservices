@@ -1,5 +1,4 @@
 server:
-  port: 9095
   error:
     include-stacktrace: never
     include-message: always

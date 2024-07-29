@@ -25,6 +25,7 @@ import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -42,7 +43,7 @@ import pl.createcompetition.tournamentservice.competition.EventCreateUpdateReque
 import pl.createcompetition.tournamentservice.competition.EventMapper;
 import pl.createcompetition.tournamentservice.competition.CompetitionRepository;
 
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Testcontainers
 public class CompetitionControllerTests {
@@ -54,6 +55,9 @@ public class CompetitionControllerTests {
     EventMapper eventMapper;
 
     private static String userToken;
+
+    @LocalServerPort
+    private int serverPort;
 
     private static final String mainUserName = "test";
 
@@ -94,14 +98,14 @@ public class CompetitionControllerTests {
 
     @BeforeAll
     static void setUp() throws URISyntaxException {
-        RestAssured.baseURI = "http://localhost";
-        RestAssured.port = 9095;
-
         userToken = getUserToken();
     }
 
     @BeforeEach
-    void cleanDatabase() {
+    void setUpTests() {
+        RestAssured.baseURI = "http://localhost";
+        RestAssured.port = serverPort;
+
         competitionRepository.deleteAll();
     }
 

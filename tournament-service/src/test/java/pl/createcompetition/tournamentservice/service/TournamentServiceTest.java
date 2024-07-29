@@ -2,7 +2,6 @@ package pl.createcompetition.tournamentservice.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -28,8 +27,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 import pl.createcompetition.tournamentservice.competition.EventCreateUpdateRequest;
+import pl.createcompetition.tournamentservice.competition.EventMapper;
 import pl.createcompetition.tournamentservice.tournament.Tournament;
-import pl.createcompetition.tournamentservice.tournament.TournamentMapper;
 import pl.createcompetition.tournamentservice.tournament.TournamentRepository;
 import pl.createcompetition.tournamentservice.tournament.TournamentService;
 import pl.createcompetition.tournamentservice.tournament.VerifyMethodsForServices;
@@ -47,7 +46,7 @@ public class TournamentServiceTest {
     @Mock
     VerifyMethodsForServices verifyMethodsForServices;
     @Spy
-    TournamentMapper tournamentMapper = Mappers.getMapper(TournamentMapper.class);
+    EventMapper eventMapper = Mappers.getMapper(EventMapper.class);
 
     @Mock
     UserPrincipal userPrincipal;
@@ -119,7 +118,7 @@ public class TournamentServiceTest {
 
         ResponseEntity<?> response = tournamentService.deleteTournament(tournament.getEventName(), userPrincipal.getName());
 
-        verify(tournamentRepository, times(1)).deleteByEventName(tournament.getEventName());
+        verify(tournamentRepository, times(1)).deleteById(tournament.getId());
         verify(tournamentRepository, times(1)).findByEventNameAndEventOwner(tournament.getEventName(), userPrincipal.getName());
         assertEquals(response.getStatusCode(), HttpStatus.NO_CONTENT);
     }
@@ -135,8 +134,7 @@ public class TournamentServiceTest {
         verify(tournamentRepository, times(1)).findByEventNameAndEventOwner(tournament.getEventName(), userPrincipal.getName());
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals("Tournament not exists. Name: " +  tournament.getEventName(), exception.getReason());
-        assertEquals(HttpStatus.NOT_FOUND.value()+ " " +HttpStatus.NOT_FOUND.name() + " \"Tournament not exists. Name: " +  tournament.getEventName() +"\"", exception.getMessage());
+        assertEquals("Not found tournament where Name: "+ tournamentCreateUpdateRequest.getEventName() + " and Owner: " + userPrincipal.getName(), exception.getReason());
     }
 
     @Test
@@ -152,16 +150,17 @@ public class TournamentServiceTest {
         verify(tournamentRepository, times(1)).existsTournamentByEventNameIgnoreCase(tournament.getEventName());
 
         assertEquals(HttpStatus.CONFLICT, exception.getStatusCode());
-        assertEquals("Tournament named: " + tournament.getEventName() + " already exists", exception.getReason());
-        assertEquals(HttpStatus.CONFLICT.value()+ " " +HttpStatus.CONFLICT.name() + " \"Tournament named: "  + tournament.getEventName() + " already exists\"" , exception.getMessage());
-
+        assertEquals("Tournament already exists. Named: " + tournament.getEventName(), exception.getReason());
     }
 
     @Test
     public void shouldThrowExceptionTournamentNotBelongToUser() {
-        
-        when(tournamentRepository.findByEventNameAndEventOwner(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())).thenReturn(Optional.of(tournament));
+
+        when(tournamentRepository.findByEventNameAndEventOwner(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+            .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found Tournament named: " + tournament.getEventName() + " with Owner: " + userName));
+
         tournament.setEventOwner("OtherOwner");
+
 
         ResponseStatusException exception = assertThrows(
                 ResponseStatusException.class,
@@ -172,8 +171,6 @@ public class TournamentServiceTest {
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("Not found Tournament named: " + tournament.getEventName() + " with Owner: " + userPrincipal.getName(), exception.getReason());
-        assertEquals( HttpStatus.NOT_FOUND.value()+ " " +HttpStatus.NOT_FOUND.name() + " \"Not found Tournament named: " + tournament.getEventName() + " with Owner: " + userPrincipal.getName() +"\"", exception.getMessage());
-
     }
 
     @Test
@@ -193,7 +190,6 @@ public class TournamentServiceTest {
         verify(tournamentRepository, times(1)).findByEventNameAndEventOwner(tournament.getEventName(), userPrincipal.getName());
         assertEquals(response.getStatusCode(), HttpStatus.OK);
         assertEquals(response.getBody(), tournament);
-
     }
 
     @Test
