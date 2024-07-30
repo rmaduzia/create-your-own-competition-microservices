@@ -62,9 +62,9 @@ public class TournamentController {
     }
 
     @RolesAllowed("user")
-    @DeleteMapping("{tournamentName}/teams")
+    @DeleteMapping("{tournamentName}/teams/{teamName}")
     public ResponseEntity<?> deleteTeamFromTournament(@PathVariable String tournamentName,
-                                                      @RequestBody String teamName,
+                                                      @PathVariable String teamName,
                                                       UserPrincipal userPrincipal) {
 
         return tournamentService.removeTeamFromTournament(tournamentName, teamName, userPrincipal.getName());

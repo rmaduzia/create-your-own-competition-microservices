@@ -9,8 +9,10 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.createcompetition.tournamentservice.competition.Competition;
 import pl.createcompetition.tournamentservice.tournament.Tournament;
@@ -20,6 +22,8 @@ import pl.createcompetition.tournamentservice.tournament.Tournament;
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class TeamEntity {
 
     @Id
