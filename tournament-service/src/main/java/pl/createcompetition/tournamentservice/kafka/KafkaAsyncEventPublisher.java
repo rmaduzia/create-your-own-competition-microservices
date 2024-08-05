@@ -6,13 +6,15 @@ import static pl.createcompetition.tournamentservice.kafka.MessageReadConst.Topi
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
 import pl.createcompetition.tournamentservice.kafka.domain.EventPublisher;
 import pl.createcompetition.tournamentservice.kafka.domain.InternalEvent;
 
 @RequiredArgsConstructor
+@Service
 public class KafkaAsyncEventPublisher implements EventPublisher<InternalEvent> {
 
-    KafkaTemplate<String, InternalEvent> kafkaTemplate;
+    private final KafkaTemplate<String, InternalEvent> kafkaTemplate;
 
     @Override
     public void send(InternalEvent event) {
