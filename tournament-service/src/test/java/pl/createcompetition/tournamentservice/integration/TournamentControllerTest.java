@@ -254,7 +254,31 @@ public class TournamentControllerTest {
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
         assertEquals("Not found tournament where Name: "+ competitionNameWhichNotExists + " and Owner: " + mainUserName, response.jsonPath().getString("message"));
     }
-    
+
+
+    @Test
+    void shouldRemoveTeamFromTournament() {
+
+        Tournament tournament = getTournament();
+
+        String firstTeam = "firstTeamName";
+        String secondTeam = "secondTeamName";
+
+        tournament.addTeamToTournament(firstTeam);
+        tournament.addTeamToTournament(secondTeam);
+
+        tournamentRepository.save(tournament);
+
+        Response response = given().header("Authorization", "Bearer " + userToken)
+            .contentType("application/json")
+            .pathParam("tournamentName", tournament.getEventName())
+            .pathParam("teamName", firstTeam)
+            .delete("tournament/{tournamentName}/teams/{teamName}");
+
+
+        assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatusCode());
+    }
+
     public void saveTournament() {
         Tournament tournament = getTournament();
         tournamentRepository.save(tournament);
