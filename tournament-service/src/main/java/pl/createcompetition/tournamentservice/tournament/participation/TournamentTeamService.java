@@ -2,11 +2,14 @@ package pl.createcompetition.tournamentservice.tournament.participation;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import pl.createcompetition.tournamentservice.kafka.domain.MessageSendFacade;
+import pl.createcompetition.tournamentservice.kafka.domain.NotifyTeamMembersRequest;
 import pl.createcompetition.tournamentservice.tournament.Tournament;
 import pl.createcompetition.tournamentservice.tournament.TournamentRepository;
 import pl.createcompetition.tournamentservice.tournament.VerifyMethodsForServices;
@@ -16,9 +19,9 @@ import pl.createcompetition.tournamentservice.microserviceschanges.UserPrincipal
 @Service
 public class TournamentTeamService {
 
-//    private final NotificationMessagesToUsersService notificationMessagesToUsersService;
     private final VerifyMethodsForServices verifyMethodsForServices;
     private final TournamentRepository tournamentRepository;
+    private final MessageSendFacade messageSendFacade;
 
     public ResponseEntity<?> teamJoinTournament(String teamName, String tournamentName,String userName) {
 
@@ -33,11 +36,13 @@ public class TournamentTeamService {
 
         findTournament.addTeamToTournament(teamName);
 
-        // Send notification to Team Members
-     //   for (UserDetail userDetail: foundTeam.getUserDetails()) {
-   //         notificationMessagesToUsersService.notificationMessageToUser(userDetail.getName(), "Team","joined tournament: ", tournamentName);
-    //    }
+        NotifyTeamMembersRequest notifyTeamMembersRequest = NotifyTeamMembersRequest.builder()
+            .id(UUID.randomUUID())
+            .teamName(teamName)
+            .body("Your team: " + teamName + " joined tournament: " + tournamentName)
+            .build();
 
+        messageSendFacade.sendEvent(notifyTeamMembersRequest);
 
         return ResponseEntity.ok().build();
     }
@@ -52,13 +57,19 @@ public class TournamentTeamService {
 
         boolean isTeamRemovedFromTournament = findTournament.deleteTeamFromTournament(teamName);
 
-        // Send notification to Team Members
-//        for (UserDetail userDetail: foundTeam.getUserDetails()) {
-//            notificationMessagesToUsersService.notificationMessageToUser(userDetail.getName(), "Team","left tournament: ", tournamentName);
-//        }
+        if (!isTeamRemovedFromTournament) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Issue while removing team from tournament");
+        }
+
+        NotifyTeamMembersRequest notifyTeamMembersRequest = NotifyTeamMembersRequest.builder()
+            .id(UUID.randomUUID())
+            .teamName(teamName)
+            .body("Your team: " + teamName + " left tournament: " + tournamentName)
+            .build();
+
+        messageSendFacade.sendEvent(notifyTeamMembersRequest);
 
         return ResponseEntity.ok().build();
-
     }
 
 

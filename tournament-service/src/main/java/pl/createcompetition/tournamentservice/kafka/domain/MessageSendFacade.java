@@ -9,8 +9,8 @@ public class MessageSendFacade {
 
     private final EventPublisher eventPublisher;
 
-    public void sendEvent(final NotifyUserRequest notifyUserRequest) {
-        eventPublisher.send(notifyUserRequest);
+    public void sendEvent(final NotifyTeamMembersRequest notifyTeamMembersRequest) {
+        eventPublisher.send(notifyTeamMembersRequest);
     }
 
 }
