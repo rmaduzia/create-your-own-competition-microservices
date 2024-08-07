@@ -1,10 +1,13 @@
 package pl.createcompetition.tournamentservice.competition;
 
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import pl.createcompetition.tournamentservice.kafka.domain.MessageSendFacade;
+import pl.createcompetition.tournamentservice.kafka.domain.NotifyTeamMembersRequest;
 import pl.createcompetition.tournamentservice.tournament.VerifyMethodsForServices;
 import pl.createcompetition.tournamentservice.tournament.participation.TeamDto;
 
@@ -12,9 +15,10 @@ import pl.createcompetition.tournamentservice.tournament.participation.TeamDto;
 @Service
 public class CompetitionTeamService {
 
-//    private final NotificationMessagesToUsersService notificationMessagesToUsersService;
     private final VerifyMethodsForServices verifyMethodsForServices;
     private final CompetitionRepository competitionRepository;
+    private final MessageSendFacade messageSendFacade;
+
 
     public ResponseEntity<?> teamJoinCompetition(String teamName, String competitionName, String userName) {
 
@@ -33,11 +37,14 @@ public class CompetitionTeamService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Did not add team: " + teamName + " to competition: " + competitionName);
         }
 
+        NotifyTeamMembersRequest notifyTeamMembersRequest = NotifyTeamMembersRequest.builder()
+            .id(UUID.randomUUID())
+            .teamName(teamName)
+            .body("Your team: " + teamName + " joined competition: " + competitionName)
+            .build();
 
-//        // Send notification to Team Members
-//        for (UserDetail userDetail: foundTeam.getUserDetails()) {
-//            notificationMessagesToUsersService.notificationMessageToUser(userDetail.getName(), "Team","joined competition: ", competitionName);
-//        }
+        messageSendFacade.sendEvent(notifyTeamMembersRequest);
+
 
         return ResponseEntity.ok("Added team: " + teamName + " to competition: " + competitionName);
 
@@ -56,10 +63,13 @@ public class CompetitionTeamService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Did not find team: " + teamName + " in competition: " + competitionName);
         }
 
-        // Send notification to Team Members
-//        for (UserDetail userDetail: foundTeam.getUserDetails()) {
-//            notificationMessagesToUsersService.notificationMessageToUser(userDetail.getName(), "Team","left tournament: ", competitionName);
-//        }
+        NotifyTeamMembersRequest notifyTeamMembersRequest = NotifyTeamMembersRequest.builder()
+            .id(UUID.randomUUID())
+            .teamName(teamName)
+            .body("Your team: " + teamName + " left competition: " + competitionName)
+            .build();
+
+        messageSendFacade.sendEvent(notifyTeamMembersRequest);
 
         competitionRepository.save(foundCompetition);
         return ResponseEntity.ok("Removed team: " + teamName + " from competition: " + competitionName);
