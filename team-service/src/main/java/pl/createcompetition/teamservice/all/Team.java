@@ -1,7 +1,5 @@
 package pl.createcompetition.teamservice.all;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -9,10 +7,7 @@ import org.hibernate.annotations.ColumnDefault;
 import pl.createcompetition.teamservice.query.QueryDtoInterface;
 
 
-
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import static pl.createcompetition.teamservice.config.AppConstants.MAX_AMOUNT_OF_USERS_IN_TEAM;
@@ -52,9 +47,7 @@ public class Team implements QueryDtoInterface<Team.TeamDto> {
 //    @MapKeyColumn(name = "id")
     @Column(name = "user_name")
     @Builder.Default
-//    Map<Long, String> team_members = new HashMap<>();
-//    @Singular
-    private Set<String> team_members = new HashSet<>();
+    private Set<String> teamMembers = new HashSet<>();
 
     @NotBlank(message = "City can't be empty")
     @Pattern(regexp="^[a-zA-Z]*$", message = "City can't contain number")
@@ -81,11 +74,11 @@ public class Team implements QueryDtoInterface<Team.TeamDto> {
     }
 
     public boolean addRecruit(String recruitName) {
-        return team_members.add(recruitName);
+        return teamMembers.add(recruitName);
     }
 
     public boolean removeRecruit(String recruitName) {
-        return team_members.remove(recruitName);
+        return teamMembers.remove(recruitName);
     }
 
 

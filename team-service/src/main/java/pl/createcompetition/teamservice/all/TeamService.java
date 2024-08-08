@@ -112,11 +112,13 @@ public class TeamService {
         }
 
     private void checkIfUserIsMemberOfTeam(Team team, String username) {
-        if(!team.getTeam_members().contains(username)) {
+        if(!team.getTeamMembers().contains(username)) {
             throw new ResourceNotFoundException("User named: " + username, "Team", team.getTeamName() + " not found in Team");
         }
     }
 
 
-
+    public ResponseEntity<?> getListOfTeamMembers(String teamName) {
+        return ResponseEntity.ok(teamRepository.findTeamMembersByTeamName(teamName));
+    }
 }

@@ -18,7 +18,6 @@ import io.restassured.response.Response;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,20 +25,16 @@ import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.testcontainers.containers.MySQLContainer;
@@ -119,7 +114,7 @@ public class EndToEndTesting {
             .teamName(teamName)
             .maxAmountMembers(30)
             .teamOwner(mainUserName)
-            .team_members(null)
+            .teamMembers(null)
             .city("Gdynia")
             .isOpenRecruitment(true)
             .build();
@@ -162,7 +157,7 @@ public class EndToEndTesting {
         assertEquals(createTeamRequest.getCity(), teamFromRepository.getCity());
         assertEquals(mainUserName, teamFromRepository.getTeamOwner());
         assertTrue(teamFromRepository.isOpenRecruitment());
-        assertTrue(teamFromRepository.getTeam_members().isEmpty());
+        assertTrue(teamFromRepository.getTeamMembers().isEmpty());
         assertEquals(30, teamFromRepository.getMaxAmountMembers());
 
     }
@@ -221,8 +216,8 @@ public class EndToEndTesting {
 
         assertEquals(201, response.getStatusCode());
         assertNotNull(savedTeam);
-        assertEquals(1, savedTeam.getTeam_members().size());
-        assertTrue(savedTeam.getTeam_members().contains("secondUser"));
+        assertEquals(1, savedTeam.getTeamMembers().size());
+        assertTrue(savedTeam.getTeamMembers().contains("secondUser"));
 
     }
 
@@ -234,7 +229,7 @@ public class EndToEndTesting {
 
         Set<String> teamMembers = new HashSet<>(Arrays.asList(firstRecruit, secondRecruit));
 
-        preparedTeam.setTeam_members(teamMembers);
+        preparedTeam.setTeamMembers(teamMembers);
 
         teamRepository.save(preparedTeam);
 
@@ -247,9 +242,9 @@ public class EndToEndTesting {
         Team teamFromRepository = teamRepository.findByTeamName(teamName).orElse(null);
 
         assert teamFromRepository != null;
-        assertEquals(1 ,teamFromRepository.getTeam_members().size());
-        assertTrue(teamFromRepository.getTeam_members().contains("secondRecruit"));
-        assertFalse(teamFromRepository.getTeam_members().contains("firstRecruit"));
+        assertEquals(1 ,teamFromRepository.getTeamMembers().size());
+        assertTrue(teamFromRepository.getTeamMembers().contains("secondRecruit"));
+        assertFalse(teamFromRepository.getTeamMembers().contains("firstRecruit"));
         assertEquals(200, response.getStatusCode());
 
     }
@@ -262,7 +257,7 @@ public class EndToEndTesting {
 
         Set<String> teamMembers = new HashSet<>(List.of(firstRecruit));
 
-        preparedTeam.setTeam_members(teamMembers);
+        preparedTeam.setTeamMembers(teamMembers);
 
         teamRepository.save(preparedTeam);
 

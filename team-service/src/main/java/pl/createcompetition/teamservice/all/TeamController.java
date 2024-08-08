@@ -82,19 +82,11 @@ public class TeamController {
         return teamService.removeMemberFromTeam(teamName, recruitName, userPrincipal);
     }
 
-    @GetMapping("testing-endpoint")
-    public ResponseEntity<?> testingEndpoint() {
-
-        String userNameToDelete = "userNameToDelete";
-        String teamName = "teamName";
-
-//        throw new ResourceNotFoundException("UserName: " + userNameToDelete +  "does not belong to team: " + teamName);
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "UserName999999999999999999999999999");
-//        throw new ResourceNotFoundException("UserName7777777777777777777777777");
-
-//        throw new ResourceNotFoundException("99999999999999999999");
-
-
+    @GetMapping("team-members/{teamName}")
+    @RolesAllowed("user")
+    public ResponseEntity<?> getListOfTeamMembers(@RequestBody String teamName) {
+        return teamService.getListOfTeamMembers(teamName);
     }
+
 
 }
