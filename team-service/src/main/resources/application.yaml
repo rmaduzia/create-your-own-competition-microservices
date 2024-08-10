@@ -6,27 +6,15 @@ server:
 spring:
 
   datasource:
-#    url: jdbc:${DATABASE_DRIVER}://${DATABASE_URL}:${DATABASE_PORT}/${DATABASE_NAME}?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
-#    username: ${DATABASE_USERNAME}
-#    password: ${DATABASE_PASSWORD}
-    url: jdbc:mysql://localhost:3306/team-service?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
-    username: root
-    password: root
-
-#  flyway:
-#    user: ${DATABASE_USERNAME}
-#    password: ${DATABASE_PASSWORD}
-#    url: jdbc:${DATABASE_DRIVER}://${DATABASE_URL}:${DATABASE_PORT}/${DATABASE_NAME}?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
-#    schemas: ${DATABASE_NAME}
-#    locations: classpath:/db/migration/structure/ddl
-#    out-of-order: true
-#    enabled: true
+    url: jdbc:${DATABASE_DRIVER}://${DATABASE_URL}:${DATABASE_PORT}/${DATABASE_NAME}?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
 
   flyway:
-    user: root
-    password: root
-    url: jdbc:mysql://localhost:3306/team-service?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
-    schemas: team-service
+    user: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    url: jdbc:${DATABASE_DRIVER}://${DATABASE_URL}:${DATABASE_PORT}/${DATABASE_NAME}?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
+    schemas: ${DATABASE_NAME}
     locations: classpath:/db/migration/structure/ddl
     out-of-order: true
     enabled: true
