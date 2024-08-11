@@ -42,6 +42,8 @@ public class TournamentTeamService {
             .body("Your team: " + teamName + " joined tournament: " + tournamentName)
             .build();
 
+        tournamentRepository.save(findTournament);
+
         messageSendFacade.sendEvent(notifyTeamMembersRequest);
 
         return ResponseEntity.ok().build();
@@ -60,6 +62,8 @@ public class TournamentTeamService {
         if (!isTeamRemovedFromTournament) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Issue while removing team from tournament");
         }
+
+        tournamentRepository.save(findTournament);
 
         NotifyTeamMembersRequest notifyTeamMembersRequest = NotifyTeamMembersRequest.builder()
             .id(UUID.randomUUID())
