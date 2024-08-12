@@ -37,6 +37,9 @@ public class CompetitionTeamService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Did not add team: " + teamName + " to competition: " + competitionName);
         }
 
+        competitionRepository.save(foundCompetition);
+
+
         NotifyTeamMembersRequest notifyTeamMembersRequest = NotifyTeamMembersRequest.builder()
             .id(UUID.randomUUID())
             .teamName(teamName)
