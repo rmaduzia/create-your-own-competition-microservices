@@ -1,6 +1,7 @@
 package pl.createcompetition.tournamentservice.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -10,7 +11,9 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,6 +23,7 @@ import pl.createcompetition.tournamentservice.competition.Competition;
 import pl.createcompetition.tournamentservice.competition.CompetitionRepository;
 import pl.createcompetition.tournamentservice.competition.CompetitionTeamService;
 import pl.createcompetition.tournamentservice.kafka.domain.MessageSendFacade;
+import pl.createcompetition.tournamentservice.kafka.domain.NotifyTeamMembersRequest;
 import pl.createcompetition.tournamentservice.microserviceschanges.UserPrincipal;
 import pl.createcompetition.tournamentservice.tournament.VerifyMethodsForServices;
 import pl.createcompetition.tournamentservice.tournament.participation.TeamDto;
@@ -43,6 +47,9 @@ public class CompetitionTeamServiceTest {
 
     Competition competition;
     TeamDto teamDto;
+
+    @Captor
+    ArgumentCaptor<NotifyTeamMembersRequest> notifyTeamMembersRequestArgumentCaptor;
     
     @BeforeEach
     public void setUp() {
@@ -52,14 +59,13 @@ public class CompetitionTeamServiceTest {
         competition = Competition.builder()
             .maxAmountOfTeams(10)
             .eventOwner(userName)
-            .eventName("Tourtnament1")
+            .eventName("CompetitionName")
             .isEventFinished(false)
             .build();
         
         teamDto = TeamDto.builder()
             .teamName("someTeamName")
             .teamOwner(userPrincipal.getName())
-
             .build();
     }
 
@@ -74,8 +80,16 @@ public class CompetitionTeamServiceTest {
 
         verify(competitionRepository, times(1)).save(competition);
         verify(messageSendFacade, times(1)).sendEvent(any());
+        verify(messageSendFacade).sendEvent(notifyTeamMembersRequestArgumentCaptor.capture());
         assertEquals(response.getStatusCode(), HttpStatus.OK);
         assertEquals("Added team: " + teamDto.getTeamName() +  " to competition: " + competition.getEventName(), response.getBody());
+
+        NotifyTeamMembersRequest notifyTeamMembersRequest = notifyTeamMembersRequestArgumentCaptor.getValue();
+
+        assertEquals(teamDto.getTeamName(), notifyTeamMembersRequest.getTeamName());
+        assertEquals("Your team: " + teamDto.getTeamName() + " joined competition: " + competition.getEventName(), notifyTeamMembersRequest.getBody());
+        assertEquals(teamDto.getTeamName(), notifyTeamMembersRequest.getKey());
+        assertNotNull(notifyTeamMembersRequest.getId());
     }
 
     @Test
@@ -91,7 +105,16 @@ public class CompetitionTeamServiceTest {
         ResponseEntity<?> response = competitionTeamService.teamLeaveCompetition(teamDto.getTeamName(), competition.getEventName(), userPrincipal.getName());
 
         verify(competitionRepository, times(1)).save(competition);
+        verify(messageSendFacade, times(1)).sendEvent(any());
+        verify(messageSendFacade).sendEvent(notifyTeamMembersRequestArgumentCaptor.capture());
         assertEquals(response.getStatusCode(), HttpStatus.OK);
         assertEquals("Removed team: " + teamDto.getTeamName() +  " from competition: " + competition.getEventName(), response.getBody());
+
+        NotifyTeamMembersRequest notifyTeamMembersRequest = notifyTeamMembersRequestArgumentCaptor.getValue();
+
+        assertEquals(teamDto.getTeamName(), notifyTeamMembersRequest.getTeamName());
+        assertEquals("Your team: " + teamDto.getTeamName() + " left competition: " + competition.getEventName(), notifyTeamMembersRequest.getBody());
+        assertEquals(teamDto.getTeamName(), notifyTeamMembersRequest.getKey());
+        assertNotNull(notifyTeamMembersRequest.getId());
     }
 }
