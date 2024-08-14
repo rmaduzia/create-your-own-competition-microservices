@@ -1,7 +1,9 @@
 package pl.createcompetition.tournamentservice.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -10,13 +12,16 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import pl.createcompetition.tournamentservice.kafka.domain.MessageSendFacade;
+import pl.createcompetition.tournamentservice.kafka.domain.NotifyTeamMembersRequest;
 import pl.createcompetition.tournamentservice.microserviceschanges.UserPrincipal;
 import pl.createcompetition.tournamentservice.tournament.Tournament;
 import pl.createcompetition.tournamentservice.tournament.TournamentRepository;
@@ -38,6 +43,9 @@ public class TournamentTeamServiceTest {
 
     @Mock
     UserPrincipal userPrincipal;
+
+    @Captor
+    ArgumentCaptor<NotifyTeamMembersRequest> notifyTeamMembersRequestArgumentCaptor;
 
     private static final String userName = "someUserName";
 
@@ -79,8 +87,18 @@ public class TournamentTeamServiceTest {
         ResponseEntity<?> response = tournamentTeamService.teamJoinTournament(firstTeamDto.getTeamName(), tournament.getEventName(), userPrincipal.getName());
 
         verify(tournamentRepository, times(1)).save(tournament);
+        verify(messageSendFacade, times(1)).sendEvent(any());
+        verify(messageSendFacade).sendEvent(notifyTeamMembersRequestArgumentCaptor.capture());
         verify(verifyMethodsForServices, times(1)).shouldFindTeam(firstTeamDto.getTeamName(), firstTeamDto.getTeamOwner());
+
         assertEquals(response.getStatusCode(), HttpStatus.OK);
+
+        NotifyTeamMembersRequest notifyTeamMembersRequest = notifyTeamMembersRequestArgumentCaptor.getValue();
+
+        assertEquals(firstTeamDto.getTeamName(), notifyTeamMembersRequest.getTeamName());
+        assertEquals("Your team: " + firstTeamDto.getTeamName() + " joined tournament: " + tournament.getEventName(), notifyTeamMembersRequest.getBody());
+        assertEquals(firstTeamDto.getTeamName(), notifyTeamMembersRequest.getKey());
+        assertNotNull(notifyTeamMembersRequest.getId());
     }
 
     @Test
@@ -99,7 +117,16 @@ public class TournamentTeamServiceTest {
 
         verify(verifyMethodsForServices, times(1)).shouldFindTeam(firstTeamDto.getTeamName(), firstTeamDto.getTeamOwner());
         verify(tournamentRepository, times(1)).save(tournament);
+        verify(messageSendFacade, times(1)).sendEvent(any());
+        verify(messageSendFacade).sendEvent(notifyTeamMembersRequestArgumentCaptor.capture());
         assertEquals(response.getStatusCode(), HttpStatus.OK);
         assertNull(response.getBody());
+
+        NotifyTeamMembersRequest notifyTeamMembersRequest = notifyTeamMembersRequestArgumentCaptor.getValue();
+
+        assertEquals(firstTeamDto.getTeamName(), notifyTeamMembersRequest.getTeamName());
+        assertEquals("Your team: " + firstTeamDto.getTeamName() + " left tournament: " + tournament.getEventName(), notifyTeamMembersRequest.getBody());
+        assertEquals(firstTeamDto.getTeamName(), notifyTeamMembersRequest.getKey());
+        assertNotNull(notifyTeamMembersRequest.getId());
     }
 }
