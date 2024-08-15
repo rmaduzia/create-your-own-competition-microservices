@@ -1,5 +1,6 @@
 package pl.createcompetition.teamservice.all;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -118,7 +119,7 @@ public class TeamService {
     }
 
 
-    public ResponseEntity<?> getListOfTeamMembers(String teamName) {
-        return ResponseEntity.ok(teamRepository.findTeamMembersByTeamName(teamName));
+    public List<String> getListOfTeamMembers(String teamName) {
+        return teamRepository.findTeamMembersByTeamName(teamName);
     }
 }

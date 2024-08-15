@@ -3,6 +3,7 @@ package pl.createcompetition.teamservice.all;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -84,7 +85,7 @@ public class TeamController {
 
     @GetMapping("team-members/{teamName}")
     @RolesAllowed("user")
-    public ResponseEntity<?> getListOfTeamMembers(@RequestBody String teamName) {
+    public List<String> getListOfTeamMembers(@RequestBody String teamName) {
         return teamService.getListOfTeamMembers(teamName);
     }
 
