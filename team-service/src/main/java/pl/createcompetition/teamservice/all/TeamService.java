@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import pl.createcompetition.teamservice.exception.BadRequestException;
 import pl.createcompetition.teamservice.exception.ResourceAlreadyExistException;
 import pl.createcompetition.teamservice.exception.ResourceNotFoundException;
 //import pl.createcompetition.teamservice.notification.NotificationMessagesToUsersService;
@@ -47,7 +46,7 @@ public class TeamService {
     public ResponseEntity<?> updateTeam (String teamName, Team team, String userName) {
 
         if (!team.getTeamName().equals(teamName)) {
-            throw new BadRequestException("Team name doesn't match with Team object");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team name doesn't match with Team object");
         }
 
         Team foundTeam = verifyMethodsForServices.shouldFindTeam(team.getTeamName(), userName);
