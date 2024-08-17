@@ -17,7 +17,6 @@ import pl.createcompetition.teamservice.all.Team;
 import pl.createcompetition.teamservice.all.TeamRepository;
 import pl.createcompetition.teamservice.all.TeamService;
 import pl.createcompetition.teamservice.all.VerifyMethodsForServices;
-import pl.createcompetition.teamservice.exception.ResourceAlreadyExistException;
 import pl.createcompetition.teamservice.exception.ResourceNotFoundException;
 //import pl.createcompetition.teamservice.notification.NotificationMessagesToUsersService;
 import pl.createcompetition.teamservice.keycloak.KeyCloakService;
@@ -148,13 +147,13 @@ public class TeamServiceTest {
 
         when(teamRepository.existsTeamByTeamNameIgnoreCase(team.getTeamName())).thenReturn(true);
 
-        Exception exception = assertThrows(
-                ResourceAlreadyExistException.class,
+        ResponseStatusException exception = assertThrows(
+                ResponseStatusException.class,
                 () -> teamService.addTeam(createTeamRequest, userName),
                 "Expected doThing() to throw, but it didn't");
 
         verify(teamRepository, times(1)).existsTeamByTeamNameIgnoreCase(team.getTeamName());
-        assertEquals("Team already exists with Name : '"+ team.getTeamName()+ "'", exception.getMessage());
+        assertEquals("Team with name: " + team.getTeamName() + " already exists", exception.getReason());
     }
 
     @Test

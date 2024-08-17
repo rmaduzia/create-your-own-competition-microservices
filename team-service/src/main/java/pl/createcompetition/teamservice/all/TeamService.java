@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import pl.createcompetition.teamservice.exception.ResourceAlreadyExistException;
 import pl.createcompetition.teamservice.exception.ResourceNotFoundException;
 //import pl.createcompetition.teamservice.notification.NotificationMessagesToUsersService;
 import pl.createcompetition.teamservice.keycloak.KeyCloakService;
@@ -39,7 +38,7 @@ public class TeamService {
                 .build();
             return ResponseEntity.status(HttpStatus.CREATED).body(teamRepository.save(newTeam));
         } else{
-            throw new ResourceAlreadyExistException("Team", "Name", createTeamRequest.getTeamName());
+            throw new ResponseStatusException(HttpStatus.CONFLICT,  "Team with name: " + createTeamRequest.getTeamName() + " already exists");
         }
     }
 
