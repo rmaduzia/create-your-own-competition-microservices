@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import pl.createcompetition.teamservice.exception.ResourceNotFoundException;
 //import pl.createcompetition.teamservice.notification.NotificationMessagesToUsersService;
 import pl.createcompetition.teamservice.keycloak.KeyCloakService;
 import pl.createcompetition.teamservice.query.GetQueryImplService;
@@ -92,8 +91,7 @@ public class TeamService {
         boolean isRemoved = foundTeam.removeRecruit(userNameToDelete);
 
         if (!isRemoved)
-            throw new ResourceNotFoundException("UserName: " + userNameToDelete
-                +  " does not belong to team: " + teamName);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "UserName: " + userNameToDelete +  " does not belong to team: " + teamName);
 
 
         teamRepository.save(foundTeam);
@@ -112,7 +110,7 @@ public class TeamService {
 
     private void checkIfUserIsMemberOfTeam(Team team, String username) {
         if(!team.getTeamMembers().contains(username)) {
-            throw new ResourceNotFoundException("User named: " + username, "Team", team.getTeamName() + " not found in Team");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User named: " + username + "not found in Team: " + team.getTeamName());
         }
     }
 

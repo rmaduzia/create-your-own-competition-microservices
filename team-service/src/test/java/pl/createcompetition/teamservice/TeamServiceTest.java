@@ -17,7 +17,6 @@ import pl.createcompetition.teamservice.all.Team;
 import pl.createcompetition.teamservice.all.TeamRepository;
 import pl.createcompetition.teamservice.all.TeamService;
 import pl.createcompetition.teamservice.all.VerifyMethodsForServices;
-import pl.createcompetition.teamservice.exception.ResourceNotFoundException;
 //import pl.createcompetition.teamservice.notification.NotificationMessagesToUsersService;
 import pl.createcompetition.teamservice.keycloak.KeyCloakService;
 import pl.createcompetition.teamservice.notification.NotificationRepository;
@@ -131,15 +130,16 @@ public class TeamServiceTest {
     @Test
     public void shouldThrowExceptionTeamNotExists() {
 
-        when(verifyMethodsForServices.shouldFindTeam(team.getTeamName(), team.getTeamOwner())).thenThrow(new ResourceNotFoundException("Team not exists", "Name", team.getTeamName()));
+        when(verifyMethodsForServices.shouldFindTeam(team.getTeamName(), team.getTeamOwner())).thenThrow(
+            new ResponseStatusException(HttpStatus.NOT_FOUND, "Team named: " + team.getTeamName()  + " not exists"));
 
-        Exception exception = assertThrows(
-                ResourceNotFoundException.class,
+        ResponseStatusException exception = assertThrows(
+                ResponseStatusException.class,
                 () -> teamService.updateTeam(team.getTeamName(),team, userName),
                 "Expected doThing() to throw, but it didn't");
 
         verify(verifyMethodsForServices, times(1)).shouldFindTeam(team.getTeamName(), team.getTeamOwner());
-        assertEquals("Team not exists not found with Name : '"+ team.getTeamName()+ "'", exception.getMessage());
+        assertEquals("Team named: " + team.getTeamName() +  " not exists", exception.getReason());
     }
 
     @Test

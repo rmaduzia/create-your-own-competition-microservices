@@ -1,8 +1,9 @@
 package pl.createcompetition.teamservice.all;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import pl.createcompetition.teamservice.exception.ResourceNotFoundException;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @AllArgsConstructor
@@ -12,12 +13,12 @@ public class VerifyMethodsForServices {
 
     public Team shouldFindTeam(String teamName, String teamOwner) {
         return teamRepository.findByTeamNameAndTeamOwner(teamName, teamOwner).orElseThrow(() ->
-                new ResourceNotFoundException("Team not exists", "Name", teamName));
+            new ResponseStatusException(HttpStatus.NOT_FOUND, "Team named: " + teamName  + " not exists"));
     }
 
     public Team shouldFindTeam(String teamName) {
         return teamRepository.findByTeamName(teamName).orElseThrow(() ->
-                new ResourceNotFoundException("Team not exists", "Name", teamName));
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Team named: " + teamName  + " not exists"));
     }
 
 }
