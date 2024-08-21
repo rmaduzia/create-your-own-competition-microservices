@@ -30,6 +30,7 @@ import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -47,7 +48,7 @@ import pl.createcompetition.teamservice.all.TeamRepository;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureMockMvc
 @Testcontainers
-public class EndToEndTesting {
+public class TeamControllerTestsIT {
 
 //    @LocalServerPort
 //    int applicationPort;
@@ -270,6 +271,27 @@ public class EndToEndTesting {
         assertEquals(404, response.getStatusCode());
         assertEquals("UserName: " + recruitWhichNotBelongToTeam + " does not belong to team: myTeamName", response.jsonPath().getString("message"));
 
+    }
+
+    @Test
+    void shouldGetListOfTeamMembers() {
+
+        Set<String> teamMembers = new HashSet<>(Arrays.asList("firstRecruit", "secondRecruit", "thirdRecruit"));
+
+        preparedTeam.setTeamMembers(teamMembers);
+
+        teamRepository.save(preparedTeam);
+
+        Response response = given().header("Authorization", "Bearer " + userToken)
+            .contentType("application/json")
+            .pathParam("teamName", teamName)
+            .get("team/team-members/{teamName}");
+
+        assertEquals(HttpStatus.OK.value(), response.getStatusCode());
+
+        List<String> returnedTeam = response.jsonPath().getList("$", String.class);
+
+        assertEquals(teamMembers, Set.copyOf(returnedTeam));
     }
 
     private static String getUserToken() throws URISyntaxException {

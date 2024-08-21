@@ -13,7 +13,7 @@ import java.util.Set;
 import static pl.createcompetition.teamservice.config.AppConstants.MAX_AMOUNT_OF_USERS_IN_TEAM;
 
 
-@EqualsAndHashCode(of="id")
+@EqualsAndHashCode(of="teamName")
 @Table(name = "teams")
 @Getter
 @Setter

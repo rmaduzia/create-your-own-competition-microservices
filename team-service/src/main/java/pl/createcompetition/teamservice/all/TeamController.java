@@ -81,7 +81,7 @@ public class TeamController {
 
     @GetMapping("team-members/{teamName}")
     @RolesAllowed("user")
-    public List<String> getListOfTeamMembers(@RequestBody String teamName) {
+    public List<String> getListOfTeamMembers(@PathVariable String teamName) {
         return teamService.getListOfTeamMembers(teamName);
     }
 
