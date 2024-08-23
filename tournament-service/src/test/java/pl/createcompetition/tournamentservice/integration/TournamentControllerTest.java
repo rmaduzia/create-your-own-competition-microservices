@@ -8,11 +8,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpStatus;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.createcompetition.tournamentservice.competition.EventCreateUpdateRequest;
 import pl.createcompetition.tournamentservice.tournament.Tournament;
 import pl.createcompetition.tournamentservice.tournament.TournamentRepository;
@@ -21,9 +17,6 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
-@Testcontainers
 public class TournamentControllerTest extends IntegrationTestsBaseConfig {
 
     @Autowired
@@ -33,7 +26,6 @@ public class TournamentControllerTest extends IntegrationTestsBaseConfig {
     void setupTests() {
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = serverPort;
-
         tournamentRepository.deleteAll();
     }
 
