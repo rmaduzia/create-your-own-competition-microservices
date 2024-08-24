@@ -14,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -23,7 +22,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -32,7 +30,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public abstract class IntegrationTestsBaseConfig {
 
     protected static String userToken;
-
     protected static final String mainUserName = "test";
 
     @LocalServerPort
@@ -44,33 +41,40 @@ public abstract class IntegrationTestsBaseConfig {
     static PortBinding portBinding = new PortBinding(
         Binding.bindPort(MYSQL_HOST_PORT), new ExposedPort(MYSQL_CONTAINER_PORT));
 
-    @Container
-    @ServiceConnection
     static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0")
         .withUsername("root")
         .withPassword("root")
         .withDatabaseName("competition-tournament-service")
         .withCreateContainerCmdModifier(cmd -> cmd.withHostConfig(new HostConfig().withPortBindings(portBinding))
-            .withExposedPorts(ExposedPort.tcp(MYSQL_CONTAINER_PORT)));
+            .withExposedPorts(ExposedPort.tcp(MYSQL_CONTAINER_PORT)))
+    .withReuse(true);
 
-    @Container
     static KeycloakContainer keycloakContainer = new KeycloakContainer("quay.io/keycloak/keycloak:22.0.4")
-        .withRealmImportFile("appdevelopercompetition-realm-export.json");
+        .withRealmImportFile("appdevelopercompetition-realm-export.json")
+        .withReuse(true);
+
+    @BeforeAll
+    static void startContainers() {
+        mysql.start();
+        keycloakContainer.start();
+    }
 
     @DynamicPropertySource
-    static void setupKeyCloak(DynamicPropertyRegistry registry) {
+    static void setupProperties(DynamicPropertyRegistry registry) {
 
         registry.add("spring.security.oauth2.resourceserver.jwt.jwk-set-uri",
             () -> keycloakContainer.getAuthServerUrl() + "/realms/appdevelopercompetition/protocol/openid-connect/certs");
 
-        registry.add("keycloak.domain",
-            () -> keycloakContainer.getAuthServerUrl());
+        registry.add("keycloak.domain", keycloakContainer::getAuthServerUrl);
 
-        registry.add("keycloak.urls.auth",
-            () -> keycloakContainer.getAuthServerUrl());
+        registry.add("keycloak.urls.auth", keycloakContainer::getAuthServerUrl);
 
         registry.add("keycloak.adminClientSecret",
             () -> "**********");
+
+        registry.add("spring.datasource.url", mysql::getJdbcUrl);
+        registry.add("spring.datasource.password", mysql::getPassword);
+        registry.add("spring.datasource.username", mysql::getUsername);
     }
 
     @BeforeAll
