@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.createcompetition.tournamentservice.competition.Competition;
 import pl.createcompetition.tournamentservice.microserviceschanges.UserPrincipal;
 import pl.createcompetition.tournamentservice.model.Tag;
 
@@ -26,8 +27,8 @@ public class CompetitionTagController {
 
     @RolesAllowed("user")
     @GetMapping()
-    public ResponseEntity<?> getTagsToCompetition(@RequestBody List<String> tagCompetition) {
-        return competitionTagService.getCompetitionTag(tagCompetition);
+    public List<Competition> getTagsToCompetition(@RequestBody String tagCompetition) {
+        return competitionTagService.getCompetitionsTag(tagCompetition);
 
     }
 
@@ -37,7 +38,7 @@ public class CompetitionTagController {
                                                   @PathVariable String competitionName,
                                                   UserPrincipal userPrincipal) {
 
-        return competitionTagService.addCompetitionTag(tagCompetition, competitionName, userPrincipal);
+        return competitionTagService.addCompetitionTag(tagCompetition, competitionName, userPrincipal.getName());
     }
 
     @RolesAllowed("user")
@@ -46,7 +47,7 @@ public class CompetitionTagController {
                                                   @PathVariable String competitionName,
                                                   UserPrincipal userPrincipal) {
 
-        return competitionTagService.updateCompetitionTag(tagCompetition, competitionName, userPrincipal);
+        return competitionTagService.updateCompetitionTag(tagCompetition, competitionName, userPrincipal.getName());
     }
 
     @RolesAllowed("user")
@@ -55,7 +56,7 @@ public class CompetitionTagController {
                                                   @PathVariable String competitionName,
                                                   UserPrincipal userPrincipal) {
 
-        return competitionTagService.deleteCompetitionTag(tagCompetition, competitionName, userPrincipal);
+        return competitionTagService.deleteCompetitionTag(tagCompetition, competitionName, userPrincipal.getName());
     }
 
 

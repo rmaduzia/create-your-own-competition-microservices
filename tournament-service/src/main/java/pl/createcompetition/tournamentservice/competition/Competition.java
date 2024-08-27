@@ -27,7 +27,7 @@ import pl.createcompetition.tournamentservice.model.Tag;
 import pl.createcompetition.tournamentservice.model.TeamEntity;
 import pl.createcompetition.tournamentservice.query.QueryDtoInterface;
 
-@EqualsAndHashCode(of = {"id", "eventName"})
+@EqualsAndHashCode(of = {"eventName"})
 @Table(name = "competitions")
 @Entity
 @Getter

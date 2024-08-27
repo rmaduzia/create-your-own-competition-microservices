@@ -22,14 +22,14 @@ public class CompetitionTagService {
     private final VerifyMethodsForServices verifyMethodsForServices;
 
 
-    public ResponseEntity<?> getCompetitionTag(List<String> competitionTag) {
-        return ResponseEntity.noContent().build();
+    public List<Competition> getCompetitionsTag(String tagName) {
+        return competitionRepository.findByTagsTag(tagName);
     }
 
-    public ResponseEntity<?> addCompetitionTag(Set<Tag> competitionTag, String competitionName, UserPrincipal userPrincipal) {
+    public ResponseEntity<?> addCompetitionTag(Set<Tag> competitionTag, String competitionName, String userName) {
 
         Competition findCompetition =  verifyMethodsForServices.shouldFindCompetition(competitionName);
-        verifyMethodsForServices.checkIfCompetitionBelongToUser(findCompetition.getEventOwner(), userPrincipal.getName());
+        verifyMethodsForServices.checkIfCompetitionBelongToUser(findCompetition.getEventOwner(), userName);
 
         findCompetition.addManyTagToCompetition(competitionTag);
 
@@ -40,10 +40,10 @@ public class CompetitionTagService {
         }
     }
 
-    public ResponseEntity<?> updateCompetitionTag(Tag competitionTag, String competitionName, UserPrincipal userPrincipal) {
+    public ResponseEntity<?> updateCompetitionTag(Tag competitionTag, String competitionName, String userName) {
 
         Competition findCompetition =  verifyMethodsForServices.shouldFindCompetition(competitionName);
-        verifyMethodsForServices.checkIfCompetitionBelongToUser(findCompetition.getEventOwner(), userPrincipal.getName());
+        verifyMethodsForServices.checkIfCompetitionBelongToUser(findCompetition.getEventOwner(), userName);
 
         findCompetition.addTagToCompetition(competitionTag);
 
@@ -51,10 +51,10 @@ public class CompetitionTagService {
 
     }
 
-    public ResponseEntity<?> deleteCompetitionTag(Tag competitionTag, String competitionName, UserPrincipal userPrincipal) {
+    public ResponseEntity<?> deleteCompetitionTag(Tag competitionTag, String competitionName, String userName) {
 
         Competition findCompetition =  verifyMethodsForServices.shouldFindCompetition(competitionName);
-        verifyMethodsForServices.checkIfCompetitionBelongToUser(findCompetition.getEventOwner(), userPrincipal.getName());
+        verifyMethodsForServices.checkIfCompetitionBelongToUser(findCompetition.getEventOwner(), userName);
 
         if (findCompetition.getTags().contains(competitionTag)) {
             competitionRepository.deleteById(findCompetition.getId());
