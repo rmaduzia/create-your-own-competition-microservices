@@ -91,4 +91,19 @@ public class CompetitionTagServiceTest {
         assertEquals(response.getBody(), competition);
     }
 
+    @Test
+    public void shouldUpdateTag() {
+
+        when(verifyMethodsForServices.shouldFindCompetition(competition.getEventName())).thenReturn(competition);
+        when(competitionRepository.save(competition)).thenReturn(competition);
+
+        competitionTag.setTag("updatedTag");
+        ResponseEntity<?> response = competitionTagService.updateCompetitionTag(competitionTag, competition.getEventName(), userPrincipal.getName());
+
+        verify(competitionRepository, times(1)).save(competition);
+
+        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertEquals(response.getBody(), competition);
+    }
+
 }
