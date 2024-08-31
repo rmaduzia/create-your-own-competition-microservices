@@ -111,8 +111,15 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
         return teams.add(teamEntity);
     }
 
-    public void addManyTagToCompetition(Set<Tag> tag) {
-        this.tags.addAll(tag);
+    public void addManyTagToCompetition(Set<String> tagsList) {
+
+        Set<Tag> tags = new HashSet<>();
+
+        for(String value: tagsList) {
+            tags.add(new Tag(value));
+        }
+
+        this.tags.addAll(tags);
     }
 
     @Override

@@ -34,7 +34,7 @@ public class CompetitionTagController {
 
     @RolesAllowed("user")
     @PostMapping("{competitionName}")
-    public ResponseEntity<?> addTagsToCompetition(@RequestBody Set<Tag> tagCompetition,
+    public ResponseEntity<?> addTagsToCompetition(@RequestBody Set<String> tagCompetition,
                                                   @PathVariable String competitionName,
                                                   UserPrincipal userPrincipal) {
 

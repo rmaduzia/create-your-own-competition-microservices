@@ -26,7 +26,7 @@ public class CompetitionTagService {
         return competitionRepository.findByTagsTag(tagName);
     }
 
-    public ResponseEntity<?> addCompetitionTag(Set<Tag> competitionTag, String competitionName, String userName) {
+    public ResponseEntity<?> addCompetitionTag(Set<String> competitionTag, String competitionName, String userName) {
 
         Competition findCompetition =  verifyMethodsForServices.shouldFindCompetition(competitionName);
         verifyMethodsForServices.checkIfCompetitionBelongToUser(findCompetition.getEventOwner(), userName);
@@ -36,7 +36,7 @@ public class CompetitionTagService {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(competitionRepository.save(findCompetition));
         } catch (DataIntegrityViolationException exception) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Competition Tag already exists: " +competitionTag.iterator().next().getTag());
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Competition Tag already exists: " +competitionTag.iterator().next());
         }
     }
 
