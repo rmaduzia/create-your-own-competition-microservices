@@ -1,5 +1,0 @@
-CREATE TABLE tags
-(
-    id  BIGINT PRIMARY KEY,
-    tag VARCHAR(255)
-);
