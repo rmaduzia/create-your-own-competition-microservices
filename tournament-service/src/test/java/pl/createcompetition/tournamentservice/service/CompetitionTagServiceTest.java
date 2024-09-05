@@ -1,6 +1,7 @@
 package pl.createcompetition.tournamentservice.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -38,12 +39,13 @@ import pl.createcompetition.tournamentservice.tournament.VerifyMethodsForService
 public class CompetitionTagServiceTest {
 
     @Mock
-    CompetitionRepository competitionRepository;
-    @InjectMocks
-    CompetitionTagService competitionTagService;
+    private CompetitionRepository competitionRepository;
 
     @Mock
-    VerifyMethodsForServices verifyMethodsForServices;
+    private VerifyMethodsForServices verifyMethodsForServices;
+
+    @InjectMocks
+    private CompetitionTagService competitionTagService;
 
     @Mock
     UserPrincipal userPrincipal;
@@ -105,5 +107,21 @@ public class CompetitionTagServiceTest {
         assertEquals(response.getStatusCode(), HttpStatus.OK);
         assertEquals(response.getBody(), competition);
     }
+
+
+    @Test
+    public void shouldThrowExceptionCompetitionNotExistsWhenAddTag() {
+
+        Set<String> tags = Set.of("someTag");
+
+        ResponseStatusException exception = assertThrows(
+            ResponseStatusException.class,
+            () ->  competitionTagService.addCompetitionTag(tags, competition.getEventName(), userPrincipal.getName()),
+            "Expected doThing() to throw, but it didn't");
+
+        verify(competitionRepository, times(1)).findByEventName(competition.getEventName());
+        assertEquals("Competition not exists not found with Name : '"+ competition.getEventName()+ "'", exception.getMessage());
+    }
+
 
 }
