@@ -31,7 +31,6 @@ import pl.createcompetition.tournamentservice.competition.EventMapper;
 import pl.createcompetition.tournamentservice.tournament.Tournament;
 import pl.createcompetition.tournamentservice.tournament.TournamentRepository;
 import pl.createcompetition.tournamentservice.tournament.TournamentService;
-import pl.createcompetition.tournamentservice.tournament.VerifyMethodsForServices;
 import pl.createcompetition.tournamentservice.tournament.participation.TeamDto;
 import pl.createcompetition.tournamentservice.microserviceschanges.UserPrincipal;
 
@@ -43,8 +42,6 @@ public class TournamentServiceTest {
     TournamentRepository tournamentRepository;
     @InjectMocks
     TournamentService tournamentService;
-    @Mock
-    VerifyMethodsForServices verifyMethodsForServices;
     @Spy
     EventMapper eventMapper = Mappers.getMapper(EventMapper.class);
 
@@ -215,8 +212,6 @@ public class TournamentServiceTest {
         tournament.addTeamToTournament(teamDto.getTeamName());
 
         when(tournamentRepository.findByEventNameAndEventOwner(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())).thenReturn(Optional.of(tournament));
-        lenient().when(verifyMethodsForServices.shouldFindTeam(teamDto.getTeamName())).thenReturn(
-            teamDto);
 
         ResponseEntity<?> response = tournamentService.removeTeamFromTournament(tournament.getEventName(), teamDto.getTeamName(), userPrincipal.getName());
 
