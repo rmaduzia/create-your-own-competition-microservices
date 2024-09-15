@@ -2,7 +2,9 @@ package pl.createcompetition.tournamentservice.competition.tag;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,13 +16,12 @@ import pl.createcompetition.tournamentservice.microserviceschanges.UserPrincipal
 import pl.createcompetition.tournamentservice.model.Tag;
 import pl.createcompetition.tournamentservice.tournament.VerifyMethodsForServices;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class CompetitionTagService {
 
     private final CompetitionRepository competitionRepository;
     private final VerifyMethodsForServices verifyMethodsForServices;
-
 
     public List<Competition> getCompetitionsTag(String tagName) {
         return competitionRepository.findByTagsTag(tagName);
@@ -28,13 +29,20 @@ public class CompetitionTagService {
 
     public ResponseEntity<?> addCompetitionTag(Set<String> competitionTag, String competitionName, String userName) {
 
-        Competition findCompetition =  verifyMethodsForServices.shouldFindCompetition(competitionName);
-        verifyMethodsForServices.checkIfCompetitionBelongToUser(findCompetition.getEventOwner(), userName);
+        Competition foundCompetition =  verifyMethodsForServices.shouldFindCompetition(competitionName);
+        verifyMethodsForServices.checkIfCompetitionBelongToUser(foundCompetition.getEventOwner(), userName);
 
-        findCompetition.addManyTagToCompetition(competitionTag);
+        foundCompetition.addManyTagToCompetition(competitionTag);
+
+        competitionRepository.save(foundCompetition);
+
+        List<String> tags = foundCompetition.getTags().stream()
+            .map(Tag::getTag)
+            .toList();;
+        EventTagsDto eventTagsDto = new EventTagsDto(competitionName,tags);
 
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(competitionRepository.save(findCompetition));
+            return ResponseEntity.status(HttpStatus.CREATED).body(eventTagsDto);
         } catch (DataIntegrityViolationException exception) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Competition Tag already exists: " +competitionTag.iterator().next());
         }
