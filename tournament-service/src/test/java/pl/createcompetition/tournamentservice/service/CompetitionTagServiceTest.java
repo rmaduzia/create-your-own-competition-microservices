@@ -133,5 +133,19 @@ public class CompetitionTagServiceTest {
     }
 
 
+    @Test
+    public void shouldThrowExceptionCompetitionNotExistsWhenUpdateTag() {
+
+        String competitionTag = "updatedTag";
+
+        ResponseStatusException exception = assertThrows(
+            ResponseStatusException.class,
+            () ->  competitionTagService.updateCompetitionTag(competitionTag, competition.getEventName(), userPrincipal.getName()),
+            "Expected doThing() to throw, but it didn't");
+
+        verify(competitionRepository, times(1)).findByEventName(competition.getEventName());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Competition not exists, Name: "+ competition.getEventName(), exception.getReason());
+    }
 
 }
