@@ -1,4 +1,4 @@
-INSERT INTO matches_in_tournaments (tournament_id, first_team_name, second_team_name, match_date, winner_team, is_winner_confirmed, is_match_was_played, is_closed)
+INSERT INTO match_in_tournament (tournament_id, first_team_name, second_team_name, match_date, winner_team, is_winner_confirmed, is_match_was_played, is_closed)
 VALUES
 
 (1, 'TeamAlpha', 'TeamBeta', '2024-06-05 14:00:00', 'TeamAlpha', true, true, true),

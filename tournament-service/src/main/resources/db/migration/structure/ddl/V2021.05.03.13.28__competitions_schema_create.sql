@@ -14,7 +14,7 @@ CREATE TABLE competitions
     competition_owner   VARCHAR(255)
 );
 
-CREATE TABLE matches_in_competitions
+CREATE TABLE match_in_competition
 (
     id                  BIGINT PRIMARY KEY AUTO_INCREMENT,
     first_team_name     VARCHAR(255),
@@ -27,17 +27,7 @@ CREATE TABLE matches_in_competitions
     competition_id      BIGINT
 );
 
-CREATE TABLE matches_in_competition
-(
-    id                  BIGINT PRIMARY KEY AUTO_INCREMENT,
-    first_team_name     VARCHAR(255),
-    second_team_name    VARCHAR(255),
-    is_winner_confirmed BOOLEAN,
-    is_match_was_played BOOLEAN,
-    match_date          DATETIME,
-    winner_team         VARCHAR(255),
-    competition_id      BIGINT
-);
+
 
 CREATE TABLE votes_for_winning_team_in_competition_matches
 (
@@ -50,5 +40,5 @@ CREATE TABLE votes_for_winning_team_in_competition_matches
 
     CONSTRAINT FK_VOTES_FOR_WINNING_TEAM_IN_COMPETITION_MATCHES_COMPETITION_ID
         FOREIGN KEY (match_in_competition_id)
-            REFERENCES matches_in_competition (id)
+            REFERENCES match_in_competition (id)
 );

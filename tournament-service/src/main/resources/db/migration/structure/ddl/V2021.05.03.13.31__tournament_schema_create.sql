@@ -20,7 +20,7 @@ CREATE TABLE tournaments
 
 
 
-CREATE TABLE matches_in_tournaments
+CREATE TABLE match_in_tournament
 (
     id                  BIGINT PRIMARY KEY AUTO_INCREMENT,
     first_team_name     VARCHAR(255),
@@ -44,7 +44,7 @@ CREATE TABLE votes_for_winning_team_in_tournament_matches
 
     CONSTRAINT FK_VOTES_FOR_WINNING_TEAM_IN_TOURNAMENT_MATCHES_COMPETITION_ID
         FOREIGN KEY (match_in_tournament_id)
-            REFERENCES matches_in_tournaments (id)
+            REFERENCES match_in_tournament (id)
 );
 
 CREATE TABLE matches_in_tournament

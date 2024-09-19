@@ -17,7 +17,7 @@ import pl.createcompetition.tournamentservice.tournament.match.MatchInTournament
 import pl.createcompetition.tournamentservice.query.QueryDtoInterface;
 
 @EqualsAndHashCode(of = {"id"})
-@Table(name = "matches_in_tournaments")
+@Table(name = "match_in_tournament")
 @Getter
 @Setter
 @Builder

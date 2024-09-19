@@ -20,7 +20,7 @@ import pl.createcompetition.tournamentservice.query.QueryDtoInterface;
 
 @EqualsAndHashCode(of="id")
 @Entity
-@Table(name = "matches_in_competitions")
+@Table(name = "match_in_competition")
 @Getter
 @Setter
 @Builder
