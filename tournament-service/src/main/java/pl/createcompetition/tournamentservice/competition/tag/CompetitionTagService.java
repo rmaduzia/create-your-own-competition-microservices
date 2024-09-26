@@ -2,8 +2,6 @@ package pl.createcompetition.tournamentservice.competition.tag;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -12,8 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.createcompetition.tournamentservice.competition.Competition;
 import pl.createcompetition.tournamentservice.competition.CompetitionRepository;
-import pl.createcompetition.tournamentservice.microserviceschanges.UserPrincipal;
 import pl.createcompetition.tournamentservice.model.Tag;
+import pl.createcompetition.tournamentservice.tag.EventTagsDto;
 import pl.createcompetition.tournamentservice.tournament.VerifyMethodsForServices;
 
 @RequiredArgsConstructor
@@ -27,7 +25,7 @@ public class CompetitionTagService {
         return competitionRepository.findByTagsTag(tagName);
     }
 
-    public ResponseEntity<?> addCompetitionTag(Set<String> competitionTag, String competitionName, String userName) {
+    public ResponseEntity<EventTagsDto> addCompetitionTag(Set<String> competitionTag, String competitionName, String userName) {
 
         Competition foundCompetition =  verifyMethodsForServices.shouldFindCompetition(competitionName);
         verifyMethodsForServices.checkIfCompetitionBelongToUser(foundCompetition.getEventOwner(), userName);
@@ -38,7 +36,7 @@ public class CompetitionTagService {
 
         List<String> tags = foundCompetition.getTags().stream()
             .map(Tag::getTag)
-            .toList();;
+            .toList();
         EventTagsDto eventTagsDto = new EventTagsDto(competitionName,tags);
 
         try {
@@ -48,27 +46,35 @@ public class CompetitionTagService {
         }
     }
 
-    public ResponseEntity<?> updateCompetitionTag(Tag competitionTag, String competitionName, String userName) {
+    public ResponseEntity<EventTagsDto> updateCompetitionTag(String competitionTag, String competitionName, String userName) {
 
         Competition findCompetition =  verifyMethodsForServices.shouldFindCompetition(competitionName);
         verifyMethodsForServices.checkIfCompetitionBelongToUser(findCompetition.getEventOwner(), userName);
 
         findCompetition.addTagToCompetition(competitionTag);
 
-        return ResponseEntity.ok(competitionRepository.save(findCompetition));
+        competitionRepository.save(findCompetition);
+
+        EventTagsDto eventTagsDto = new EventTagsDto(competitionName, List.of(competitionTag));
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(eventTagsDto);
 
     }
 
-    public ResponseEntity<?> deleteCompetitionTag(Tag competitionTag, String competitionName, String userName) {
+    public ResponseEntity<Void> deleteCompetitionTag(String competitionTag, String competitionName, String userName) {
 
         Competition findCompetition =  verifyMethodsForServices.shouldFindCompetition(competitionName);
         verifyMethodsForServices.checkIfCompetitionBelongToUser(findCompetition.getEventOwner(), userName);
 
-        if (findCompetition.getTags().contains(competitionTag)) {
-            competitionRepository.deleteById(findCompetition.getId());
+        boolean isRemoved = findCompetition.removeTagByName(competitionTag);
+
+        competitionRepository.save(findCompetition);
+
+        if (isRemoved) {
+//            competitionRepository.deleteById(findCompetition.getId());
             return ResponseEntity.noContent().build();
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "CompetitionTag Tag not found:" + competitionTag.getId());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "CompetitionTag Tag not found:" + competitionTag);
         }
     }
 }

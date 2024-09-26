@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.createcompetition.tournamentservice.competition.Competition;
 import pl.createcompetition.tournamentservice.microserviceschanges.UserPrincipal;
-import pl.createcompetition.tournamentservice.model.Tag;
+import pl.createcompetition.tournamentservice.tag.EventTagsDto;
 
 @AllArgsConstructor
 @RestController
@@ -34,7 +34,7 @@ public class CompetitionTagController {
 
     @RolesAllowed("user")
     @PostMapping("{competitionName}")
-    public ResponseEntity<?> addTagsToCompetition(@RequestBody Set<String> tagCompetition,
+    public ResponseEntity<EventTagsDto> addTagsToCompetition(@RequestBody Set<String> tagCompetition,
                                                   @PathVariable String competitionName,
                                                   UserPrincipal userPrincipal) {
 
@@ -43,7 +43,7 @@ public class CompetitionTagController {
 
     @RolesAllowed("user")
     @PutMapping("{competitionName}")
-    public ResponseEntity<?> updateTagCompetition(@RequestBody Tag tagCompetition,
+    public ResponseEntity<EventTagsDto> updateTagCompetition(@RequestBody String tagCompetition,
                                                   @PathVariable String competitionName,
                                                   UserPrincipal userPrincipal) {
 
@@ -52,7 +52,7 @@ public class CompetitionTagController {
 
     @RolesAllowed("user")
     @DeleteMapping("{competitionName}")
-    public ResponseEntity<?> deleteTagCompetition(@RequestBody Tag tagCompetition,
+    public ResponseEntity<?> deleteTagCompetition(@RequestBody String tagCompetition,
                                                   @PathVariable String competitionName,
                                                   UserPrincipal userPrincipal) {
 
