@@ -20,6 +20,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Range;
 import pl.createcompetition.tournamentservice.competition.Competition.CompetitionDto;
 import pl.createcompetition.tournamentservice.competition.match.MatchInCompetition;
@@ -31,6 +32,7 @@ import pl.createcompetition.tournamentservice.query.QueryDtoInterface;
 @Table(name = "competitions")
 @Entity
 @Getter
+@ToString
 @Setter
 @Builder
 @AllArgsConstructor
@@ -98,8 +100,12 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
             cascade = CascadeType.ALL)
     private List<MatchInCompetition> matchInCompetition = new ArrayList<>();
 
-    public void addTagToCompetition(Tag tag) {
-        this.tags.add(tag);
+    public void addTagToCompetition(String tag) {
+        this.tags.add(new Tag(tag));
+    }
+
+    public boolean removeTagByName(String tagName) {
+        return tags.removeIf(tag -> tag.getTag().equals(tagName));
     }
 
     public boolean removeTeam(String teamName) {
