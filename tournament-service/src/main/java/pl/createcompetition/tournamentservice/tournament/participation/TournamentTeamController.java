@@ -13,26 +13,26 @@ import pl.createcompetition.tournamentservice.microserviceschanges.UserPrincipal
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("team")
+@RequestMapping("tournament")
 public class TournamentTeamController {
 
     private final TournamentTeamService tournamentService;
 
     @RolesAllowed("user")
-    @PostMapping("{teamName}/joinTournament")
-    public ResponseEntity<?> joinTeamToTournament(@RequestBody String recruitName,
+    @PostMapping("/{tournamentName}/team/joinTournament")
+    public ResponseEntity<String> joinTeamToTournament(@RequestBody String teamName,
                                                   UserPrincipal userPrincipal,
-                                                  @PathVariable String teamName) {
+                                                  @PathVariable String tournamentName) {
 
-        return tournamentService.teamJoinTournament(teamName, recruitName, userPrincipal.getName());
+        return tournamentService.teamJoinTournament(tournamentName, teamName, userPrincipal.getName());
     }
 
     @RolesAllowed("user")
-    @PostMapping("{teamName}leaveTournament")
-    public ResponseEntity<?> teamLeaveTournament(@RequestBody String recruitName,
+    @PostMapping("/{tournamentName}/team/leaveTournament")
+    public ResponseEntity<?> teamLeaveTournament(@RequestBody String teamName,
                                                  UserPrincipal userPrincipal,
-                                                 @PathVariable String teamName) {
+                                                 @PathVariable String tournamentName) {
 
-        return tournamentService.teamLeaveTournament(teamName, recruitName, userPrincipal.getName());
+        return tournamentService.teamLeaveTournament(tournamentName, teamName, userPrincipal.getName());
     }
 }

@@ -23,7 +23,7 @@ public class TournamentTeamService {
     private final TournamentRepository tournamentRepository;
     private final MessageSendFacade messageSendFacade;
 
-    public ResponseEntity<?> teamJoinTournament(String teamName, String tournamentName,String userName) {
+    public ResponseEntity<String> teamJoinTournament(String tournamentName, String teamName,String userName) {
 
         TeamDto foundTeamDto = verifyMethodsForServices.shouldFindTeam(teamName, userName);
         checkIfTeamBelongToUser(foundTeamDto, userName);
@@ -46,11 +46,11 @@ public class TournamentTeamService {
 
         messageSendFacade.sendEvent(notifyTeamMembersRequest);
 
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>("Team: " + teamName + " joined tournament: " + tournamentName, HttpStatus.OK);
     }
 
 
-    public ResponseEntity<?> teamLeaveTournament(String teamName, String tournamentName,String userName) {
+    public ResponseEntity<?> teamLeaveTournament(String tournamentName, String teamName, String userName) {
 
         TeamDto foundTeamDto = verifyMethodsForServices.shouldFindTeam(teamName, userName);
         checkIfTeamBelongToUser(foundTeamDto, userName);
@@ -73,7 +73,7 @@ public class TournamentTeamService {
 
         messageSendFacade.sendEvent(notifyTeamMembersRequest);
 
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>("Team: " + teamName + " left tournament: " + tournamentName, HttpStatus.OK);
     }
 
 
