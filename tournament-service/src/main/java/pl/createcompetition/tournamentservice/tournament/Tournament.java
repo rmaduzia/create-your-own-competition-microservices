@@ -127,6 +127,27 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
         return this.teams.removeIf(v -> v.getTeamName().equals(teamName));
     }
 
+    public void addTagToTournament(String tagName) {
+        tags.add(new Tag(tagName));
+    }
+
+    public boolean removeTagByName(String tagName) {
+        return tags.removeIf(v -> v.getTag().equals(tagName));
+    }
+
+    public void addManyTagsToTournament(Set<String> tagsToAdd) {
+
+        Set<Tag> tagsEntityToAdd = new HashSet<>();
+
+        for (String tag : tagsToAdd) {
+
+            tagsEntityToAdd.add(new Tag(tag));
+        }
+
+        tags.addAll(tagsEntityToAdd);
+    }
+
+
     @Override
     public TournamentDto map() {
         return new TournamentDto(eventOwner, eventName, maxAmountOfTeams, city, streetName,
