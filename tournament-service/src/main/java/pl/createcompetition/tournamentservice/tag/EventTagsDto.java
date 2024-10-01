@@ -1,4 +1,4 @@
-package pl.createcompetition.tournamentservice.competition.tag;
+package pl.createcompetition.tournamentservice.tag;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
