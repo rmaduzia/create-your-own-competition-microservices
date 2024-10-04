@@ -53,12 +53,6 @@ public abstract class IntegrationTestsBaseConfig {
         .withRealmImportFile("appdevelopercompetition-realm-export.json")
         .withReuse(true);
 
-    @BeforeAll
-    static void startContainers() {
-        mysql.start();
-        keycloakContainer.start();
-    }
-
     @DynamicPropertySource
     static void setupProperties(DynamicPropertyRegistry registry) {
 
@@ -79,6 +73,9 @@ public abstract class IntegrationTestsBaseConfig {
 
     @BeforeAll
     static void setUp() throws URISyntaxException {
+
+        mysql.start();
+        keycloakContainer.start();
         userToken = getUserToken();
     }
 
