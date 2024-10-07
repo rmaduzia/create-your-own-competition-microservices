@@ -1,152 +1,60 @@
-INSERT INTO tournament_tags (tag_id, tournament_id)
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Sports' AND tn.event_name = 'National Tournament'
+INSERT INTO tournament_tags (tournament_id, tag_id)
+SELECT t.id, tg.id
+FROM tournaments t
+JOIN tags tg
+-- Summer Games
+WHERE t.event_name = 'Summer Games' AND tg.tag IN ('SummerGames', 'OutdoorEvents', 'NationalLeague', 'RoundOf16', 'GroupD')
 UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Football' AND tn.event_name = 'Football World Cup'
+SELECT t.id, tg.id
+FROM tournaments t
+JOIN tags tg
+-- Winter Championship
+WHERE t.event_name = 'Winter Championship' AND tg.tag IN ('WinterGames', 'InternationalCup', 'QuarterFinals', 'GroupA', 'TieBreaker')
 UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'SummerGames' AND tn.event_name = 'Summer Olympics'
+SELECT t.id, tg.id
+FROM tournaments t
+JOIN tags tg
+-- Spring Showdown
+WHERE t.event_name = 'Spring Showdown' AND tg.tag IN ('Sports', 'TeamCompetition', 'QualifierRound', 'SemiFinals', 'PlayOffs')
 UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Championship' AND tn.event_name = 'Championship Finals'
+SELECT t.id, tg.id
+FROM tournaments t
+JOIN tags tg
+-- Autumn Clash
+WHERE t.event_name = 'Autumn Clash' AND tg.tag IN ('Athletics', 'FriendlyMatch', 'GroupStage', 'Champion', 'MedalWinner')
 UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Indoor' AND tn.event_name = 'Indoor Volleyball Tournament'
+SELECT t.id, tg.id
+FROM tournaments t
+JOIN tags tg
+-- New Year Bash
+WHERE t.event_name = 'New Year Bash' AND tg.tag IN ('IndoorGames', 'Final', 'PenaltyShootout', 'AwardCeremony', 'Underdog')
 UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Athletics' AND tn.event_name = 'Track and Field Nationals'
+SELECT t.id, tg.id
+FROM tournaments t
+JOIN tags tg
+-- Olympic Trials
+WHERE t.event_name = 'Olympic Trials' AND tg.tag IN ('Olympics', 'FairPlay', 'ClosingCeremony', 'GoldenGoal', 'TeamSpirit')
 UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'WinterGames' AND tn.event_name = 'Winter Sports Tournament'
+SELECT t.id, tg.id
+FROM tournaments t
+JOIN tags tg
+-- Championship Series
+WHERE t.event_name = 'Championship Series' AND tg.tag IN ('Championship', 'GroupB', 'ExtraTime', 'NationalRecord', 'SemiFinals')
 UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Marathon' AND tn.event_name = 'City Marathon Tournament'
+SELECT t.id, tg.id
+FROM tournaments t
+JOIN tags tg
+-- Global Games
+WHERE t.event_name = 'Global Games' AND tg.tag IN ('WorldCup', 'FinalStage', 'Underdog', 'Final', 'RunnerUp')
 UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Soccer' AND tn.event_name = 'National Soccer Tournament'
+SELECT t.id, tg.id
+FROM tournaments t
+JOIN tags tg
+-- Champions League
+WHERE t.event_name = 'Champions League' AND tg.tag IN ('PremierLeague', 'NationalLeague', 'FairPlay', 'TieBreaker', 'AwardCeremony')
 UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Volleyball' AND tn.event_name = 'Beach Volleyball Nationals'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Tennis' AND tn.event_name = 'International Tennis Cup'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'TableTennis' AND tn.event_name = 'Table Tennis Championship'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Cycling' AND tn.event_name = 'Cycling Tournament'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Rugby' AND tn.event_name = 'National Rugby Finals'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Swimming' AND tn.event_name = 'Swimming Tournament'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Hockey' AND tn.event_name = 'Hockey Nationals'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Cricket' AND tn.event_name = 'Cricket World Tournament'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Golf' AND tn.event_name = 'Golf Championship'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Boxing' AND tn.event_name = 'Boxing Tournament'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Wrestling' AND tn.event_name = 'Wrestling National Tournament'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Motorsports' AND tn.event_name = 'Motorsports Tournament'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Surfing' AND tn.event_name = 'National Surfing Tournament'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Rowing' AND tn.event_name = 'Rowing Championship'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Weightlifting' AND tn.event_name = 'Weightlifting Tournament'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Triathlon' AND tn.event_name = 'Triathlon Nationals'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Skating' AND tn.event_name = 'Skating Championship'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Esports' AND tn.event_name = 'Esports World Tournament'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Archery' AND tn.event_name = 'Archery Tournament'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Bowling' AND tn.event_name = 'Bowling Championship'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Shooting' AND tn.event_name = 'Shooting Tournament'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'HorseRacing' AND tn.event_name = 'Horse Racing Nationals'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Billiards' AND tn.event_name = 'Billiards Championship'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Fencing' AND tn.event_name = 'Fencing Nationals'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Gymnastics' AND tn.event_name = 'Gymnastics World Cup'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Climbing' AND tn.event_name = 'Climbing Championship'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Badminton' AND tn.event_name = 'Badminton Nationals'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Squash' AND tn.event_name = 'Squash Tournament'
-UNION ALL
-SELECT t.id, tn.id
-FROM tags t, tournaments tn
-WHERE t.tag = 'Judo' AND tn.event_name = 'Judo Nationals';
+SELECT t.id, tg.id
+FROM tournaments t
+JOIN tags tg
+-- City Showdown
+WHERE t.event_name = 'City Showdown' AND tg.tag IN ('TeamCompetition', 'QuarterFinals', 'PlayOffs', 'GroupC', 'FairPlay');
