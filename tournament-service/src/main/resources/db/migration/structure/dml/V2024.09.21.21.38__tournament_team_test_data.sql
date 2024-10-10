@@ -1,175 +1,51 @@
+-- Insert into tournament_teams using the test data from tournaments and teams
 INSERT INTO tournament_teams (tournament_id, team_id)
 SELECT t.id, tm.id
 FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Alpha'
-WHERE t.event_name = 'Champions League'
+JOIN teams tm ON tm.team_name IN ('Team Alpha', 'Team Beta', 'Team Gamma', 'Team Delta', 'Team Zeta')
+WHERE t.event_name IN ('Summer Games', 'Winter Championship', 'Spring Showdown', 'Autumn Clash', 'New Year Bash')
 UNION ALL
 SELECT t.id, tm.id
 FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Beta'
-WHERE t.event_name = 'World Cup'
+JOIN teams tm ON tm.team_name IN ('Team Eta', 'Team Theta', 'Team Kappa', 'Team Lambda', 'Team Omega')
+WHERE t.event_name IN ('Olympic Trials', 'City Showdown', 'Championship Series', 'Global Games', 'Champions League')
 UNION ALL
 SELECT t.id, tm.id
 FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Gamma'
-WHERE t.event_name = 'Olympics'
+JOIN teams tm ON tm.team_name IN ('Team Sigma', 'Team Phi', 'Team Chi', 'Team Psi', 'Team Xi')
+WHERE t.event_name IN ('National Finals', 'City Clash', 'Battle of Boroughs', 'Winter Showdown', 'Summer Clash')
 UNION ALL
 SELECT t.id, tm.id
 FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Delta'
-WHERE t.event_name = 'Grand Slam'
+JOIN teams tm ON tm.team_name IN ('Team Omicron', 'Team Rho', 'Team Nu', 'Team Mu', 'Team Tau')
+WHERE t.event_name IN ('East Coast Tournament', 'West Coast Showdown', 'Super League', 'Elite Championship', 'Ultimate Showdown')
 UNION ALL
 SELECT t.id, tm.id
 FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Zeta'
-WHERE t.event_name = 'National Tournament'
+JOIN teams tm ON tm.team_name IN ('Team Iota', 'Team Epsilon', 'Team Upsilon', 'Team Pi', 'Team Sigma Prime')
+WHERE t.event_name IN ('Grand Finale', 'Super Tournament', 'World Series', 'Premier League', 'Ultimate Battle')
 UNION ALL
 SELECT t.id, tm.id
 FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Eta'
-WHERE t.event_name = 'Winter Games'
+JOIN teams tm ON tm.team_name IN ('Team Theta Prime', 'Team Delta Prime', 'Team Gamma Prime', 'Team Alpha Prime', 'Team Omega Prime')
+WHERE t.event_name IN ('Pro Series', 'Champion of Champions', 'Winter Games', 'Autumn Showdown', 'City Champions')
 UNION ALL
 SELECT t.id, tm.id
 FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Theta'
-WHERE t.event_name = 'European Cup'
+JOIN teams tm ON tm.team_name IN ('Team Zeta Prime', 'Team Lambda Prime', 'Team Kappa Prime', 'Team Eta Prime', 'Team Psi Prime')
+WHERE t.event_name IN ('Battle Royale', 'Superstar League', 'Summer Challenge', 'Elite Tournament', 'Regional Clash')
 UNION ALL
 SELECT t.id, tm.id
 FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Kappa'
-WHERE t.event_name = 'State Championship'
+JOIN teams tm ON tm.team_name IN ('Team Chi Prime', 'Team Omicron Prime', 'Team Sigma Beta', 'Team Gamma Beta', 'Team Alpha Beta')
+WHERE t.event_name IN ('Pro League', 'Ultimate Championship', 'National Games', 'Finals Series', 'Global Challenge')
 UNION ALL
 SELECT t.id, tm.id
 FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Lambda'
-WHERE t.event_name = 'Beach Volleyball Championship'
+JOIN teams tm ON tm.team_name IN ('Team Theta Beta', 'Team Delta Beta', 'Team Kappa Beta', 'Team Lambda Beta', 'Team Zeta Beta')
+WHERE t.event_name IN ('International Showdown', 'Champion Showdown', 'Winter Finals', 'City League', 'Ultimate Finals')
 UNION ALL
 SELECT t.id, tm.id
 FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Omega'
-WHERE t.event_name = 'City Marathon'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Sigma'
-WHERE t.event_name = 'World Athletics Championship'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Alpha'
-WHERE t.event_name = 'Table Tennis Open'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Zeta'
-WHERE t.event_name = 'Track and Field Nationals'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Beta'
-WHERE t.event_name = 'Cycling Tour'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Eta'
-WHERE t.event_name = 'Rowing Championship'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Theta'
-WHERE t.event_name = 'Swimming Championship'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Lambda'
-WHERE t.event_name = 'National Tennis Open'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Delta'
-WHERE t.event_name = 'Motorsports Finals'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Alpha'
-WHERE t.event_name = 'Ski Championship'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Gamma'
-WHERE t.event_name = 'Weightlifting Tournament'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Beta'
-WHERE t.event_name = 'Rugby World Cup'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Eta'
-WHERE t.event_name = 'Esports Championship'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Theta'
-WHERE t.event_name = 'Climbing Nationals'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Omega'
-WHERE t.event_name = 'Surfing World Cup'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Sigma'
-WHERE t.event_name = 'Triathlon Nationals'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Kappa'
-WHERE t.event_name = 'Skating Nationals'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Delta'
-WHERE t.event_name = 'Shooting Nationals'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Alpha'
-WHERE t.event_name = 'Gymnastics Championship'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Gamma'
-WHERE t.event_name = 'Boxing Championship'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Omega'
-WHERE t.event_name = 'Billiards Championship'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Beta'
-WHERE t.event_name = 'Badminton Nationals'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Sigma'
-WHERE t.event_name = 'Wrestling World Cup'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Theta'
-WHERE t.event_name = 'Hockey Championship'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Alpha'
-WHERE t.event_name = 'Archery Tournament'
-UNION ALL
-SELECT t.id, tm.id
-FROM tournaments t
-JOIN teams tm ON tm.team_name = 'Team Zeta'
-WHERE t.event_name = 'Fencing Nationals';
+JOIN teams tm ON tm.team_name IN ('Team Omega Beta', 'Team Sigma Omega', 'Team Gamma Omega', 'Team Alpha Omega', 'Team Theta Omega')
+WHERE t.event_name IN ('Elite Showdown', 'World Finals', 'Super Series', 'Global Finals', 'Summer Showdown');
