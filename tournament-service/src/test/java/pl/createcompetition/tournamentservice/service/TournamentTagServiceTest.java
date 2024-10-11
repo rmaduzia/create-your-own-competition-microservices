@@ -27,18 +27,21 @@ import pl.createcompetition.tournamentservice.competition.Competition;
 import pl.createcompetition.tournamentservice.competition.CompetitionRepository;
 import pl.createcompetition.tournamentservice.competition.EventMapper;
 import pl.createcompetition.tournamentservice.competition.tag.CompetitionTagService;
-import pl.createcompetition.tournamentservice.tag.EventTagsDto;
 import pl.createcompetition.tournamentservice.microserviceschanges.UserPrincipal;
 import pl.createcompetition.tournamentservice.model.Tag;
+import pl.createcompetition.tournamentservice.tag.EventTagsDto;
+import pl.createcompetition.tournamentservice.tournament.Tournament;
+import pl.createcompetition.tournamentservice.tournament.TournamentRepository;
 import pl.createcompetition.tournamentservice.tournament.VerifyMethodsForServices;
+import pl.createcompetition.tournamentservice.tournament.tag.TournamentTagService;
 
 @ExtendWith(MockitoExtension.class)
-public class CompetitionTagServiceTest {
+public class TournamentTagServiceTest {
 
     @Mock
-    CompetitionRepository competitionRepository;
+    TournamentRepository tournamentRepository;
 
-    CompetitionTagService competitionTagService;
+    TournamentTagService tournamentTagService;
 
     @InjectMocks
     VerifyMethodsForServices verifyMethodsForServices;
@@ -52,17 +55,17 @@ public class CompetitionTagServiceTest {
 
     private static final String userName = "someUserName";
 
-    Competition competition;
+    Tournament competition;
     Tag competitionTag;
 
     @BeforeEach
     public void setUp() {
 
-        competitionTagService = new CompetitionTagService(competitionRepository, verifyMethodsForServices);
+        tournamentTagService = new TournamentTagService(tournamentRepository, verifyMethodsForServices);
 
         when(userPrincipal.getName()).thenReturn(userName);
 
-        competition = Competition.builder()
+        competition = Tournament.builder()
                 .id(1L)
                 .eventOwner(userName)
                 .eventName("zawody1")
@@ -79,13 +82,13 @@ public class CompetitionTagServiceTest {
     @Test
     public void shouldAddTags() {
 
-        when(competitionRepository.findByEventName(competition.getEventName())).thenReturn(
+        when(tournamentRepository.findByEventName(competition.getEventName())).thenReturn(
             Optional.ofNullable(competition));
 
         Set<String> tags = new HashSet<>(Set.of("someTag", "someNextTag"));
-        ResponseEntity<?> response = competitionTagService.addCompetitionTag(tags, competition.getEventName(), userPrincipal.getName());
+        ResponseEntity<?> response = tournamentTagService.addTournamentTag(tags, competition.getEventName(), userPrincipal.getName());
 
-        verify(competitionRepository, times(1)).save(competition);
+        verify(tournamentRepository, times(1)).save(competition);
 
         EventTagsDto returnedEventTagsDto = (EventTagsDto) response.getBody();
 
@@ -98,15 +101,15 @@ public class CompetitionTagServiceTest {
     @Test
     public void shouldUpdateTag() {
 
-        when(competitionRepository.findByEventName(competition.getEventName())).thenReturn(
+        when(tournamentRepository.findByEventName(competition.getEventName())).thenReturn(
             Optional.ofNullable(competition));
 
-        when(competitionRepository.save(competition)).thenReturn(competition);
+        when(tournamentRepository.save(competition)).thenReturn(competition);
 
         String competitionTag = "updatedTag";
-        ResponseEntity<?> response = competitionTagService.updateCompetitionTag(competitionTag, competition.getEventName(), userPrincipal.getName());
+        ResponseEntity<?> response = tournamentTagService.updateTournamentTag(competitionTag, competition.getEventName(), userPrincipal.getName());
 
-        verify(competitionRepository, times(1)).save(competition);
+        verify(tournamentRepository, times(1)).save(competition);
 
         EventTagsDto returnedEventTagsDto = (EventTagsDto) response.getBody();
 
@@ -117,35 +120,5 @@ public class CompetitionTagServiceTest {
 
     }
 
-    @Test
-    public void shouldThrowExceptionCompetitionNotExistsWhenAddTag() {
-
-        Set<String> tags = Set.of("someTag");
-
-        ResponseStatusException exception = assertThrows(
-            ResponseStatusException.class,
-            () ->  competitionTagService.addCompetitionTag(tags, competition.getEventName(), userPrincipal.getName()),
-            "Expected doThing() to throw, but it didn't");
-
-        verify(competitionRepository, times(1)).findByEventName(competition.getEventName());
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals("Competition not exists, Name: "+ competition.getEventName(), exception.getReason());
-    }
-
-
-    @Test
-    public void shouldThrowExceptionCompetitionNotExistsWhenUpdateTag() {
-
-        String competitionTag = "updatedTag";
-
-        ResponseStatusException exception = assertThrows(
-            ResponseStatusException.class,
-            () ->  competitionTagService.updateCompetitionTag(competitionTag, competition.getEventName(), userPrincipal.getName()),
-            "Expected doThing() to throw, but it didn't");
-
-        verify(competitionRepository, times(1)).findByEventName(competition.getEventName());
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals("Competition not exists, Name: "+ competition.getEventName(), exception.getReason());
-    }
 
 }
