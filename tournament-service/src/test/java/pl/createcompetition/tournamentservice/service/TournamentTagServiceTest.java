@@ -121,4 +121,36 @@ public class TournamentTagServiceTest {
     }
 
 
+    @Test
+    public void shouldThrowExceptionCompetitionNotExistsWhenAddTag() {
+
+        Set<String> tags = Set.of("someTag");
+
+        ResponseStatusException exception = assertThrows(
+            ResponseStatusException.class,
+            () ->  tournamentTagService.addTournamentTag(tags, competition.getEventName(), userPrincipal.getName()),
+            "Expected doThing() to throw, but it didn't");
+
+        verify(tournamentRepository, times(1)).findByEventName(competition.getEventName());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Competition not exists, Name: "+ competition.getEventName(), exception.getReason());
+    }
+
+
+    @Test
+    public void shouldThrowExceptionCompetitionNotExistsWhenUpdateTag() {
+
+        String competitionTag = "updatedTag";
+
+        ResponseStatusException exception = assertThrows(
+            ResponseStatusException.class,
+            () ->  tournamentTagService.updateTournamentTag(competitionTag, competition.getEventName(), userPrincipal.getName()),
+            "Expected doThing() to throw, but it didn't");
+
+        verify(tournamentRepository, times(1)).findByEventName(competition.getEventName());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Competition not exists, Name: "+ competition.getEventName(), exception.getReason());
+    }
+
+
 }
