@@ -135,6 +135,85 @@ public class TournamentTeamControllerIT extends IntegrationTestsBaseConfig {
 
         tournamentRepository.save(tournament);
     }
+    @Test
+    void teamShouldLeaveTournament() {
+
+        saveTournamentWithTeams();
+
+        String teamName = "secondTeam";
+        String tournamentName = "zawody";
+
+        TeamDto teamDto = TeamDto.builder()
+            .teamName(teamName)
+            .teamOwner(mainUserName)
+            .build();
+
+        when(verifyMethodsForServices.shouldFindTeam(teamName, mainUserName)).thenReturn(teamDto);
+
+        Response response = given().header("Authorization", "Bearer " + userToken)
+            .contentType("application/json")
+            .body(teamName)
+            .pathParam("tournamentName", tournamentName)
+            .when()
+            .post("tournament/{tournamentName}/team/leaveTournament");
+
+        assertEquals(HttpStatus.OK.value(), response.getStatusCode());
+        assertEquals("Team: " + teamName + " joined tournament: " + tournamentName, response.getBody().asString());
+
+        Tournament tournament = tournamentRepository.findByEventNameWithTeams(tournamentName).orElseThrow();
+
+        assertEquals(2, tournament.getTeams().size());
+
+        assertEquals(2, tournament.getTeams().stream().filter(v -> v.getTeamName().equals("firstTeam") || v.getTeamName().equals("thirdTeam")).count());
+
+        verify(messageSendFacade, times(1)).sendEvent(any());
+    }
+
+    @Test
+    void shouldThrowErrorThatTournamentNotExistsWhenTeamTryToLeaveTournament() {
+
+        String teamName = "secondTeam";
+        String tournamentName = "zawody";
+
+        TeamDto teamDto = TeamDto.builder()
+            .teamName(teamName)
+            .teamOwner(mainUserName)
+            .build();
+
+        when(verifyMethodsForServices.shouldFindTeam(teamName, mainUserName)).thenReturn(teamDto);
+
+        Response response = given().header("Authorization", "Bearer " + userToken)
+            .contentType("application/json")
+            .body(teamName)
+            .pathParam("tournamentName", tournamentName)
+            .when()
+            .post("tournament/{tournamentName}/team/leaveTournament");
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
+        assertEquals("Team not found, Team Name: " + teamName + " Team owner: " + mainUserName, response.jsonPath().getString("message"));
+    }
+
+    @Test
+    void shouldThrowErrorThatTeamNotExistsWhenTeamTryToLeaveTournament() {
+
+        saveTournamentWithTeams();
+
+        String teamName = "secondTeam";
+        String tournamentName = "zawody";
+
+        when(verifyMethodsForServices.shouldFindTeam(teamName, mainUserName)).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found, Team Name: " + teamName + " Team owner: " + mainUserName));
+
+        Response response = given().header("Authorization", "Bearer " + userToken)
+            .contentType("application/json")
+            .body(teamName)
+            .pathParam("tournamentName", tournamentName)
+            .when()
+            .post("tournament/{tournamentName}/team/leaveTournament");
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
+        assertEquals("Team not found, Team Name: " + teamName + " Team owner: " + mainUserName, response.jsonPath().getString("message"));
+    }
+
 
 
     public void saveTournament() {
