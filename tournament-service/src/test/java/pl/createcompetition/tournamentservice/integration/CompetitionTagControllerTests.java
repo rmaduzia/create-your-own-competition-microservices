@@ -101,7 +101,65 @@ public class CompetitionTagControllerTests extends IntegrationTestsBaseConfig{
             response.jsonPath().getString("message"));
     }
 
-  
+    @Test
+    void shouldUpdateTagToCompetition() {
+        saveCompetition();
+
+        String newTag = "newTagAdded";
+
+        Response response = given().header("Authorization", "Bearer " + userToken)
+            .contentType("application/json")
+            .body(newTag)
+            .when()
+            .put("competition/tags/" + getCompetition().getEventName());
+
+        assertEquals(HttpStatus.CREATED.value(), response.getStatusCode());
+
+        EventTagsDto responseBody = response.getBody().as(EventTagsDto.class);
+
+        assertEquals("zawody", responseBody.getEventName());
+        assertEquals(1, responseBody.getTags().size());
+
+        assertTrue(responseBody.getTags().contains(newTag));
+    }
+
+    @Test
+    void shouldThrowErrorThatCompetitionNotFoundWhenUpdateTag() {
+
+        String newTag = "newTagAdded";
+
+        Response response = given().header("Authorization", "Bearer " + userToken)
+            .contentType("application/json")
+            .body(newTag)
+            .when()
+            .put("competition/tags/" + getCompetition().getEventName());
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
+
+        assertEquals("Competition not exists, Name: zawody" ,
+            response.jsonPath().getString("message"));
+    }
+
+    @Test
+    void shouldThrowErrorThatYouAreNotOwnerOfCompetitionWhenUpdateTag() {
+
+        saveCompetitionWithDifferentOwner();
+
+        String newTag = "newTagAdded";
+
+        Response response = given().header("Authorization", "Bearer " + userToken)
+            .contentType("application/json")
+            .body(newTag)
+            .when()
+            .put("competition/tags/" + getCompetition().getEventName());
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode());
+
+        assertEquals("You are not owner of this Competition" ,
+            response.jsonPath().getString("message"));
+    }
+
+ 
 
     public void saveCompetition() {
         Competition competition = getCompetition();
