@@ -161,6 +161,64 @@ public class TournamentTagControllerTests extends IntegrationTestsBaseConfig{
             response.jsonPath().getString("message"));
     }
 
+    @Test
+    void shouldDeleteTagToTurnament() {
+        saveTournament();
+
+        String tagToDelete = "otherTag";
+
+        Response response = given().header("Authorization", "Bearer " + userToken)
+            .contentType("application/json")
+            .body(tagToDelete)
+            .when()
+            .delete("tournament/tags/" + getTournament().getEventName());
+
+        assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatusCode());
+
+        Tournament competition = tournamentRepository.findByEventNameWithTags("zawody").orElseThrow();
+
+        assertEquals(1, competition.getTags().size());
+
+        assertTrue(competition.getTags().stream().anyMatch(v -> v.getTag().equals("sampleTag")));
+
+    }
+
+    @Test
+    void shouldThrowErrorThatCompetitionNotFoundWhenDeleteTagToTournament() {
+
+        String tagToDelete = "otherTag";
+
+        Response response = given().header("Authorization", "Bearer " + userToken)
+            .contentType("application/json")
+            .body(tagToDelete)
+            .when()
+            .delete("tournament/tags/" + getTournament().getEventName());
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
+
+        assertEquals("Competition not exists, Name: zawody",
+            response.getBody().jsonPath().getString(("message")));
+    }
+
+    @Test
+    void shouldThrowErrorThatYouAreNotOwnerOfCompetitionWhenDeleteTagToCompetition() {
+
+        saveCompetitionWithDifferentOwner();
+
+        String tagToDelete = "otherTag";
+
+        Response response = given().header("Authorization", "Bearer " + userToken)
+            .contentType("application/json")
+            .body(tagToDelete)
+            .when()
+            .delete("competition/tags/" + getTournament().getEventName());
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode());
+
+        assertEquals("You are not owner of this Competition",
+            response.getBody().jsonPath().getString(("message")));
+    }
+
     public void saveTournament() {
         Tournament competition = getTournament();
         tournamentRepository.save(competition);
