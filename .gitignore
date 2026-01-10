@@ -1,0 +1,31 @@
+# Compiled class file
+*.class
+
+# Log files
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Package files
+*.jar
+*.war
+*.ear
+
+# Maven specific files
+target/
+
+# IntelliJ IDEA files
+.idea/
+.run/
+
+# Eclipse files
+.classpath
+.project
+.settings/
+
+# NetBeans files
+nbproject/
+
+# Mac files
+.DS_Store
