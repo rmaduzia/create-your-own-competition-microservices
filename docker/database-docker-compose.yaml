@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  user-db:
+    image: mysql:8.0
+    container_name: user-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: user_service
+    volumes:
+      - user-db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_interval: 30s
+    ports:
+      - "3306:3306"
+  team-db:
+    image: mysql:8.0
+    container_name: team-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: team_service
+    volumes:
+      - team-db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_interval: 30s
+    ports:
+      - "3307:3306"
+  tournament-db:
+    image: mysql:8.0
+    container_name: tournament-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tournament_service
+    volumes:
+      - tournament-db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_interval: 30s
+    ports:
+      - "3308:3306"
+
+volumes:
+  user-db-data:
+  team-db-data:
+  tournament-db-data:

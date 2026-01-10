@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+
+  user-service:
+    build:
+      context: ../user-service
+      dockerfile: Dockerfile
+    container_name: user-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://user-db:3306/user_service?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    ports:
+      - "8083:8080"
+    restart: on-failure
+
+  team-service:
+    build:
+      context: ../team-service
+      dockerfile: Dockerfile
+    container_name: team-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://team-db:3307/team_service?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    ports:
+      - "8081:8080"
+    restart: on-failure
+
+  tournament-service:
+    build:
+      context: ../tournament-service
+      dockerfile: Dockerfile
+    container_name: tournament-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://tournament-db:3308/tournament_service?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    ports:
+      - "8082:8080"
+    restart: on-failure
+
+
