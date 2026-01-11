@@ -28,7 +28,7 @@ public class TournamentTagService {
     public ResponseEntity<EventTagsDto> addTournamentTag(Set<String> tournamentTag, String tournamentName, String userName) {
 
         Tournament foundTournament =  verifyMethodsForServices.shouldFindTournament(tournamentName);
-        verifyMethodsForServices.checkIfCompetitionBelongToUser(foundTournament.getEventOwner(), userName);
+        verifyMethodsForServices.checkIfTournamentBelongToUser(foundTournament.getEventOwner(), userName);
 
         foundTournament.addManyTagsToTournament(tournamentTag);
 
@@ -42,14 +42,14 @@ public class TournamentTagService {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(eventTagsDto);
         } catch (DataIntegrityViolationException exception) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Competition Tag already exists: " +tournamentTag.iterator().next());
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Tournament Tag already exists: " +tournamentTag.iterator().next());
         }
     }
 
     public ResponseEntity<EventTagsDto> updateTournamentTag(String tournamentTag, String tournamentName, String userName) {
 
         Tournament foundTournament =  verifyMethodsForServices.shouldFindTournament(tournamentName);
-        verifyMethodsForServices.checkIfCompetitionBelongToUser(foundTournament.getEventOwner(), userName);
+        verifyMethodsForServices.checkIfTournamentBelongToUser(foundTournament.getEventOwner(), userName);
 
         foundTournament.addTagToTournament(tournamentTag);
 
@@ -64,7 +64,7 @@ public class TournamentTagService {
     public ResponseEntity<Void> deleteTournamentTag(String tournamentTag, String tournamentName, String userName) {
 
         Tournament foundTournament =  verifyMethodsForServices.shouldFindTournament(tournamentName);
-        verifyMethodsForServices.checkIfCompetitionBelongToUser(foundTournament.getEventOwner(), userName);
+        verifyMethodsForServices.checkIfTournamentBelongToUser(foundTournament.getEventOwner(), userName);
 
         boolean isRemoved = foundTournament.removeTagByName(tournamentTag);
 
@@ -72,7 +72,7 @@ public class TournamentTagService {
             tournamentRepository.save(foundTournament);
             return ResponseEntity.noContent().build();
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "CompetitionTag Tag not found:" + tournamentTag);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tournament Tag not found:" + tournamentTag);
         }
     }
 }

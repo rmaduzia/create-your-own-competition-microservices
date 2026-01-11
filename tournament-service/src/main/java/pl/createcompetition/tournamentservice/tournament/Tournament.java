@@ -104,7 +104,7 @@ public class Tournament implements QueryDtoInterface<TournamentDto> {
             cascade = CascadeType.ALL)
     private List<MatchInTournament> matchInTournament = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Builder.Default
     @JoinTable(name = "tournament_tags",
             joinColumns = @JoinColumn(name = "tournament_id", foreignKey = @ForeignKey(name = "FK_TOURNAMENT_TAGS_TOURNAMENT_ID")),

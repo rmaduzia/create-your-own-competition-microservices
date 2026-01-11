@@ -40,7 +40,7 @@ public class VerifyMethodsForServices {
 
     public Tournament shouldFindTournament(String competitionName) {
         return tournamentRepository.findByEventName(competitionName).orElseThrow(() ->
-            new ResponseStatusException(HttpStatus.NOT_FOUND, "Competition not exists, Name: " +competitionName));
+            new ResponseStatusException(HttpStatus.NOT_FOUND, "Tournament not exists, Name: " +competitionName));
     }
 
     public void checkIfCompetitionBelongToUser(String competitionName, String userName) {
@@ -48,5 +48,13 @@ public class VerifyMethodsForServices {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"You are not owner of this Competition");
         }
     }
+
+    public void checkIfTournamentBelongToUser(String competitionName, String userName) {
+        if(!competitionName.equals(userName)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"You are not owner of this Tournament");
+        }
+    }
+
+
 
 }

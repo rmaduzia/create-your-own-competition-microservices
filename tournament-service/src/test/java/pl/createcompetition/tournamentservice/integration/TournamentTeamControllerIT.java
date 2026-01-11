@@ -79,8 +79,6 @@ public class TournamentTeamControllerIT extends IntegrationTestsBaseConfig {
     @Test
     void shouldThrowErrorThatTournamentNotExistsWhenTeamTryJoinToTournament() {
 
-        saveTournamentWithTeams();
-
         String teamName = "someNewTeamName";
         String tournamentName = "zawody";
 
@@ -158,7 +156,7 @@ public class TournamentTeamControllerIT extends IntegrationTestsBaseConfig {
             .post("tournament/{tournamentName}/team/leaveTournament");
 
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
-        assertEquals("Team: " + teamName + " joined tournament: " + tournamentName, response.getBody().asString());
+        assertEquals("Team: " + teamName + " left tournament: " + tournamentName, response.getBody().asString());
 
         Tournament tournament = tournamentRepository.findByEventNameWithTeams(tournamentName).orElseThrow();
 
@@ -190,7 +188,7 @@ public class TournamentTeamControllerIT extends IntegrationTestsBaseConfig {
             .post("tournament/{tournamentName}/team/leaveTournament");
 
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
-        assertEquals("Team not found, Team Name: " + teamName + " Team owner: " + mainUserName, response.jsonPath().getString("message"));
+        assertEquals("Tournament not exists. Name: " + tournamentName, response.jsonPath().getString("message"));
     }
 
     @Test

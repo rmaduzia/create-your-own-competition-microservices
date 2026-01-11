@@ -12,11 +12,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import pl.createcompetition.tournamentservice.competition.Competition;
+import pl.createcompetition.tournamentservice.competition.CompetitionRepository;
 import pl.createcompetition.tournamentservice.competition.EventCreateUpdateRequest;
 import pl.createcompetition.tournamentservice.competition.EventMapper;
 import pl.createcompetition.tournamentservice.model.Tag;
@@ -30,7 +33,15 @@ public class TournamentTagControllerTests extends IntegrationTestsBaseConfig{
     TournamentRepository tournamentRepository;
 
     @Autowired
+    CompetitionRepository competitionRepository;
+
+    @Autowired
     EventMapper eventMapper;
+
+    @BeforeAll
+    static void setup() { System.setProperty("api.version", "1.44"); }
+
+
 
     @BeforeEach
     void setUpTests() {
@@ -41,7 +52,7 @@ public class TournamentTagControllerTests extends IntegrationTestsBaseConfig{
     }
 
     @Test
-    void shouldAddTagToCompetition() {
+    void shouldAddTagToTournament() {
 
         saveTournament();
 
@@ -51,7 +62,7 @@ public class TournamentTagControllerTests extends IntegrationTestsBaseConfig{
             .contentType("application/json")
             .body(listOfTags)
             .when()
-            .post("competition/tags/" + getTournament().getEventName());
+            .post("tournament/tags/" + getTournament().getEventName());
 
         assertEquals(HttpStatus.CREATED.value(), response.getStatusCode());
 
@@ -65,7 +76,7 @@ public class TournamentTagControllerTests extends IntegrationTestsBaseConfig{
     }
 
     @Test
-    void shouldThrowErrorThatCompetitionNotFoundWhenAddTag() {
+    void shouldThrowErrorThatTournamentNotFoundWhenAddTag() {
 
         List<String> listOfTags = new ArrayList<>(Arrays.asList("firstTag", "secondTag", "thirdTag"));
 
@@ -73,18 +84,18 @@ public class TournamentTagControllerTests extends IntegrationTestsBaseConfig{
             .contentType("application/json")
             .body(listOfTags)
             .when()
-            .post("competition/tags/" + getTournament().getEventName());
+            .post("tournament/tags/" + getTournament().getEventName());
 
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
 
-        assertEquals("Competition not exists, Name: zawody" ,
+        assertEquals("Tournament not exists, Name: zawody" ,
             response.jsonPath().getString("message"));
     }
 
     @Test
-    void shouldThrowErrorThatYouAreNotOwnerOfCompetitionWhenAddTag() {
+    void shouldThrowErrorThatYouAreNotOwnerOfTournamentWhenAddTag() {
 
-        saveCompetitionWithDifferentOwner();
+        saveTournamentWithDifferentOwner();
 
         List<String> listOfTags = new ArrayList<>(Arrays.asList("firstTag", "secondTag", "thirdTag"));
 
@@ -92,19 +103,19 @@ public class TournamentTagControllerTests extends IntegrationTestsBaseConfig{
             .contentType("application/json")
             .body(listOfTags)
             .when()
-            .post("competition/tags/" + getTournament().getEventName());
+            .post("tournament/tags/" + getTournament().getEventName());
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode());
 
         System.out.println("response: " + response.getBody().asString());
 
-        assertEquals("You are not owner of this Competition" ,
+        assertEquals("You are not owner of this Tournament" ,
             response.jsonPath().getString("message"));
     }
 
 
     @Test
-    void shouldUpdateTagToCompetition() {
+    void shouldUpdateTagToTournament() {
         saveTournament();
 
         String newTag = "newTagAdded";
@@ -126,7 +137,7 @@ public class TournamentTagControllerTests extends IntegrationTestsBaseConfig{
     }
 
     @Test
-    void shouldThrowErrorThatCompetitionNotFoundWhenUpdateTag() {
+    void shouldThrowErrorThatTournamentNotFoundWhenUpdateTag() {
 
         String newTag = "newTagAdded";
 
@@ -138,14 +149,14 @@ public class TournamentTagControllerTests extends IntegrationTestsBaseConfig{
 
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
 
-        assertEquals("Competition not exists, Name: zawody" ,
+        assertEquals("Tournament not exists, Name: zawody" ,
             response.jsonPath().getString("message"));
     }
 
     @Test
-    void shouldThrowErrorThatYouAreNotOwnerOfCompetitionWhenUpdateTag() {
+    void shouldThrowErrorThatYouAreNotOwnerOfTournamentWhenUpdateTag() {
 
-        saveCompetitionWithDifferentOwner();
+        saveTournamentWithDifferentOwner();
 
         String newTag = "newTagAdded";
 
@@ -157,7 +168,7 @@ public class TournamentTagControllerTests extends IntegrationTestsBaseConfig{
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode());
 
-        assertEquals("You are not owner of this Competition" ,
+        assertEquals("You are not owner of this Tournament" ,
             response.jsonPath().getString("message"));
     }
 
@@ -175,16 +186,16 @@ public class TournamentTagControllerTests extends IntegrationTestsBaseConfig{
 
         assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatusCode());
 
-        Tournament competition = tournamentRepository.findByEventNameWithTags("zawody").orElseThrow();
+        Tournament tournament = tournamentRepository.findByEventNameWithTags("zawody").orElseThrow();
 
-        assertEquals(1, competition.getTags().size());
+        assertEquals(1, tournament.getTags().size());
 
-        assertTrue(competition.getTags().stream().anyMatch(v -> v.getTag().equals("sampleTag")));
+        assertTrue(tournament.getTags().stream().anyMatch(v -> v.getTag().equals("sampleTag")));
 
     }
 
     @Test
-    void shouldThrowErrorThatCompetitionNotFoundWhenDeleteTagToTournament() {
+    void shouldThrowErrorThatTournamentNotFoundWhenDeleteTagToTournament() {
 
         String tagToDelete = "otherTag";
 
@@ -196,14 +207,14 @@ public class TournamentTagControllerTests extends IntegrationTestsBaseConfig{
 
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
 
-        assertEquals("Competition not exists, Name: zawody",
+        assertEquals("Tournament not exists, Name: zawody",
             response.getBody().jsonPath().getString(("message")));
     }
 
     @Test
     void shouldThrowErrorThatYouAreNotOwnerOfCompetitionWhenDeleteTagToCompetition() {
 
-        saveCompetitionWithDifferentOwner();
+        saveTournamentWithDifferentOwner();
 
         String tagToDelete = "otherTag";
 
@@ -211,24 +222,24 @@ public class TournamentTagControllerTests extends IntegrationTestsBaseConfig{
             .contentType("application/json")
             .body(tagToDelete)
             .when()
-            .delete("competition/tags/" + getTournament().getEventName());
+            .delete("tournament/tags/" + getTournament().getEventName());
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode());
 
-        assertEquals("You are not owner of this Competition",
+        assertEquals("You are not owner of this Tournament",
             response.getBody().jsonPath().getString(("message")));
     }
 
     public void saveTournament() {
-        Tournament competition = getTournament();
-        tournamentRepository.save(competition);
+        Tournament tournament = getTournament();
+        tournamentRepository.save(tournament);
     }
 
-    public void saveCompetitionWithDifferentOwner() {
-        Tournament competition = getTournament();
-        competition.setEventOwner("someOtherOwner");
+    public void saveTournamentWithDifferentOwner() {
+        Tournament tournament = getTournament();
+        tournament.setEventOwner("someOtherOwner");
 
-        tournamentRepository.save(competition);
+        tournamentRepository.save(tournament);
     }
 
     private static Tournament getTournament() {

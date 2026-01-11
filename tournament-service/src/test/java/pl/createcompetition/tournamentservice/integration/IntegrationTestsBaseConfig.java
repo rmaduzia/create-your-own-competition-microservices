@@ -22,6 +22,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -41,6 +42,7 @@ public abstract class IntegrationTestsBaseConfig {
     static PortBinding portBinding = new PortBinding(
         Binding.bindPort(MYSQL_HOST_PORT), new ExposedPort(MYSQL_CONTAINER_PORT));
 
+    @Container
     static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0")
         .withUsername("root")
         .withPassword("root")
@@ -49,6 +51,7 @@ public abstract class IntegrationTestsBaseConfig {
             .withExposedPorts(ExposedPort.tcp(MYSQL_CONTAINER_PORT)))
     .withReuse(true);
 
+    @Container
     static KeycloakContainer keycloakContainer = new KeycloakContainer("quay.io/keycloak/keycloak:22.0.4")
         .withRealmImportFile("appdevelopercompetition-realm-export.json")
         .withReuse(true);
@@ -73,9 +76,6 @@ public abstract class IntegrationTestsBaseConfig {
 
     @BeforeAll
     static void setUp() throws URISyntaxException {
-
-        mysql.start();
-        keycloakContainer.start();
         userToken = getUserToken();
     }
 

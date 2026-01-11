@@ -133,7 +133,7 @@ public class TournamentTagServiceTest {
 
         verify(tournamentRepository, times(1)).findByEventName(competition.getEventName());
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals("Competition not exists, Name: "+ competition.getEventName(), exception.getReason());
+        assertEquals("Tournament not exists, Name: "+ competition.getEventName(), exception.getReason());
     }
 
 
@@ -149,7 +149,7 @@ public class TournamentTagServiceTest {
 
         verify(tournamentRepository, times(1)).findByEventName(competition.getEventName());
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals("Competition not exists, Name: "+ competition.getEventName(), exception.getReason());
+        assertEquals("Tournament not exists, Name: "+ competition.getEventName(), exception.getReason());
     }
 
 

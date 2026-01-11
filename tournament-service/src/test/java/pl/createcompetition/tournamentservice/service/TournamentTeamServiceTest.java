@@ -84,7 +84,7 @@ public class TournamentTeamServiceTest {
         when(tournamentRepository.findByEventName(ArgumentMatchers.anyString())).thenReturn(Optional.of(tournament));
         when(tournamentRepository.save(tournament)).thenReturn(tournament);
 
-        ResponseEntity<?> response = tournamentTeamService.teamJoinTournament(firstTeamDto.getTeamName(), tournament.getEventName(), userPrincipal.getName());
+        ResponseEntity<?> response = tournamentTeamService.teamJoinTournament(tournament.getEventName(), firstTeamDto.getTeamName(), userPrincipal.getName());
 
         verify(tournamentRepository, times(1)).save(tournament);
         verify(messageSendFacade, times(1)).sendEvent(any());
@@ -113,14 +113,15 @@ public class TournamentTeamServiceTest {
             Optional.of(tournament));
         when(tournamentRepository.save(tournament)).thenReturn(tournament);
 
-        ResponseEntity<?> response = tournamentTeamService.teamLeaveTournament(firstTeamDto.getTeamName(), tournament.getEventName(), userPrincipal.getName());
+        ResponseEntity<?> response = tournamentTeamService.teamLeaveTournament(tournament.getEventName(), firstTeamDto.getTeamName(), userPrincipal.getName());
 
         verify(verifyMethodsForServices, times(1)).shouldFindTeam(firstTeamDto.getTeamName(), firstTeamDto.getTeamOwner());
         verify(tournamentRepository, times(1)).save(tournament);
         verify(messageSendFacade, times(1)).sendEvent(any());
         verify(messageSendFacade).sendEvent(notifyTeamMembersRequestArgumentCaptor.capture());
-        assertEquals(response.getStatusCode(), HttpStatus.OK);
-        assertNull(response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        String expectedMessage = "Team: " + firstTeamDto.getTeamName() + " left tournament: " + tournament.getEventName();
+        assertEquals(expectedMessage, response.getBody());
 
         NotifyTeamMembersRequest notifyTeamMembersRequest = notifyTeamMembersRequestArgumentCaptor.getValue();
 

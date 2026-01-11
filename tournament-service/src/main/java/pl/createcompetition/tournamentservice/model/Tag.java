@@ -19,7 +19,7 @@ import pl.createcompetition.tournamentservice.tournament.Tournament;
 import pl.createcompetition.tournamentservice.competition.Competition;
 
 
-@EqualsAndHashCode(of = {"id", "tag"})
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "tags")
 @Entity
 @Getter
@@ -35,6 +35,7 @@ public class Tag {
 
     @Column(unique=true)
     @NotBlank(message = "Tag name can't be empty")
+    @EqualsAndHashCode.Include
     private String tag;
 
     @ManyToMany(mappedBy = "tags")
