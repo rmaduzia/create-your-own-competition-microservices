@@ -26,110 +26,47 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.JacksonJsonParser;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.createcompetition.teamservice.all.CreateTeamRequest;
 import pl.createcompetition.teamservice.all.Team;
 import pl.createcompetition.teamservice.all.TeamRepository;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@AutoConfigureMockMvc
-@Testcontainers
-public class TeamControllerTestsIT {
-
-//    @LocalServerPort
-//    int applicationPort;
+public class TeamControllerTestsIT extends IntegrationTestsBaseConfig{
 
     @Autowired
     TeamRepository teamRepository;
 
-//    @Autowired
-//    DynamicPropertyRegistry registry;
-
     static String teamName;
 
-    static Team preparedTeam;
+    private Team preparedTeam;
 
     private static final String mainUserName = "test";
 
     private static String userToken;
 
-    static int MYSQL_HOST_PORT = 34343;
-    static int MYSQL_CONTAINER_PORT = 3306;
-    static PortBinding portBinding = new PortBinding(Ports.Binding.bindPort(MYSQL_HOST_PORT), new ExposedPort(MYSQL_CONTAINER_PORT));
-
-    @Container
-    @ServiceConnection
-    static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0")
-            .withUsername("root")
-            .withPassword("root")
-            .withDatabaseName("team-service")
-            .withCreateContainerCmdModifier(cmd -> cmd.withHostConfig(new HostConfig().withPortBindings(portBinding))
-                    .withExposedPorts(ExposedPort.tcp(MYSQL_CONTAINER_PORT)));
-
-    @Container
-    static KeycloakContainer keycloakContainer = new KeycloakContainer("quay.io/keycloak/keycloak:22.0.4")
-            .withRealmImportFile("appdevelopercompetition-realm-export.json");
-
-    @DynamicPropertySource
-    static void setupKeyCloak(DynamicPropertyRegistry registry) {
-
-        registry.add("spring.security.oauth2.resourceserver.jwt.jwk-set-uri",
-                () -> keycloakContainer.getAuthServerUrl() + "/realms/appdevelopercompetition/protocol/openid-connect/certs");
-
-        registry.add("keycloak.domain",
-                () -> keycloakContainer.getAuthServerUrl());
-
-        registry.add("keycloak.urls.auth",
-                () -> keycloakContainer.getAuthServerUrl());
-
-        registry.add("keycloak.adminClientSecret",
-                () -> "**********");
-
-    }
-
-
     @BeforeAll
     static void setUp() throws URISyntaxException {
-
-        RestAssured.baseURI = "http://localhost";
-        RestAssured.port = 9095;
-
         teamName = "myTeamName";
-
-        preparedTeam = Team.builder()
-            .id(1L)
-            .teamName(teamName)
-            .maxAmountMembers(30)
-            .teamOwner(mainUserName)
-            .teamMembers(null)
-            .city("Gdynia")
-            .isOpenRecruitment(true)
-            .build();
-
         userToken = getUserToken();
     }
 
     @BeforeEach
-    void cleanDatabase() {
+    void setUpTests() {
+        RestAssured.baseURI = "http://localhost";
+        RestAssured.port = serverPort;
 
         teamRepository.deleteAll();
-        teamRepository.flush();
-    }
+//        teamRepository.flush();
 
+        preparedTeam = Team.builder()
+        .teamName(teamName)
+        .maxAmountMembers(30)
+        .teamOwner(mainUserName)
+        .teamMembers(null)
+        .city("Gdynia")
+        .isOpenRecruitment(true)
+        .build();
+    }
 
     @Test
     void shouldAddTeam() {
@@ -145,13 +82,10 @@ public class TeamControllerTestsIT {
           .when()
           .post("team");
 
-        System.out.println("response team: " + response.getBody().asString());
-
         Team returnedTeam = response.getBody().as(Team.class);
         Team teamFromRepository = teamRepository.findByTeamName("teamName").orElse(null);
 
-
-        assertEquals(response.getStatusCode(), 201);
+        assertEquals(201, response.getStatusCode());
         assertEquals(returnedTeam, teamFromRepository, "Returned team does not match with expected");
 
         assertEquals(createTeamRequest.getTeamName(), teamFromRepository.getTeamName());
@@ -179,7 +113,6 @@ public class TeamControllerTestsIT {
 
         Team returnedTeam = response.getBody().as(Team.class);
         Team teamFromRepository = teamRepository.findByTeamName(teamName).orElse(null);
-
 
         assertEquals(200, response.getStatusCode());
         assertEquals(returnedTeam, preparedTeam, "Returned team does not match with expected");
@@ -231,8 +164,7 @@ public class TeamControllerTestsIT {
         Set<String> teamMembers = new HashSet<>(Arrays.asList(firstRecruit, secondRecruit));
 
         preparedTeam.setTeamMembers(teamMembers);
-
-        teamRepository.save(preparedTeam);
+        teamRepository.saveAndFlush(preparedTeam);
 
         Response response = given().header("Authorization", "Bearer " + userToken)
             .contentType("application/json")
@@ -242,7 +174,7 @@ public class TeamControllerTestsIT {
 
         Team teamFromRepository = teamRepository.findByTeamName(teamName).orElse(null);
 
-        assert teamFromRepository != null;
+        assertNotNull(teamFromRepository);
         assertEquals(1 ,teamFromRepository.getTeamMembers().size());
         assertTrue(teamFromRepository.getTeamMembers().contains("secondRecruit"));
         assertFalse(teamFromRepository.getTeamMembers().contains("firstRecruit"));
@@ -292,36 +224,5 @@ public class TeamControllerTestsIT {
         List<String> returnedTeam = response.jsonPath().getList("$", String.class);
 
         assertEquals(teamMembers, Set.copyOf(returnedTeam));
-    }
-
-    private static String getUserToken() throws URISyntaxException {
-
-        URI authorizationUri = new URIBuilder(keycloakContainer.getAuthServerUrl() + "/realms/appdevelopercompetition/protocol/openid-connect/token").build();
-
-        WebClient webClient = WebClient.builder().build();
-
-        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add("grant_type", "password");
-        formData.add("username", mainUserName);
-        formData.add("password", "test");
-        formData.add("client_id", "competition-app-client");
-        formData.add("client_secret", "**********");
-        formData.add("redirect_uri", "http://localhost:9093/callback");
-        formData.add("scope", "openid profile");
-
-        String result = webClient.post()
-            .uri(authorizationUri)
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .body(BodyInserters.fromFormData(formData))
-            .retrieve()
-            .bodyToMono(String.class)
-            .block();
-
-        JacksonJsonParser jsonParser = new JacksonJsonParser();
-
-      return jsonParser.parseMap(result)
-            .get("access_token")
-            .toString();
-
     }
 }
