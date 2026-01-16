@@ -41,6 +41,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -58,6 +59,14 @@ import pl.createcompetition.unit.UnitTestJwtDecoderConfig;
 @WebMvcTest(UserController.class)
 @Import({KeyCloakService.class, UnitTestJwtDecoderConfig.class, WebClientConfig.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+
+@TestPropertySource(properties = {
+    "keycloak.domain=http://localhost:9090",
+    "keycloak.realm=appdevelopercompetition",
+    "keycloak-client.clientId=competition-app-client",
+    "keycloak-client.clientSecret=test-secret",
+    "keycloak-client.redirectUri=http://localhost:9090/callback"
+})
 public class UserControllerProperUnitTest {
 
     @Autowired

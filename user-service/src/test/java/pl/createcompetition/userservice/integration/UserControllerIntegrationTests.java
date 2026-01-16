@@ -3,6 +3,7 @@ package pl.createcompetition.userservice.integration;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -10,6 +11,7 @@ import com.google.gson.reflect.TypeToken;
 import io.restassured.RestAssured;
 import java.lang.reflect.Field;
 
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import io.restassured.response.Response;
 import java.net.URISyntaxException;
@@ -17,11 +19,16 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import pl.createcompetition.userservice.microserviceschanges.ExchangePasswordForTokenRequestRecord;
 import pl.createcompetition.userservice.microserviceschanges.ValidJwtToken;
+import pl.createcompetition.userservice.user.KeyCloakService;
 import pl.createcompetition.userservice.user.UserCreateRecord;
 
 public class UserControllerIntegrationTests extends IntegrationTestsBaseConfig{
+
+    @Autowired
+    KeyCloakService keyCloakService;
 
     private static String userToken;
 
@@ -90,7 +97,7 @@ public class UserControllerIntegrationTests extends IntegrationTestsBaseConfig{
 
         Map<String, String> jsonMap = gson.fromJson(response.getBody().asString(), new TypeToken<Map<String, String>>(){}.getType());
 
-        assertEquals(jsonMap.size(), 2 ,"Response body should contain only two fields");
+        assertEquals(2, jsonMap.size(),"Response body should contain only two fields");
 
         assertEquals(userName, jsonMap.get("userName"), "Unexpected username in response");
         assertEquals(email, jsonMap.get("email"), "Unexpected email in response");
@@ -111,11 +118,6 @@ public class UserControllerIntegrationTests extends IntegrationTestsBaseConfig{
             .contentType("application/json")
             .body(userCreateRecord)
             .post("/keycloak/user/create");
-
-        System.out.println(response.getStatusCode());
-        System.out.println(response.getBody().asString());
-
-
 
         Gson gson = new Gson();
         JsonObject jsonResponse = gson.fromJson(response.getBody().asString(), JsonObject.class);
@@ -188,18 +190,9 @@ public class UserControllerIntegrationTests extends IntegrationTestsBaseConfig{
             .body(exchangePasswordForTokenRequestRecord)
             .post("/keycloak/user/login");
 
-        System.out.println("response: " + response.getStatusCode());
-        System.out.println("response: " + response.getBody().asString());
-
-//        ResponseStatusException responseStatusException = response.getBody().as(ResponseStatusException.class);
-
-        System.out.println("__________________________________");
 
         assertEquals(401, response.getStatusCode());
         assertEquals("Unauthorized", response.jsonPath().getString("error"));
-//        assertEquals();
-
-
     }
 
 
@@ -215,7 +208,6 @@ public class UserControllerIntegrationTests extends IntegrationTestsBaseConfig{
     }
 
 
-    //TODO IMPLEMENTS TESTS
     @Test
     void shouldUpdatePassword() {
 
@@ -223,27 +215,86 @@ public class UserControllerIntegrationTests extends IntegrationTestsBaseConfig{
             .header("Authorization", "Bearer " + userToken)
             .post("keycloak/user/changePassword");
 
+
+        assertEquals(200, response.getStatusCode(), "Change password should return 200 on success");
+
     }
 
-    //TODO IMPLEMENTS TESTS
+
     @Test
     void shouldChangeUserName() {
+        String newUserName = "integration_" + UUID.randomUUID().toString().substring(0, 8);
 
         Response response = given()
             .header("Authorization", "Bearer " + userToken)
-            .post("keycloak/user/change-username");
+            .contentType("application/json")
+            .body("\"" + newUserName + "\"")
+            .post("/keycloak/user/change-username");
+
+        assertEquals(200, response.getStatusCode(), "Change username should return 200 on success");
+
+        String returned = response.getBody().asString();
+        assertNotNull(returned, "Response body should not be null");
+        returned = returned.substring(1, returned.length()-1);
+        assertEquals(newUserName, returned, "Returned username should match the requested one");
     }
 
-    //TODO IMPLEMENTS TESTS
     @Test
     void shouldSendVerificationEmail() {
 
-        String userId = "";
+
+        String userId = keyCloakService.findUserIdByUsername(mainUserName).orElse("");
+
 
         Response response = given()
             .header("Authorization", "Bearer " + userToken)
-            .post("/keycloak/" +  userId + "/send-verify-email");
+            .post("/keycloak/" + userId + "/send-verify-email");
 
+        assertEquals(200, response.getStatusCode());
+    }
+
+    @Test
+    void forgotPasswordForNonExistingUserShouldReturnBadRequest() {
+        String nonExisting = "nonexisting_" + UUID.randomUUID();
+
+        Response response = given()
+            .post("/keycloak/user/" + nonExisting + "/forgot-password");
+
+        assertTrue(response.getStatusCode() >= 400, () -> "Expected client/server error but got " + response.getStatusCode());
+    }
+
+    @Test
+    void findUserIdByUsernameShouldReturnMainUser() {
+        String userId = keyCloakService.findUserIdByUsername(mainUserName)
+            .orElseThrow(() -> new AssertionError("Main test user should exist in keycloak realm"));
+
+        assertNotNull(userId);
+    }
+
+    @Test
+    void forgotPasswordForExistingUserShouldReturnOk() {
+        Response response = given()
+            .header("Authorization", "Bearer " + userToken)
+            .post("/keycloak/user/" + mainUserName + "/forgot-password");
+
+        assertTrue(
+            response.getStatusCode() == 200 ||
+                response.getStatusCode() == 202 ||
+                response.getStatusCode() == 204,
+            "Expected success status for forgot-password but got " + response.getStatusCode()
+        );
+    }
+
+    @Test
+    void forgotPasswordRequiresAuth_shouldReturn401or403() {
+        String nonExistingOrAnyUser = mainUserName;
+
+        Response response = given()
+            .post("/keycloak/user/" + nonExistingOrAnyUser + "/forgot-password");
+
+        int status = response.getStatusCode();
+        assertTrue(status == 401 || status == 403,
+            "Expected 401 or 403 for unauthenticated forgot-password but got " + status);
     }
 
 }

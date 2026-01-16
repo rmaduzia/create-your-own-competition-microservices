@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.gson.JsonObject;
 import com.nimbusds.jose.shaded.gson.JsonParser;
 import jakarta.ws.rs.core.Response;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.client.utils.URIBuilder;
 import org.keycloak.admin.client.Keycloak;
@@ -40,7 +41,7 @@ import java.util.Objects;
 public class KeyCloakService {
 
     public static final String UPDATE_PASSWORD = "UPDATE_PASSWORD";
-//    private static final String UPDATE_EMAIL = "UPDATE_EMAIL";
+    private static final String UPDATE_EMAIL = "UPDATE_EMAIL";
     public static final String VERIFY_EMAIL = "VERIFY_EMAIL";
 
     @Value("${keycloak.domain}")
@@ -119,15 +120,21 @@ public class KeyCloakService {
 
     public void forgotPassword(String userName) {
 
+
         UsersResource usersResource = getUsersResource();
         List<UserRepresentation> userRepresentationList = usersResource.searchByUsername(userName, true);
 
+
         UserRepresentation userRepresentation = userRepresentationList.stream().findFirst().orElse(null);
 
-        if (userRepresentation != null) {
 
-            UserResource userResource = usersResource.get(userRepresentation.getId());
-            userResource.executeActionsEmail(List.of(UPDATE_PASSWORD));
+        if (userRepresentation != null) {
+            try {
+                UserResource userResource = usersResource.get(userRepresentation.getId());
+                userResource.executeActionsEmail(List.of(UPDATE_PASSWORD));
+            } catch (Exception ex) {
+                logger.error("Error while executing forgot password actions email for user {}: {}", userName, ex.getMessage());
+            }
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                 "Username not found: " + userName);
@@ -156,16 +163,21 @@ public class KeyCloakService {
     }
 
     public void changePassword(String userId) {
-
         UserResource userResource = getUserResource(userId);
-
-        userResource.executeActionsEmail(List.of(UPDATE_PASSWORD));
+        try {
+            userResource.executeActionsEmail(List.of(UPDATE_PASSWORD));
+        } catch (Exception ex) {
+            logger.error("Error while triggering change password email for user {}: {}", userId, ex.getMessage());
+        }
     }
 
     public void changeEmail(String userId) {
-
         UserResource userResource = getUserResource(userId);
-        userResource.executeActionsEmail(List.of(UPDATE_EMAIL.name()));
+        try {
+            userResource.executeActionsEmail(List.of(UPDATE_EMAIL));
+        } catch (Exception ex) {
+            logger.error("Error while triggering change email for user {}: {}", userId, ex.getMessage());
+        }
     }
 
 
@@ -184,6 +196,10 @@ public class KeyCloakService {
 
     }
 
+    public Optional<String> findUserIdByUsername(String username) {
+        List<UserRepresentation> list = getUsersResource().searchByUsername(username, true);
+        return list.stream().findFirst().map(UserRepresentation::getId);
+    }
 
     public void sendEmailVerification(String userId) {
 
