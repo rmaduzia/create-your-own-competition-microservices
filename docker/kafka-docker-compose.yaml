@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   kafka-1:
-    image: confluentinc/cp-kafka:8.0.3
+    image: confluentinc/cp-kafka:${KAFKA_VERSION}
     container_name: kafka-1
     ports:
       - "9092:9092"
@@ -23,7 +23,7 @@ services:
       - kafka-net
 
   kafka-2:
-    image: confluentinc/cp-kafka:8.0.3
+    image: confluentinc/cp-kafka:${KAFKA_VERSION}
     container_name: kafka-2
     ports:
       - "9094:9094"
@@ -44,7 +44,7 @@ services:
       - kafka-net
 
   kafka-3:
-    image: confluentinc/cp-kafka:8.0.3
+    image: confluentinc/cp-kafka:${KAFKA_VERSION}
     container_name: kafka-3
     ports:
       - "9096:9096"
@@ -65,7 +65,7 @@ services:
       - kafka-net
 
   kafka-schema-registry:
-    image: confluentinc/cp-schema-registry:7.7.0
+    image: confluentinc/cp-schema-registry:${KAFKA_VERSION}
     hostname: kafka-schema-registry
     container_name: kafka-schema-registry
     depends_on:
@@ -76,11 +76,50 @@ services:
       - "8081:8081"
     environment:
       SCHEMA_REGISTRY_HOST_NAME: kafka-schema-registry
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'PLAINTEXT://kafka-11:9090,PLAINTEXT://kafka-2:9090,PLAINTEXT://kafka-3:9090'
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'PLAINTEXT://kafka-1:9090,PLAINTEXT://kafka-2:9090,PLAINTEXT://kafka-3:9090'
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+    networks:
+      - kafka-net
+
+
+
+  init-kafka-topic:
+    image: confluentinc/cp-kafka:${KAFKA_VERSION}
+    container_name: init-kafka-topic
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      # block until kafka is reachable
+      kafka-topics --bootstrap-server kafka-1:9090 --list 
+      
+      echo -e 'Deleting kafka topics'
+      kafka-topics --bootstrap-server kafka-1:9092 --topic user-invite-to-team-topic --delete --if-exists
+      kafka-topics --bootstrap-server kafka-1:9092 --topic user-leave-team-topic --delete --if-exists
+      kafka-topics --bootstrap-server kafka-1:9092 --topic competition-start-topic --delete --if-exists
+      kafka-topics --bootstrap-server kafka-1:9092 --topic competition-end-topic --delete --if-exists
+      kafka-topics --bootstrap-server kafka-1:9092 --topic tournament-start-topic --delete --if-exists
+      kafka-topics --bootstrap-server kafka-1:9092 --topic tournament-end-topic --delete --if-exists
+      
+      echo -e 'Creating kafka topics'
+      kafka-topics --bootstrap-server kafka-1:9092 --create --if-not-exists --topic user-invite-to-team-topic --replication-factor 3 --partitions 3 --config min.insync.replicas=2
+      kafka-topics --bootstrap-server kafka-1:9092 --create --if-not-exists --topic user-leave-team-topic --replication-factor 3 --partitions 3 --config min.insync.replicas=2
+      kafka-topics --bootstrap-server kafka-1:9092 --create --if-not-exists --topic competition-start-topic --replication-factor 3 --partitions 3 --config min.insync.replicas=2
+      kafka-topics --bootstrap-server kafka-1:9092 --create --if-not-exists --topic competition-end-topic --replication-factor 3 --partitions 3 --config min.insync.replicas=2
+      kafka-topics --bootstrap-server kafka-1:9092 --create --if-not-exists --topic tournament-start-topic --replication-factor 3 --partitions 3 --config min.insync.replicas=2
+      kafka-topics --bootstrap-server kafka-1:9092 --create --if-not-exists --topic tournament-end-topic --replication-factor 3 --partitions 3 --config min.insync.replicas=2
+      
+      echo -e 'Successfully created the following topics:'
+      kafka-topics --bootstrap-server kafka-1:9092 --list
+      "
+
+    networks:
+      - kafka-net
 
 networks:
   kafka-net:
     driver: bridge
-
-
