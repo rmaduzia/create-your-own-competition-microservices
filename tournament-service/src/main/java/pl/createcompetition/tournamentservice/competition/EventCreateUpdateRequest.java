@@ -53,4 +53,6 @@ public class EventCreateUpdateRequest {
     private boolean isEventStarted;
     private boolean isEventFinished;
 
+    private Integer version;
+
 }

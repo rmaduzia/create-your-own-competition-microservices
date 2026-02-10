@@ -2,6 +2,7 @@ package pl.createcompetition.tournamentservice.integration;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.restassured.RestAssured;
@@ -61,6 +62,17 @@ public class CompetitionControllerTests extends IntegrationTestsBaseConfig{
         assertTrue(createdCompetition.getTags().isEmpty());
         assertTrue(createdCompetition.getTeams().isEmpty());
         assertTrue(createdCompetition.getMatchInCompetition().isEmpty());
+
+        Optional<Competition> fromDbOpt = competitionRepository.findByEventName(eventCreateUpdateRequest.getEventName());
+        assertTrue(fromDbOpt.isPresent(), "Competition should be persisted");
+        Competition fromDb = fromDbOpt.get();
+
+        assertNotNull(fromDb.getCreatedDate(), "createdDate should be set by auditing");
+        assertNotNull(fromDb.getUpdatedDate(), "updatedDate should be set by auditing");
+        assertEquals(mainUserName, fromDb.getCreatedBy(), "createdBy should equal current principal");
+        assertNotNull(fromDb.getUpdatedBy(), "updatedBy should be set");
+        assertNotNull(fromDb.getVersion(), "version must be set");
+        assertTrue(fromDb.getVersion() >= 0);
     }
 
     @Test
@@ -121,8 +133,18 @@ public class CompetitionControllerTests extends IntegrationTestsBaseConfig{
         assertEquals(updateRequest.getStreetNumber(), updatedCompetition.getStreetNumber());
         assertEquals(updateRequest.getMaxAmountOfTeams(), updatedCompetition.getMaxAmountOfTeams());
         assertEquals(updateRequest.isOpenRecruitment(), updatedCompetition.isOpenRecruitment());
-    }
 
+        Optional<Competition> fromDbOpt = competitionRepository.findByEventName(updateRequest.getEventName());
+        assertTrue(fromDbOpt.isPresent());
+        Competition fromDb = fromDbOpt.get();
+
+        assertNotNull(fromDb.getUpdatedDate(), "updatedDate should be set after update");
+        assertEquals(mainUserName, fromDb.getUpdatedBy(), "updatedBy should equal the principal performing the update");
+        assertNotNull(fromDb.getVersion(), "version should be present after update");
+        assertEquals(competition.getVersion() + 1, fromDb.getVersion());
+
+    }
+    
     @Test
     void shouldThrowErrorThatCompetitionFromParamDoesNotMatchWithRequestBody() {
 

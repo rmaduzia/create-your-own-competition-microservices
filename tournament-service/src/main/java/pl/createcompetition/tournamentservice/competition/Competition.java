@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,6 +23,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import pl.createcompetition.tournamentservice.competition.Competition.CompetitionDto;
 import pl.createcompetition.tournamentservice.competition.match.MatchInCompetition;
 import pl.createcompetition.tournamentservice.model.Tag;
@@ -31,6 +37,7 @@ import pl.createcompetition.tournamentservice.query.QueryDtoInterface;
 @EqualsAndHashCode(of = {"eventName"})
 @Table(name = "competitions")
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @ToString
 @Setter
@@ -79,6 +86,23 @@ public class Competition implements QueryDtoInterface<CompetitionDto> {
     private boolean isOpenRecruitment;
     private boolean isEventStarted;
     private boolean isEventFinished;
+
+    @Version
+    private Integer version;
+
+    @CreatedDate
+    @Column(updatable = false)
+    private Instant createdDate;
+
+    @LastModifiedDate
+    private Instant updatedDate;
+
+    @CreatedBy
+    private String createdBy;
+
+    @LastModifiedBy
+    private String updatedBy;
+
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "competition_tag",

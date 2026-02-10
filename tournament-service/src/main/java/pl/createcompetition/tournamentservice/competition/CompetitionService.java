@@ -1,6 +1,8 @@
 package pl.createcompetition.tournamentservice.competition;
 
 import lombok.AllArgsConstructor;
+import org.hibernate.dialect.lock.OptimisticEntityLockException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -37,17 +39,26 @@ public class CompetitionService {
     public ResponseEntity<?> updateCompetition(String eventName, EventCreateUpdateRequest eventCreateUpdateRequest, String userName) {
 
         if (!eventCreateUpdateRequest.getEventName().equals(eventName)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Competition Name doesn't match with Competition object");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                "Competition Name doesn't match with Competition object");
         }
+
         Competition foundCompetition = verifyMethodsForServices.shouldFindCompetition(
             eventCreateUpdateRequest.getEventName());
-        verifyMethodsForServices.checkIfCompetitionBelongToUser(foundCompetition.getEventOwner(), userName);
+
+        verifyMethodsForServices.checkIfCompetitionBelongToUser(foundCompetition.getEventOwner(),
+            userName);
 
         eventMapper.updateCompetitionFromDto(eventCreateUpdateRequest, foundCompetition);
 
-        EventCreateUpdateRequest savedCompetition = eventMapper.mapCompetitionToSimpleCompetitionDto(competitionRepository.save(foundCompetition));
-
-        return ResponseEntity.ok(savedCompetition);
+        try {
+            EventCreateUpdateRequest savedCompetition = eventMapper.mapCompetitionToSimpleCompetitionDto(
+                competitionRepository.save(foundCompetition));
+            return ResponseEntity.ok(savedCompetition);
+        } catch (OptimisticLockingFailureException optimisticLockingFailureException) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                "Competition was updated by another transaction. Please try again.");
+        }
     }
 
     public ResponseEntity<?> deleteCompetition(String eventName, String userName){
