@@ -21,6 +21,7 @@
         <module>team-service</module>
         <module>tournament-service</module>
         <module>user-service</module>
+        <module>team-notification-service</module>
     </modules>
 
     <properties>

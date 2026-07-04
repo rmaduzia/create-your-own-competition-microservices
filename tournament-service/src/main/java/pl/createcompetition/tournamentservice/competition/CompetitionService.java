@@ -1,11 +1,13 @@
 package pl.createcompetition.tournamentservice.competition;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.dialect.lock.OptimisticEntityLockException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import pl.createcompetition.tournamentservice.model.PagedResponseDto;
 import pl.createcompetition.tournamentservice.query.GetQueryImplService;
@@ -13,6 +15,7 @@ import pl.createcompetition.tournamentservice.query.PaginationInfoRequest;
 import pl.createcompetition.tournamentservice.tournament.VerifyMethodsForServices;
 
 @Service
+@Slf4j
 @AllArgsConstructor
 public class CompetitionService {
 
@@ -36,6 +39,7 @@ public class CompetitionService {
         }
     }
 
+    @Transactional
     public ResponseEntity<?> updateCompetition(String eventName, EventCreateUpdateRequest eventCreateUpdateRequest, String userName) {
 
         if (!eventCreateUpdateRequest.getEventName().equals(eventName)) {
@@ -49,7 +53,13 @@ public class CompetitionService {
         verifyMethodsForServices.checkIfCompetitionBelongToUser(foundCompetition.getEventOwner(),
             userName);
 
+        log.info("Incoming DTO version: {}", eventCreateUpdateRequest.getVersion());
+        log.info("Entity version (before mapping): {}", foundCompetition.getVersion());
+
         eventMapper.updateCompetitionFromDto(eventCreateUpdateRequest, foundCompetition);
+
+        log.info("Entity version (after mapping): {}", foundCompetition.getVersion());
+
 
         try {
             EventCreateUpdateRequest savedCompetition = eventMapper.mapCompetitionToSimpleCompetitionDto(

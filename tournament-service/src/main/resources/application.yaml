@@ -3,6 +3,26 @@ server:
     include-stacktrace: never
     include-message: always
 
+kafka-config:
+  bootstrap-servers: localhost:9092, localhost:9094, localhost:9094
+  schema-registry-url-key: schema.registry.url
+  schema-registry-url: http://localhost:8081
+  num-of-partitions: 3
+  replicator-factor: 3
+
+kafka-producer-config:
+  key-serializer-class: org.apache.kafka.common.serialization.StringSerializer
+  value-serializer-class: io.confluent.kafka.serializers.KafkaAvroSerializer
+  compression-type: none
+  acks: all
+  batch-size: 16384
+  batch-size-boost-factor: 100
+  linger-ms: 5
+  request-timeout-ms: 60000
+  retry-count: 5
+  reconnectionBackoffMs: 5000
+  retryBackoffMs: 5000
+
 spring:
   kafka:
     bootstrap-servers: localhost:29092,localhost:29093,localhost:29094

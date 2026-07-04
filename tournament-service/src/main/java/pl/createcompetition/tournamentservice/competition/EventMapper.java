@@ -11,6 +11,7 @@ import pl.createcompetition.tournamentservice.tournament.Tournament;
 public interface EventMapper {
 
     @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
+    @Mapping(target = "version", source = "version")
     void updateCompetitionFromDto(EventCreateUpdateRequest source, @MappingTarget Competition target);
 
     @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)

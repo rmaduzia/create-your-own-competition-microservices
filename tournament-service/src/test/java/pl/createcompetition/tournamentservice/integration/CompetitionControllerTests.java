@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -144,7 +145,40 @@ public class CompetitionControllerTests extends IntegrationTestsBaseConfig{
         assertEquals(competition.getVersion() + 1, fromDb.getVersion());
 
     }
-    
+
+    @Test
+    @Disabled
+    void shouldFailUpdateWhenVersionIsStale() {
+
+        // create & persist initial entity
+        Competition competition = getCompetition();
+        competitionRepository.save(competition);
+
+        // load from DB to ensure version present
+        Competition fromDbBefore = competitionRepository.findByEventName(competition.getEventName()).get();
+        Integer originalVersion = fromDbBefore.getVersion(); // probably 0
+
+        // prepare DTO with that version (client sends originalVersion)
+        EventCreateUpdateRequest dto = eventMapper.mapCompetitionToSimpleCompetitionDto(fromDbBefore);
+        dto.setVersion(originalVersion);
+
+        // Simulate another transaction that updates the entity and increments the version
+        Competition otherTx = competitionRepository.findByEventName(competition.getEventName()).get();
+        otherTx.setCity("someone-else-changed");
+        competitionRepository.save(otherTx); // now version = originalVersion + 1
+
+        // Now attempt update with stale DTO (still has originalVersion)
+        Response response = given().header("Authorization", "Bearer " + userToken)
+            .contentType("application/json")
+            .body(dto)
+            .when()
+            .put("competition/" + dto.getEventName());
+
+        assertEquals(HttpStatus.CONFLICT.value(), response.getStatusCode());
+        assertEquals("Competition was updated by another transaction. Please try again.", response.jsonPath().getString("message"));
+    }
+
+
     @Test
     void shouldThrowErrorThatCompetitionFromParamDoesNotMatchWithRequestBody() {
 
